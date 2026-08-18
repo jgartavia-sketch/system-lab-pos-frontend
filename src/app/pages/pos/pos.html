@@ -1,0 +1,626 @@
+<div class="pos-shell" [class.sidebar-open]="isSidebarOpen()">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button
+        type="button"
+        class="menu-button"
+        aria-label="Abrir o cerrar menú lateral"
+        (click)="toggleSidebar()"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="/logo.png" alt="System Lab" class="brand-logo" />
+        </div>
+
+        <div class="brand-text">
+          <strong>System Lab</strong>
+          <span>POS Platform</span>
+        </div>
+      </div>
+
+      <div class="powered">
+        Plataforma comercial inteligente
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="search-box">
+        <span class="search-icon"></span>
+        <input type="text" placeholder="Buscar en el sistema..." />
+      </div>
+
+      <button type="button" class="icon-button" aria-label="Notificaciones">
+        <span class="notification-dot"></span>
+      </button>
+
+      <div class="user-box">
+        <div>
+          <strong>Admin</strong>
+          <span>System Lab</span>
+        </div>
+
+        <div class="avatar">A</div>
+      </div>
+    </div>
+  </header>
+
+  <button
+    type="button"
+    class="sidebar-overlay"
+    aria-label="Cerrar menú lateral"
+    (click)="closeSidebar()"
+  ></button>
+
+  <aside class="sidebar">
+    <nav class="sidebar-nav" aria-label="Navegación principal">
+      <span class="nav-section-title">Operación</span>
+
+      <a class="nav-item active" href="#">
+        <span class="nav-icon icon-dashboard"></span>
+        <span>Dashboard</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <span class="nav-icon icon-pos"></span>
+        <span>POS</span>
+        <small>Core</small>
+      </a>
+
+      <a class="nav-item" href="#">
+        <span class="nav-icon icon-cash"></span>
+        <span>Caja</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <span class="nav-icon icon-products"></span>
+        <span>Productos</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <span class="nav-icon icon-inventory"></span>
+        <span>Inventario</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <span class="nav-icon icon-expenses-menu"></span>
+        <span>Egresos</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <span class="nav-icon icon-movements"></span>
+        <span>Centro de movimientos</span>
+      </a>
+
+      <span class="nav-section-title">Gestión estratégica</span>
+
+      <details class="nav-group">
+        <summary class="nav-item">
+          <span class="nav-icon icon-reports"></span>
+          <span>Reportes</span>
+          <small>▾</small>
+        </summary>
+
+        <div class="nav-submenu">
+          <a href="#">Ventas</a>
+          <a href="#">Productos</a>
+          <a href="#">Clientes</a>
+          <a href="#">Utilidad</a>
+        </div>
+      </details>
+
+      <span class="nav-section-title">Sistema</span>
+
+      <a class="nav-item" href="#">
+        <span class="nav-icon icon-users"></span>
+        <span>Usuarios</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <span class="nav-icon icon-settings"></span>
+        <span>Configuración</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-card">
+      <div class="card-icon"></div>
+
+      <div>
+        <strong>QR Cliente frecuente</strong>
+        <p>Tarjeta digital, puntos y fidelización para cada comercio.</p>
+      </div>
+
+      <button type="button">Ver estrategia</button>
+    </div>
+
+    <button type="button" class="logout-button">
+      <span></span>
+      Cerrar sesión
+    </button>
+  </aside>
+
+  <main class="main-panel">
+    <section class="dashboard-head">
+      <article class="executive-card">
+        <div class="card-kicker">
+          <span>Panel ejecutivo</span>
+          <small>Actualizado 15:50</small>
+        </div>
+
+        <div class="executive-body">
+          <div class="executive-copy">
+            <h1>Resumen comercial</h1>
+
+            <p>
+              Vista central de ventas, tickets, caja y movimiento operativo
+              para tomar decisiones sin andar cazando datos como si fueran Pokémon.
+            </p>
+
+            <div class="executive-tags">
+              <span>Localidad: Shirley's</span>
+              <span>Rango: 2026-06-07 → 2026-06-07</span>
+            </div>
+          </div>
+
+          <div class="sales-total">
+            <span>Ventas del rango</span>
+            <strong>₡0</strong>
+            <small>0 tickets registrados</small>
+          </div>
+        </div>
+
+        <div class="executive-metrics">
+          <div>
+            <span>Ventas</span>
+            <strong>₡0</strong>
+          </div>
+
+          <div>
+            <span>Tickets</span>
+            <strong>0</strong>
+          </div>
+
+          <div>
+            <span>Express</span>
+            <strong>0</strong>
+          </div>
+
+          <div>
+            <span>Caja</span>
+            <strong>₡0</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="query-card">
+        <div class="card-kicker">
+          <span>Filtros de búsqueda</span>
+          <small>Control de consulta</small>
+        </div>
+
+        <h2>Consultar operación</h2>
+
+        <div class="query-grid">
+          <label class="field field-location">
+            <small>Localidad</small>
+            <div class="fake-input">
+              <span class="input-icon icon-store"></span>
+              Shirley's
+            </div>
+          </label>
+
+          <label class="field">
+            <small>Fecha inicial</small>
+            <div class="fake-input">
+              <span class="input-icon icon-calendar"></span>
+              2026-06-07
+            </div>
+          </label>
+
+          <label class="field">
+            <small>Fecha final</small>
+            <div class="fake-input">
+              <span class="input-icon icon-calendar"></span>
+              2026-06-07
+            </div>
+          </label>
+        </div>
+
+        <div class="quick-ranges" aria-label="Rangos rápidos">
+          <button type="button">Hoy</button>
+          <button type="button">Ayer</button>
+          <button type="button">Últimos 7 días</button>
+          <button type="button">Mes actual</button>
+          <button type="button">Año actual</button>
+        </div>
+
+        <button type="button" class="refresh-button">
+          Actualizar panel
+        </button>
+      </article>
+    </section>
+
+    <section class="kpi-grid">
+      <article class="kpi-card accent-a">
+        <div class="kpi-top">
+          <div class="kpi-icon icon-trend"></div>
+          <span class="kpi-chip">Ventas</span>
+        </div>
+
+        <div class="kpi-body">
+          <span>Ticket promedio</span>
+          <strong>₡0</strong>
+          <p>Promedio diario de referencia</p>
+        </div>
+      </article>
+
+      <article class="kpi-card accent-b">
+        <div class="kpi-top">
+          <div class="kpi-icon icon-expenses"></div>
+          <span class="kpi-chip">Compras</span>
+        </div>
+
+        <div class="kpi-body">
+          <span>Gastos</span>
+          <strong>₡0</strong>
+          <p>Acumulado en el rango</p>
+        </div>
+      </article>
+
+      <article class="kpi-card accent-c">
+        <div class="kpi-top">
+          <div class="kpi-icon icon-ticket"></div>
+          <span class="kpi-chip">Operación</span>
+        </div>
+
+        <div class="kpi-body">
+          <span>Tickets</span>
+          <strong>0</strong>
+          <p>Movimientos registrados</p>
+        </div>
+      </article>
+
+      <article class="kpi-card accent-d">
+        <div class="kpi-top">
+          <div class="kpi-icon icon-cart"></div>
+          <span class="kpi-chip">Facturación</span>
+        </div>
+
+        <div class="kpi-body">
+          <span>Ventas</span>
+          <strong>₡0</strong>
+          <p>Facturación del rango</p>
+        </div>
+      </article>
+
+      <article class="kpi-card accent-e">
+        <div class="kpi-top">
+          <div class="kpi-icon icon-users"></div>
+          <span class="kpi-chip">Sistema</span>
+        </div>
+
+        <div class="kpi-body">
+          <span>Usuarios</span>
+          <strong>0</strong>
+          <p>Usuarios configurados</p>
+        </div>
+      </article>
+
+      <article class="kpi-card accent-f">
+        <div class="kpi-top">
+          <div class="kpi-icon icon-customers"></div>
+          <span class="kpi-chip">CRM</span>
+        </div>
+
+        <div class="kpi-body">
+          <span>Clientes</span>
+          <strong>0</strong>
+          <p>Base comercial registrada</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="analysis-section">
+      <div class="analysis-header">
+        <div>
+          <span>Análisis avanzado</span>
+          <h2>Lectura ejecutiva del negocio</h2>
+        </div>
+
+        <p>
+          Paneles preparados para futuras gráficas reales, sin conectar librerías todavía.
+        </p>
+      </div>
+
+      <div class="analysis-accordion">
+        <details class="analysis-panel">
+          <summary>
+            <div>
+              <span>Métodos de pago</span>
+              <strong>Distribución por canal</strong>
+            </div>
+
+            <small>Ver análisis</small>
+          </summary>
+
+          <div class="analysis-content">
+            <div class="chart-placeholder payment-placeholder">
+              <span>Gráfica futura</span>
+              <strong>Métodos de pago</strong>
+              <p>Efectivo, tarjeta, SINPE móvil, transferencia y otros canales.</p>
+            </div>
+
+            <div class="analysis-notes">
+              <h3>Resumen esperado</h3>
+              <p>
+                Aquí mostraremos cuánto vende cada método de pago y su peso dentro
+                de la operación diaria del comercio.
+              </p>
+            </div>
+          </div>
+        </details>
+
+        <details class="analysis-panel">
+          <summary>
+            <div>
+              <span>Ventas vs Compras</span>
+              <strong>Comparativo operativo</strong>
+            </div>
+
+            <small>Ver análisis</small>
+          </summary>
+
+          <div class="analysis-content">
+            <div class="chart-placeholder sales-purchases-placeholder">
+              <span>Gráfica futura</span>
+              <strong>Ventas vs Compras</strong>
+              <p>Comparación entre ingresos, compras, gastos y margen operativo.</p>
+            </div>
+
+            <div class="analysis-notes">
+              <h3>Resumen esperado</h3>
+              <p>
+                Esta sección permitirá leer rentabilidad, presión de costos y
+                comportamiento financiero por rango de fechas.
+              </p>
+            </div>
+          </div>
+        </details>
+
+        <details class="analysis-panel">
+          <summary>
+            <div>
+              <span>Comportamiento comercial</span>
+              <strong>Ventas por hora</strong>
+            </div>
+
+            <small>Ver análisis</small>
+          </summary>
+
+          <div class="analysis-content">
+            <div class="chart-placeholder hourly-sales-placeholder">
+              <span>Gráfica futura</span>
+              <strong>Ventas por hora</strong>
+              <p>Lectura del movimiento comercial por franjas horarias del día.</p>
+            </div>
+
+            <div class="analysis-notes">
+              <h3>Resumen esperado</h3>
+              <p>
+                Aquí detectaremos las horas de mayor venta, los picos de demanda
+                y los momentos donde conviene reforzar operación, inventario y personal.
+              </p>
+            </div>
+          </div>
+        </details>
+
+        <details class="analysis-panel">
+          <summary>
+            <div>
+              <span>Nueva vista</span>
+              <strong>Ventas por familia</strong>
+            </div>
+
+            <small>Ver análisis</small>
+          </summary>
+
+          <div class="analysis-content">
+            <div class="chart-placeholder product-family-placeholder">
+              <span>Gráfica futura</span>
+              <strong>Ventas por familia</strong>
+              <p>Distribución de ventas por categorías, familias o líneas de producto.</p>
+            </div>
+
+            <div class="analysis-notes">
+              <h3>Resumen esperado</h3>
+              <p>
+                Este panel mostrará cuáles familias de productos sostienen el negocio,
+                cuáles están creciendo y cuáles necesitan estrategia comercial.
+              </p>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="operations-section">
+      <div class="analysis-header">
+        <div>
+          <span>Profundización operativa</span>
+          <h2>Reportes clave del comercio</h2>
+        </div>
+
+        <p>
+          Bloques desplegables para revisar productos, utilidad por localidad y accesos rápidos.
+        </p>
+      </div>
+
+      <div class="operations-accordion">
+        <details class="analysis-panel wide-panel">
+          <summary>
+            <div>
+              <span>Productos</span>
+              <strong>Top vendidos</strong>
+            </div>
+
+            <small>Ver reporte</small>
+          </summary>
+
+          <div class="top-products-card">
+            <div class="report-title-row">
+              <div>
+                <span>Top 12 · Shirley's</span>
+                <h3>Productos con mayor salida</h3>
+              </div>
+
+              <button type="button">Ver Reporte</button>
+            </div>
+
+            <div class="bar-report">
+              <div class="bar-row">
+                <span>Empaque</span>
+                <div class="bar-track"><strong style="width: 92%">73 uds</strong></div>
+              </div>
+
+              <div class="bar-row">
+                <span>Impuesto Servicio</span>
+                <div class="bar-track"><strong style="width: 48%">38 uds</strong></div>
+              </div>
+
+              <div class="bar-row">
+                <span>TB 5</span>
+                <div class="bar-track"><strong style="width: 35%">28 uds</strong></div>
+              </div>
+
+              <div class="bar-row">
+                <span>Coca cola</span>
+                <div class="bar-track"><strong style="width: 20%">16 uds</strong></div>
+              </div>
+
+              <div class="bar-row">
+                <span>TB 4</span>
+                <div class="bar-track"><strong style="width: 18%">14 uds</strong></div>
+              </div>
+
+              <div class="bar-row">
+                <span>Coca cola zero</span>
+                <div class="bar-track"><strong style="width: 13%">10 uds</strong></div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="analysis-panel wide-panel">
+          <summary>
+            <div>
+              <span>Desempeño por sucursal</span>
+              <strong>Facturación y utilidad por localidad</strong>
+            </div>
+
+            <small>Ver detalle</small>
+          </summary>
+
+          <div class="location-performance-card">
+            <div class="report-title-row">
+              <div>
+                <span>2026-06-01 → 2026-06-08</span>
+                <h3>Shirley's</h3>
+              </div>
+
+              <div class="store-badge">
+                <span class="input-icon icon-store"></span>
+              </div>
+            </div>
+
+            <div class="performance-grid">
+              <div class="performance-row">
+                <span>Ventas</span>
+                <strong>₡1 026 470</strong>
+              </div>
+
+              <div class="performance-row">
+                <span>Utilidad</span>
+                <strong>₡753 400</strong>
+              </div>
+
+              <div class="performance-row">
+                <span>Gastos</span>
+                <strong>₡0</strong>
+              </div>
+
+              <div class="performance-row">
+                <span>Órdenes online</span>
+                <strong>0</strong>
+              </div>
+
+              <div class="performance-row">
+                <span>Monto express</span>
+                <strong>₡0</strong>
+              </div>
+
+              <div class="performance-row">
+                <span>Facturado online</span>
+                <strong>₡0</strong>
+              </div>
+
+              <div class="performance-row">
+                <span>Facturado off-line</span>
+                <strong>₡1 026 470</strong>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <article class="quick-access-card">
+        <div class="quick-access-head">
+          <div class="quick-avatar">
+            <span class="icon-users"></span>
+          </div>
+
+          <div>
+            <span>11:19 a. m.</span>
+            <h3>👋 ¡Buenos días, Gabriel <small>(Supervisor)</small></h3>
+          </div>
+
+          <div class="weather-pill">
+            Lluvioso, 18°C
+          </div>
+        </div>
+
+        <div class="quick-tabs">
+          <button type="button">
+            Mis ventas
+          </button>
+
+          <button type="button">
+            Proformas
+          </button>
+
+          <button type="button" class="active">
+            Inventario
+          </button>
+        </div>
+
+        <div class="command-buttons">
+          <button type="button" class="proforma-button">
+            Comandas Proforma
+          </button>
+
+          <button type="button" class="store-command-button">
+            Comandas Tienda
+          </button>
+        </div>
+
+        <div class="quick-note">
+          Usa los botones grandes para entrar directo a tus paneles de Comandas.
+          Los accesos rápidos quedan arriba por si necesitas ir a otras áreas.
+        </div>
+      </article>
+    </section>
+  </main>
+</div>
