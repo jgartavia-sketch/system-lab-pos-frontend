@@ -1665,3 +1665,196 @@ a {
     bottom: -10px;
   }
 }
+/* =========================================================
+   ECOSISTEMA · IDENTIDAD VISUAL POR PRODUCTO
+   ========================================================= */
+
+/* AGROMIND CR · PRODUCTO INSIGNIA · VERDE */
+.featured-product-card {
+  border-color: rgba(73, 200, 92, 0.42);
+  background:
+    radial-gradient(
+      circle at 12% 18%,
+      rgba(73, 200, 92, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 88% 16%,
+      rgba(154, 218, 72, 0.1),
+      transparent 28%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(4, 67, 53, 0.88),
+      rgba(5, 47, 48, 0.72)
+    );
+
+  box-shadow:
+    0 22px 58px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.featured-product-card:hover {
+  border-color: rgba(104, 221, 102, 0.62);
+}
+
+.featured-product-card .product-status,
+.featured-product-card .text-link {
+  color: #79df72;
+}
+
+.featured-product-card .product-status {
+  background: rgba(73, 200, 92, 0.13);
+}
+
+.featured-product-card .product-tags span {
+  border-color: rgba(104, 221, 102, 0.22);
+  background: rgba(73, 200, 92, 0.045);
+}
+
+.featured-product-card .agromind-motto em {
+  color: #79df72;
+}
+
+
+/* SYSTEM LAB POS · AZUL */
+.product-grid .product-card:first-child {
+  border-color: rgba(49, 170, 255, 0.34);
+
+  background:
+    radial-gradient(
+      circle at 12% 12%,
+      rgba(49, 170, 255, 0.14),
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(5, 49, 76, 0.82),
+      rgba(5, 37, 58, 0.66)
+    );
+}
+
+.product-grid .product-card:first-child:hover {
+  border-color: rgba(72, 188, 255, 0.62);
+
+  background:
+    radial-gradient(
+      circle at 12% 12%,
+      rgba(49, 170, 255, 0.2),
+      transparent 36%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(5, 55, 86, 0.9),
+      rgba(5, 40, 64, 0.74)
+    );
+
+  box-shadow:
+    0 22px 54px rgba(3, 32, 55, 0.28);
+}
+
+.product-grid
+  .product-card:first-child
+  .product-status.development {
+  color: #73c9ff;
+  background: rgba(49, 170, 255, 0.13);
+}
+
+
+/* SYSTEM LAB CONNECT · VIOLETA */
+.product-card.connect-card {
+  border-color: rgba(164, 91, 255, 0.34);
+
+  background:
+    radial-gradient(
+      circle at 88% 10%,
+      rgba(164, 91, 255, 0.16),
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(48, 27, 79, 0.78),
+      rgba(23, 28, 62, 0.7)
+    );
+}
+
+.product-card.connect-card:hover {
+  border-color: rgba(184, 119, 255, 0.62);
+
+  background:
+    radial-gradient(
+      circle at 88% 10%,
+      rgba(164, 91, 255, 0.23),
+      transparent 36%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(55, 30, 91, 0.88),
+      rgba(27, 31, 70, 0.78)
+    );
+
+  box-shadow:
+    0 22px 54px rgba(35, 18, 66, 0.3);
+}
+
+.connect-card > .product-status {
+  color: #c69aff;
+  background: rgba(164, 91, 255, 0.14);
+}
+
+.connect-card .connect-details {
+  border-top-color: rgba(198, 154, 255, 0.18);
+  border-bottom-color: rgba(198, 154, 255, 0.18);
+}
+
+.connect-card .connect-summary-icon {
+  color: #c69aff;
+  border-color: rgba(198, 154, 255, 0.26);
+  background: rgba(164, 91, 255, 0.1);
+}
+
+.connect-card
+  .connect-details[open]
+  .connect-summary-icon {
+  border-color: rgba(198, 154, 255, 0.48);
+  background: rgba(164, 91, 255, 0.18);
+}
+
+.connect-card .connect-detail-highlight {
+  border-color: rgba(198, 154, 255, 0.25);
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(198, 154, 255, 0.13),
+      transparent 34%
+    ),
+    rgba(164, 91, 255, 0.06);
+}
+
+.connect-card .development-label,
+.connect-card .connect-closing strong {
+  color: #c69aff;
+}
+
+.connect-card .development-label {
+  background: rgba(164, 91, 255, 0.14);
+}
+
+.connect-card .primary-button {
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #9b4dff,
+      #6930b8
+    );
+
+  box-shadow:
+    0 12px 30px rgba(116, 55, 190, 0.28);
+}
+
+.connect-card .primary-button:hover {
+  box-shadow:
+    0 16px 38px rgba(139, 72, 224, 0.38);
+}
