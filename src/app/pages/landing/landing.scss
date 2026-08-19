@@ -1858,3 +1858,269 @@ a {
   box-shadow:
     0 16px 38px rgba(139, 72, 224, 0.38);
 }
+/* =========================================================
+   RESPONSIVE FINAL · SYSTEM LAB LANDING
+   Refuerzo para tablet, móvil y pantallas pequeñas
+   ========================================================= */
+
+@media (max-width: 720px) {
+
+  /* Evita desbordamientos internos */
+  .landing-page,
+  .section-shell,
+  .hero-section,
+  .product-card,
+  .featured-product-card,
+  .project-card,
+  .solution-card,
+  .investment-card,
+  .cta-card {
+    min-width: 0;
+  }
+
+  /* Textos largos nunca fuerzan ancho */
+  h1,
+  h2,
+  h3,
+  p,
+  span,
+  strong,
+  small,
+  a {
+    overflow-wrap: break-word;
+  }
+
+  /* AgroMind */
+  .featured-product-card {
+    gap: 20px;
+  }
+
+  .featured-copy h3 {
+    font-size: clamp(2.4rem, 12vw, 3.8rem);
+  }
+
+  .featured-mark {
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .agromind-featured-logo {
+    width: min(100%, 260px);
+  }
+
+  .agromind-origin {
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .agromind-motto {
+    text-align: center;
+  }
+
+  .product-tags {
+    gap: 8px;
+  }
+
+  /* POS + Connect */
+  .product-card {
+    width: 100%;
+  }
+
+  .connect-details summary {
+    width: 100%;
+  }
+
+  .connect-details-content {
+    min-width: 0;
+  }
+
+  /* CTA de Connect */
+  .connect-card .primary-button {
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 16px;
+    text-align: center;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  /* CTA general */
+  .cta-actions,
+  .cta-actions .primary-button {
+    width: 100%;
+  }
+
+  .cta-actions .primary-button {
+    white-space: normal;
+    text-align: center;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+
+@media (max-width: 480px) {
+
+  /* Espaciado más seguro */
+  .solution-card,
+  .project-card,
+  .product-card {
+    padding: 22px;
+  }
+
+  .featured-product-card,
+  .cta-card {
+    padding: 22px;
+  }
+
+  /* Hero */
+  .hero-content h1 {
+    font-size: clamp(2.65rem, 14vw, 3.7rem);
+    line-height: 0.96;
+  }
+
+  .hero-lead {
+    font-size: 1rem;
+  }
+
+  /* Visual hero más compacto */
+  .hero-visual {
+    min-height: 360px;
+  }
+
+  .orbit-one {
+    width: 235px;
+    height: 235px;
+  }
+
+  .orbit-two {
+    width: 290px;
+    height: 290px;
+  }
+
+  .floating-card {
+    width: 132px;
+    padding: 11px 12px;
+  }
+
+  .floating-card strong {
+    font-size: 0.88rem;
+  }
+
+  .floating-card span {
+    font-size: 0.62rem;
+  }
+
+  /* AgroMind */
+  .featured-mark {
+    min-height: 220px;
+  }
+
+  .agromind-featured-logo {
+    width: min(100%, 220px);
+  }
+
+  .agromind-motto {
+    font-size: 1.35rem;
+  }
+
+  .agromind-motto em {
+    font-size: clamp(2.25rem, 13vw, 3.4rem);
+  }
+
+  /* Pills */
+  .product-tags span {
+    font-size: 0.72rem;
+    padding: 7px 9px;
+  }
+
+  /* Connect */
+  .connect-details summary {
+    gap: 12px;
+    font-size: 0.86rem;
+  }
+
+  .connect-detail-highlight {
+    padding: 14px;
+  }
+
+  .connect-card .primary-button {
+    font-size: 0.9rem;
+  }
+
+  /* Footer */
+  .footer-brand {
+    align-items: flex-start;
+  }
+}
+
+
+@media (max-width: 360px) {
+
+  .site-header {
+    width: calc(100% - 12px);
+    padding: 9px;
+    gap: 8px;
+  }
+
+  .brand-link {
+    gap: 8px;
+  }
+
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-copy strong {
+    font-size: 0.88rem;
+  }
+
+  .header-cta {
+    padding: 0 10px;
+    font-size: 0.76rem;
+  }
+
+  .hero-section,
+  .section-shell {
+    width: calc(100% - 20px);
+  }
+
+  .hero-content h1 {
+    font-size: 2.55rem;
+  }
+
+  .hero-visual {
+    min-height: 330px;
+  }
+
+  .orbit-one {
+    width: 215px;
+    height: 215px;
+  }
+
+  .orbit-two {
+    width: 265px;
+    height: 265px;
+  }
+
+  .visual-core {
+    width: 145px;
+    height: 145px;
+  }
+
+  .floating-card {
+    width: 120px;
+  }
+
+  .featured-product-card,
+  .product-card,
+  .solution-card,
+  .project-card,
+  .investment-card,
+  .cta-card {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
