@@ -1,0 +1,88 @@
+<div class="control-shell">
+  <header class="hero">
+    <div class="brand"><img src="/logo.png" alt="System Lab" /><div><strong>System Lab</strong><span>Centro de control</span></div></div>
+    <div class="hero-copy"><span class="eyebrow">Panel administrativo</span><h1>Todos los clientes. Todo bajo control.</h1><p>Infraestructura, avance de proyectos y pagos en una sola torre de mando.</p></div>
+    <a class="back-link" href="/">Volver al inicio</a>
+  </header>
+
+  <main>
+    <section class="kpis" aria-label="Resumen">
+      <article><span>Clientes activos</span><strong>{{ dashboard().clients.length }}</strong></article>
+      <article><span>Servicios conectados</span><strong>{{ activeServices() }}</strong></article>
+      <article><span>Tareas abiertas</span><strong>{{ pendingWork() }}</strong></article>
+      <article><span>Pagos pendientes</span><strong>{{ pendingPayments() }}</strong></article>
+    </section>
+
+    <nav class="tabs" aria-label="Secciones del panel">
+      <button [class.active]="activeTab() === 'services'" (click)="setTab('services')">01 · Servicios</button>
+      <button [class.active]="activeTab() === 'progress'" (click)="setTab('progress')">02 · Estado de proyectos</button>
+      <button [class.active]="activeTab() === 'payments'" (click)="setTab('payments')">03 · Historial de pagos</button>
+    </nav>
+
+    @if (error()) { <div class="alert">{{ error() }} <button (click)="loadDashboard()">Reintentar</button></div> }
+    @if (loading()) { <div class="loading">Cargando centro de control…</div> }
+
+    @if (!loading() && activeTab() === 'services') {
+      <section class="panel">
+        <div class="panel-head"><div><span class="eyebrow">Infraestructura digital</span><h2>Matriz de servicios por cliente</h2></div><p>Marcá cada servicio cuando esté activo y correctamente configurado.</p></div>
+        <div class="matrix-wrap">
+          <table class="matrix">
+            <thead><tr><th>Cliente</th>@for (service of dashboard().services; track service.key) { <th>{{ service.label }}</th> }</tr></thead>
+            <tbody>@for (client of dashboard().clients; track client.id) {
+              <tr><th><strong>{{ client.name }}</strong>@if (client.website_url) { <a [href]="client.website_url" target="_blank" rel="noreferrer">Visitar sitio ↗</a> }</th>
+                @for (service of dashboard().services; track service.key) { <td><label class="check" [class.saving]="isSaving(client.id, service.key)"><input type="checkbox" [checked]="isServiceActive(client, service.key)" [disabled]="isSaving(client.id, service.key)" (change)="toggleService(client, service, $any($event.target).checked)" /><span>✓</span></label></td> }
+              </tr>
+            }</tbody>
+          </table>
+        </div>
+      </section>
+    }
+
+    @if (!loading() && activeTab() === 'progress') {
+      <section class="two-column">
+        <form class="panel form-panel" (ngSubmit)="addMilestone()">
+          <span class="eyebrow">Nuevo avance o pendiente</span><h2>Registrar tarea</h2>
+          <label>Cliente<select [(ngModel)]="selectedClientId" name="milestoneClient">@for (client of dashboard().clients; track client.id) { <option [ngValue]="client.id">{{ client.name }}</option> }</select></label>
+          <label>Título<input [(ngModel)]="milestoneTitle" name="milestoneTitle" placeholder="Ej. Crear módulo de inventario" required /></label>
+          <label>Detalle<textarea [(ngModel)]="milestoneDescription" name="milestoneDescription" placeholder="Qué falta, qué se completó o cuál es el siguiente paso"></textarea></label>
+          <div class="form-row"><label>Prioridad<select [(ngModel)]="milestonePriority" name="milestonePriority"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option></select></label><label>Fecha objetivo<input type="date" [(ngModel)]="milestoneDueDate" name="milestoneDueDate" /></label></div>
+          <button class="primary" type="submit">Guardar tarea</button>
+        </form>
+        <div class="project-list">
+          @for (client of dashboard().clients; track client.id) {
+            <article class="panel project-card"><div class="project-title"><div><span class="eyebrow">Proyecto</span><h3>{{ client.name }}</h3></div><span class="counter">{{ client.milestones.length }} registros</span></div>
+              @if (!client.milestones.length) { <p class="empty">Todavía no hay avances registrados.</p> }
+              @for (item of client.milestones; track item.id) { <div class="milestone"><div><strong>{{ item.title }}</strong>@if (item.description) { <p>{{ item.description }}</p> }<small [class]="'priority ' + item.priority">Prioridad {{ item.priority }}</small></div><select [ngModel]="item.status" (ngModelChange)="updateMilestoneStatus(item, $event)"><option value="pending">Pendiente</option><option value="in_progress">En proceso</option><option value="completed">Listo</option><option value="blocked">Bloqueado</option></select></div> }
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+    @if (!loading() && activeTab() === 'payments') {
+      <section class="two-column payments-layout">
+        <form class="panel form-panel" (ngSubmit)="savePayment()">
+          <span class="eyebrow">Control financiero</span><h2>{{ editingPaymentId ? 'Editar registro' : 'Registrar movimiento' }}</h2>
+          <label>Cliente<select [(ngModel)]="selectedClientId" name="paymentClient">@for (client of dashboard().clients; track client.id) { <option [ngValue]="client.id">{{ client.name }}</option> }</select></label>
+          <label>Producto o servicio<select [(ngModel)]="paymentProduct" name="paymentProduct" (ngModelChange)="paymentProductChanged()">@for (product of productOptions; track product) { <option [value]="product">{{ product }}</option> }</select></label>
+          @if (paymentProduct === 'Otro') { <label>Nombre del producto o servicio<input [(ngModel)]="paymentCustomProduct" name="paymentCustomProduct" placeholder="Escribí el concepto" required /></label> }
+          <div class="form-row"><label>Valor<input type="number" min="1" [(ngModel)]="paymentValue" name="paymentValue" required /></label><label>Moneda<select [(ngModel)]="paymentCurrency" name="paymentCurrency"><option value="CRC">CRC</option><option value="USD">USD</option></select></label></div>
+          <label>Estado<select [(ngModel)]="paymentStatus" name="paymentStatus"><option value="pending">Pendiente</option><option value="paid">Pagado</option><option value="overdue">Vencido</option></select></label>
+          @if (paymentProduct === 'Publicidad semanal') {
+            <div class="dynamic-note">Periodo publicitario de seis días: lunes a sábado.</div>
+            <div class="form-row"><label>Inicio del periodo<input type="date" [(ngModel)]="paymentPeriodStart" name="paymentPeriodStart" (ngModelChange)="calculateAdvertisingDates()" /></label><label>Final del periodo<input type="date" [(ngModel)]="paymentPeriodEnd" name="paymentPeriodEnd" /></label></div>
+          } @else {
+            <details class="optional-dates"><summary>Agregar periodo del servicio</summary><div class="form-row"><label>Inicio del periodo<input type="date" [(ngModel)]="paymentPeriodStart" name="paymentPeriodStart" /></label><label>Final del periodo<input type="date" [(ngModel)]="paymentPeriodEnd" name="paymentPeriodEnd" /></label></div></details>
+          }
+          <div class="form-row"><label>Fecha real del pago<input type="date" [(ngModel)]="paymentDate" name="paymentDate" /></label><label>Próximo pago<input type="date" [(ngModel)]="paymentNextDate" name="paymentNextDate" /></label></div>
+          <label>Detalle<textarea [(ngModel)]="paymentDetail" name="paymentDetail" placeholder="Observaciones, cobertura o acuerdos"></textarea></label>
+          <div class="form-actions"><button class="primary" type="submit">{{ editingPaymentId ? 'Guardar cambios' : 'Registrar movimiento' }}</button>@if (editingPaymentId) { <button class="secondary" type="button" (click)="resetPaymentForm()">Cancelar edición</button> }</div>
+        </form>
+        <section class="panel payment-history"><div class="panel-head"><div><span class="eyebrow">Trazabilidad</span><h2>Historial de pagos</h2></div></div>
+          @if (!allPayments().length) { <p class="empty">No hay pagos registrados todavía.</p> }
+          @for (payment of allPayments(); track payment.id) { <article class="payment-row"><div class="payment-main"><strong>{{ clientName(payment.client_id) }}</strong><span>{{ payment.product_service }}</span>@if (payment.detail) { <small>{{ payment.detail }}</small> }@if (payment.period_start || payment.period_end) { <small>Periodo: {{ payment.period_start || '—' }} → {{ payment.period_end || '—' }}</small> }</div><div class="amount"><strong>{{ payment.currency === 'CRC' ? '₡' : '$' }}{{ payment.value | number:'1.0-2' }}</strong>@if (payment.payment_date) { <small>Pagado: {{ payment.payment_date }}</small> }@if (payment.next_payment_date) { <small>Próximo: {{ payment.next_payment_date }}</small> }</div><span [class]="'status ' + payment.status">{{ statusLabel(payment.status) }}</span><div class="row-actions"><button class="edit" type="button" (click)="editPayment(payment)">Editar</button>@if (payment.status !== 'paid') { <button class="success" type="button" (click)="markPaymentPaid(payment)">Marcar pagado</button> }</div></article> }
+        </section>
+      </section>
+    }
+  </main>
+</div>
