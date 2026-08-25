@@ -27,7 +27,11 @@ interface Dashboard { services: ServiceDefinition[]; clients: ManagedClient[]; }
 })
 export class ClientControl {
   private readonly http = inject(HttpClient);
-  private readonly apiBase = (globalThis as typeof globalThis & { SYSTEM_LAB_API_URL?: string }).SYSTEM_LAB_API_URL ?? 'http://localhost:8000';
+  private readonly apiBase =
+    (globalThis as typeof globalThis & { SYSTEM_LAB_API_URL?: string }).SYSTEM_LAB_API_URL
+    ?? (globalThis.location.hostname === 'localhost' || globalThis.location.hostname === '127.0.0.1'
+      ? 'http://localhost:8000'
+      : 'https://system-lab-pos-backend.onrender.com');
 
   protected readonly activeTab = signal<Tab>('services');
   protected readonly dashboard = signal<Dashboard>({ services: [], clients: [] });
