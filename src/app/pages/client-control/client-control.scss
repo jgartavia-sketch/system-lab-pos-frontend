@@ -12,3 +12,35 @@ main{width:min(1480px,calc(100% - 36px));max-width:100%;min-width:0;margin:-38px
 .payments-layout{grid-template-columns:minmax(300px,440px) 1fr}.payment-history{overflow:hidden}.payment-row{display:grid;grid-template-columns:minmax(200px,1fr) 155px 95px 132px;gap:14px;align-items:center;padding:17px 24px;border-bottom:1px solid #1d3528}.payment-main,.amount{display:flex;flex-direction:column;gap:4px}.payment-row span,.payment-row small{color:#91a99c;font-size:12px}.payment-main small:last-child{color:#70bb90}.amount{text-align:right}.status{padding:7px 10px;border-radius:999px;text-align:center;font-weight:800}.status.pending{background:#3b3218;color:#ffd36b}.status.paid{background:#153c28;color:#62e99d}.status.overdue{background:#421f1e;color:#ff978d}.row-actions{display:grid;gap:6px}.success,.edit,.secondary{border:0;border-radius:9px;padding:9px 12px;font-size:11px;font-weight:800;cursor:pointer}.success{background:#35d47c;color:#031009}.edit,.secondary{background:#203b2e;color:#cce1d5}.form-actions{display:flex;gap:8px;flex-wrap:wrap}.dynamic-note{margin:-3px 0 14px;padding:11px 13px;border:1px solid #315a44;border-radius:10px;background:#10281b;color:#72dda1;font-size:12px}.optional-dates{margin:0 0 15px;border:1px solid #294839;border-radius:10px;padding:11px 13px}.optional-dates summary{cursor:pointer;color:#9eb5a8;font-size:12px;font-weight:700}.optional-dates .form-row{margin-top:14px}.optional-dates label{margin-bottom:0}.alert,.loading{margin:14px 0;padding:16px 18px;border:1px solid #5c3e25;background:#291b12;border-radius:12px;color:#ffc084}.alert{display:flex;justify-content:space-between;gap:15px;align-items:center}.loading{text-align:center;color:#a9beb2;border-color:#294537;background:#0d1c15}
 @media(max-width:900px){.hero{grid-template-columns:1fr;min-height:400px}.hero-copy{order:2}.back-link{position:absolute;right:20px}.kpis{grid-template-columns:1fr 1fr}.add-client-panel{grid-template-columns:1fr 1fr}.add-client-panel>div,.add-client-panel button{grid-column:1/-1}.add-client-panel button{justify-self:start}.two-column,.payments-layout{grid-template-columns:1fr}.form-panel{position:static}.payment-row{grid-template-columns:1fr auto}.payment-row .status,.payment-row .success{justify-self:start}.panel-head{align-items:start;flex-direction:column}}
 @media(max-width:560px){main{width:min(100% - 22px,1480px)}.hero{padding:20px 16px 58px}.hero h1{font-size:40px}.back-link{font-size:0;padding:10px}.back-link::after{content:'← Inicio';font-size:12px}.kpis{gap:8px}.kpis article{padding:17px 14px}.kpis strong{font-size:26px}.tabs button{padding:12px 14px}.add-client-panel{grid-template-columns:1fr;padding:20px}.add-client-panel>div,.add-client-panel button{grid-column:auto}.add-client-panel button{width:100%}.panel-head,.form-panel,.project-card{padding:20px}.form-row{grid-template-columns:1fr}.milestone{grid-template-columns:1fr}.payment-row{padding:16px}.payment-row .amount{text-align:left}}
+
+/* La matriz puede crecer, pero nunca debe ensanchar el documento completo. */
+:host,
+.control-shell,
+main,
+.panel,
+.matrix-wrap {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+main {
+  max-width: calc(100% - 36px);
+  contain: inline-size;
+}
+
+.panel {
+  width: 100%;
+  overflow: hidden;
+}
+
+.matrix-wrap {
+  display: block;
+  width: 100%;
+  contain: inline-size;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+@media(max-width:560px) {
+  main { max-width: calc(100% - 22px); }
+}
