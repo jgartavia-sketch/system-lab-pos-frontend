@@ -38,6 +38,9 @@ export class ClientControl {
   protected readonly loading = signal(true);
   protected readonly error = signal('');
   protected readonly savingKeys = signal(new Set<string>());
+  protected readonly creatingClient = signal(false);
+  protected newClientName = '';
+  protected newClientWebsite = '';
   protected selectedClientId = 0;
   protected milestoneTitle = '';
   protected milestoneDescription = '';
@@ -88,6 +91,33 @@ export class ClientControl {
 
   protected isServiceActive(client: ManagedClient, key: string): boolean {
     return client.service_statuses.some((item) => item.service_key === key && item.is_active);
+  }
+
+  protected addClient(): void {
+    const name = this.newClientName.trim();
+    if (name.length < 2 || this.creatingClient()) return;
+
+    this.creatingClient.set(true);
+    this.error.set('');
+    this.http.post<ManagedClient>(`${this.apiBase}/client-management/clients`, {
+      name,
+      website_url: this.newClientWebsite.trim() || null,
+    }).subscribe({
+      next: (saved) => {
+        this.dashboard.update((current) => ({
+          ...current,
+          clients: [...current.clients, saved].sort((a, b) => a.name.localeCompare(b.name, 'es')),
+        }));
+        this.selectedClientId = saved.id;
+        this.newClientName = '';
+        this.newClientWebsite = '';
+        this.creatingClient.set(false);
+      },
+      error: (response) => {
+        this.error.set(response?.error?.detail ?? 'No se pudo crear el cliente.');
+        this.creatingClient.set(false);
+      },
+    });
   }
 
   protected toggleService(client: ManagedClient, service: ServiceDefinition, checked: boolean): void {

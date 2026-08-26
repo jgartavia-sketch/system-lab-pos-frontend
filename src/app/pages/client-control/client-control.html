@@ -23,6 +23,24 @@
     @if (loading()) { <div class="loading">Cargando centro de control…</div> }
 
     @if (!loading() && activeTab() === 'services') {
+      <form class="panel add-client-panel" (ngSubmit)="addClient()">
+        <div>
+          <span class="eyebrow">Cartera de clientes</span>
+          <h2>Agregar cliente</h2>
+        </div>
+        <label>
+          Nombre
+          <input [(ngModel)]="newClientName" name="newClientName" placeholder="Ej. Nombre del negocio" minlength="2" maxlength="140" required />
+        </label>
+        <label>
+          Sitio web <small>(opcional)</small>
+          <input [(ngModel)]="newClientWebsite" name="newClientWebsite" placeholder="www.negocio.com" maxlength="500" />
+        </label>
+        <button class="primary" type="submit" [disabled]="creatingClient() || newClientName.trim().length < 2">
+          {{ creatingClient() ? 'Agregando…' : 'Agregar cliente' }}
+        </button>
+      </form>
+
       <section class="panel">
         <div class="panel-head"><div><span class="eyebrow">Infraestructura digital</span><h2>Matriz de servicios por cliente</h2></div><p>Marcá cada servicio cuando esté activo y correctamente configurado.</p></div>
         <div class="matrix-wrap">
