@@ -44,3 +44,69 @@ main {
 @media(max-width:560px) {
   main { max-width: calc(100% - 22px); }
 }
+
+/* Acordeones de proyectos: todos permanecen cerrados al cargar. */
+.project-card {
+  padding: 0;
+}
+
+.project-title {
+  gap: 18px;
+  padding: 22px 24px;
+  border-bottom: 0;
+  cursor: pointer;
+  list-style: none;
+  transition: background .2s ease;
+}
+
+.project-title::-webkit-details-marker {
+  display: none;
+}
+
+.project-title:hover {
+  background: #102219;
+}
+
+.project-title:focus-visible {
+  outline: 2px solid #50d98a;
+  outline-offset: -3px;
+}
+
+.project-summary-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.accordion-icon {
+  width: 11px;
+  height: 11px;
+  border-right: 2px solid #50d98a;
+  border-bottom: 2px solid #50d98a;
+  transform: rotate(45deg);
+  transition: transform .2s ease;
+}
+
+.project-card[open] .project-title {
+  border-bottom: 1px solid #20382d;
+}
+
+.project-card[open] .accordion-icon {
+  transform: rotate(225deg);
+}
+
+.project-content {
+  padding: 0 24px;
+}
+
+.project-content .milestone:last-child {
+  border-bottom: 0;
+}
+
+@media(max-width:560px) {
+  .project-card { padding: 0; }
+  .project-title { padding: 18px 20px; }
+  .project-content { padding: 0 20px; }
+  .project-title h3 { font-size: 20px; }
+  .project-summary-meta { gap: 10px; }
+}

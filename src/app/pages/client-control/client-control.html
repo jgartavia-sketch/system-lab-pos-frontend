@@ -68,10 +68,16 @@
         </form>
         <div class="project-list">
           @for (client of dashboard().clients; track client.id) {
-            <article class="panel project-card"><div class="project-title"><div><span class="eyebrow">Proyecto</span><h3>{{ client.name }}</h3></div><span class="counter">{{ client.milestones.length }} registros</span></div>
-              @if (!client.milestones.length) { <p class="empty">Todavía no hay avances registrados.</p> }
-              @for (item of client.milestones; track item.id) { <div class="milestone"><div><strong>{{ item.title }}</strong>@if (item.description) { <p>{{ item.description }}</p> }<small [class]="'priority ' + item.priority">Prioridad {{ item.priority }}</small></div><select [ngModel]="item.status" (ngModelChange)="updateMilestoneStatus(item, $event)"><option value="pending">Pendiente</option><option value="in_progress">En proceso</option><option value="completed">Listo</option><option value="blocked">Bloqueado</option></select></div> }
-            </article>
+            <details class="panel project-card">
+              <summary class="project-title">
+                <div><span class="eyebrow">Negocio / Tareas</span><h3>{{ client.name }}</h3></div>
+                <div class="project-summary-meta"><span class="counter">{{ client.milestones.length }} registros</span><span class="accordion-icon" aria-hidden="true"></span></div>
+              </summary>
+              <div class="project-content">
+                @if (!client.milestones.length) { <p class="empty">Todavía no hay avances registrados.</p> }
+                @for (item of client.milestones; track item.id) { <div class="milestone"><div><strong>{{ item.title }}</strong>@if (item.description) { <p>{{ item.description }}</p> }<small [class]="'priority ' + item.priority">Prioridad {{ item.priority }}</small></div><select [ngModel]="item.status" (ngModelChange)="updateMilestoneStatus(item, $event)"><option value="pending">Pendiente</option><option value="in_progress">En proceso</option><option value="completed">Listo</option><option value="blocked">Bloqueado</option></select></div> }
+              </div>
+            </details>
           }
         </div>
       </section>
