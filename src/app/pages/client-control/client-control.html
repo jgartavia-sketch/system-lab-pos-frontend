@@ -57,6 +57,17 @@
     }
 
     @if (!loading() && activeTab() === 'progress') {
+      <section class="priority-overview" aria-label="Tareas por prioridad">
+        @for (group of [{ key: 'high', label: 'Prioridad alta' }, { key: 'medium', label: 'Prioridad media' }, { key: 'low', label: 'Prioridad baja' }]; track group.key) {
+          <article [class]="'panel overview-card priority-' + group.key">
+            <div class="overview-title"><span>{{ group.label }}</span><strong>{{ milestonesByPriority($any(group.key)).length }}</strong></div>
+            @if (!milestonesByPriority($any(group.key)).length) { <p class="overview-empty">Sin tareas abiertas.</p> }
+            @for (entry of milestonesByPriority($any(group.key)); track entry.milestone.id) {
+              <div class="overview-item"><strong>{{ entry.milestone.title }}</strong><span>{{ entry.client.name }}</span><small>{{ statusLabel(entry.milestone.status) }}@if (entry.milestone.due_date) { · {{ entry.milestone.due_date }} }</small></div>
+            }
+          </article>
+        }
+      </section>
       <section class="two-column">
         <form class="panel form-panel" (ngSubmit)="addMilestone()">
           <span class="eyebrow">Nuevo avance o pendiente</span><h2>Registrar tarea</h2>
@@ -104,6 +115,13 @@
         </form>
         <section class="payment-history">
           <div class="panel payment-history-heading"><div class="panel-head"><div><span class="eyebrow">Trazabilidad</span><h2>Historial de pagos</h2></div><p>Consultá los movimientos de cada cliente por separado.</p></div></div>
+          <div class="financial-overview" aria-label="Resumen financiero">
+            @for (group of [{ key: 'overdue', label: 'Atrasados' }, { key: 'pending', label: 'Pendientes' }, { key: 'scheduled', label: 'Programados' }, { key: 'paid', label: 'Pagados' }]; track group.key) {
+              <article [class]="'panel finance-card finance-' + group.key"><span>{{ group.label }}</span><strong>{{ paymentsByStage($any(group.key)).length }}</strong>
+                @for (entry of paymentsByStage($any(group.key)).slice(0, 3); track entry.payment.id) { <small>{{ entry.client.name }} · {{ entry.payment.product_service }}</small> }
+              </article>
+            }
+          </div>
           @for (client of dashboard().clients; track client.id) {
             <details class="panel payment-client-card">
               <summary class="payment-client-title">
@@ -112,7 +130,10 @@
               </summary>
               <div class="payment-client-content">
                 @if (!client.payments.length) { <p class="empty">Todavía no hay pagos registrados para este cliente.</p> }
-                @for (payment of paymentsForClient(client); track payment.id) { <article class="payment-row"><div class="payment-main"><strong>{{ payment.product_service }}</strong>@if (payment.detail) { <small>{{ payment.detail }}</small> }@if (payment.period_start || payment.period_end) { <small>Periodo: {{ payment.period_start || '—' }} → {{ payment.period_end || '—' }}</small> }</div><div class="amount"><strong>{{ payment.currency === 'CRC' ? '₡' : '$' }}{{ payment.value | number:'1.0-2' }}</strong>@if (payment.payment_date) { <small>Pagado: {{ payment.payment_date }}</small> }@if (payment.next_payment_date) { <small>Próximo: {{ payment.next_payment_date }}</small> }</div><span [class]="'status ' + payment.status">{{ statusLabel(payment.status) }}</span><div class="row-actions"><button class="edit" type="button" (click)="editPayment(payment)">Editar</button>@if (payment.status !== 'paid') { <button class="success" type="button" (click)="markPaymentPaid(payment)">Marcar pagado</button> }</div></article> }
+                @for (payment of paymentsForClient(client); track payment.id) {
+                  <article class="payment-row"><div class="payment-main"><strong>{{ payment.product_service }}</strong>@if (payment.detail) { <small>{{ payment.detail }}</small> }@if (payment.period_start || payment.period_end) { <small>Periodo: {{ payment.period_start || '—' }} → {{ payment.period_end || '—' }}</small> }</div><div class="amount"><strong>{{ payment.currency === 'CRC' ? '₡' : '$' }}{{ payment.value | number:'1.0-2' }}</strong>@if (payment.payment_date) { <small>Pagado: {{ payment.payment_date }}</small> }@if (payment.due_date) { <small>Vence: {{ payment.due_date }}</small> }@if (payment.status === 'paid' && payment.next_payment_date) { <small>Próximo: {{ payment.next_payment_date }}</small> }</div><span [class]="'status ' + paymentStage(payment)">{{ statusLabel(paymentStage(payment)) }}</span><div class="row-actions"><button class="edit" type="button" (click)="editPayment(payment)">Editar</button>@if (payment.status !== 'paid') { <button class="success" type="button" (click)="beginPaymentSettlement(payment)">Marcar pagado</button> }</div></article>
+                  @if (settlingPaymentId === payment.id) { <div class="settlement-form"><div><strong>Confirmar pago</strong><small>La fecha real se registrará hoy. Indicá la próxima fecha únicamente si continúa el cobro.</small></div><label>Próximo pago <input type="date" [(ngModel)]="settlementNextDate" /></label><button class="success" type="button" (click)="confirmPaymentSettlement(payment)">Confirmar</button><button class="secondary" type="button" (click)="cancelPaymentSettlement()">Cancelar</button></div> }
+                }
               </div>
             </details>
           }
