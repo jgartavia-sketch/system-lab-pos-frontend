@@ -110,3 +110,70 @@ main {
   .project-title h3 { font-size: 20px; }
   .project-summary-meta { gap: 10px; }
 }
+
+/* Historial financiero separado por cliente. */
+.payment-history {
+  display: grid;
+  gap: 14px;
+  overflow: visible;
+}
+
+.payment-history-heading {
+  overflow: hidden;
+}
+
+.payment-client-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.payment-client-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 22px 24px;
+  cursor: pointer;
+  list-style: none;
+  transition: background .2s ease;
+}
+
+.payment-client-title::-webkit-details-marker {
+  display: none;
+}
+
+.payment-client-title:hover {
+  background: #102219;
+}
+
+.payment-client-title:focus-visible {
+  outline: 2px solid #50d98a;
+  outline-offset: -3px;
+}
+
+.payment-client-title h3 {
+  margin: 8px 0 0;
+  font-size: 23px;
+}
+
+.payment-client-card[open] .payment-client-title {
+  border-bottom: 1px solid #20382d;
+}
+
+.payment-client-card[open] .accordion-icon {
+  transform: rotate(225deg);
+}
+
+.payment-client-content .empty {
+  margin: 0;
+  padding: 20px 24px;
+}
+
+.payment-client-content .payment-row:last-child {
+  border-bottom: 0;
+}
+
+@media(max-width:560px) {
+  .payment-client-title { padding: 18px 20px; }
+  .payment-client-title h3 { font-size: 20px; }
+}

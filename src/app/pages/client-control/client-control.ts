@@ -238,6 +238,7 @@ export class ClientControl {
 
   protected clientName(id: number): string { return this.dashboard().clients.find((client) => client.id === id)?.name ?? 'Cliente'; }
   protected allPayments(): Payment[] { return this.dashboard().clients.flatMap((client) => client.payments).sort((a, b) => (b.payment_date ?? b.next_payment_date ?? '').localeCompare(a.payment_date ?? a.next_payment_date ?? '') || b.id - a.id); }
+  protected paymentsForClient(client: ManagedClient): Payment[] { return [...client.payments].sort((a, b) => (b.payment_date ?? b.next_payment_date ?? '').localeCompare(a.payment_date ?? a.next_payment_date ?? '') || b.id - a.id); }
   protected statusLabel(status: string): string { return ({ pending: 'Pendiente', in_progress: 'En proceso', completed: 'Listo', blocked: 'Bloqueado', paid: 'Pagado', overdue: 'Vencido' } as Record<string, string>)[status] ?? status; }
 
   private replaceMilestone(saved: Milestone): void {

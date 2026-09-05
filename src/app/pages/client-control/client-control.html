@@ -102,9 +102,20 @@
           <label>Detalle<textarea [(ngModel)]="paymentDetail" name="paymentDetail" placeholder="Observaciones, cobertura o acuerdos"></textarea></label>
           <div class="form-actions"><button class="primary" type="submit">{{ editingPaymentId ? 'Guardar cambios' : 'Registrar movimiento' }}</button>@if (editingPaymentId) { <button class="secondary" type="button" (click)="resetPaymentForm()">Cancelar edición</button> }</div>
         </form>
-        <section class="panel payment-history"><div class="panel-head"><div><span class="eyebrow">Trazabilidad</span><h2>Historial de pagos</h2></div></div>
-          @if (!allPayments().length) { <p class="empty">No hay pagos registrados todavía.</p> }
-          @for (payment of allPayments(); track payment.id) { <article class="payment-row"><div class="payment-main"><strong>{{ clientName(payment.client_id) }}</strong><span>{{ payment.product_service }}</span>@if (payment.detail) { <small>{{ payment.detail }}</small> }@if (payment.period_start || payment.period_end) { <small>Periodo: {{ payment.period_start || '—' }} → {{ payment.period_end || '—' }}</small> }</div><div class="amount"><strong>{{ payment.currency === 'CRC' ? '₡' : '$' }}{{ payment.value | number:'1.0-2' }}</strong>@if (payment.payment_date) { <small>Pagado: {{ payment.payment_date }}</small> }@if (payment.next_payment_date) { <small>Próximo: {{ payment.next_payment_date }}</small> }</div><span [class]="'status ' + payment.status">{{ statusLabel(payment.status) }}</span><div class="row-actions"><button class="edit" type="button" (click)="editPayment(payment)">Editar</button>@if (payment.status !== 'paid') { <button class="success" type="button" (click)="markPaymentPaid(payment)">Marcar pagado</button> }</div></article> }
+        <section class="payment-history">
+          <div class="panel payment-history-heading"><div class="panel-head"><div><span class="eyebrow">Trazabilidad</span><h2>Historial de pagos</h2></div><p>Consultá los movimientos de cada cliente por separado.</p></div></div>
+          @for (client of dashboard().clients; track client.id) {
+            <details class="panel payment-client-card">
+              <summary class="payment-client-title">
+                <div><span class="eyebrow">Cliente / Pagos</span><h3>{{ client.name }}</h3></div>
+                <div class="project-summary-meta"><span class="counter">{{ client.payments.length }} registros</span><span class="accordion-icon" aria-hidden="true"></span></div>
+              </summary>
+              <div class="payment-client-content">
+                @if (!client.payments.length) { <p class="empty">Todavía no hay pagos registrados para este cliente.</p> }
+                @for (payment of paymentsForClient(client); track payment.id) { <article class="payment-row"><div class="payment-main"><strong>{{ payment.product_service }}</strong>@if (payment.detail) { <small>{{ payment.detail }}</small> }@if (payment.period_start || payment.period_end) { <small>Periodo: {{ payment.period_start || '—' }} → {{ payment.period_end || '—' }}</small> }</div><div class="amount"><strong>{{ payment.currency === 'CRC' ? '₡' : '$' }}{{ payment.value | number:'1.0-2' }}</strong>@if (payment.payment_date) { <small>Pagado: {{ payment.payment_date }}</small> }@if (payment.next_payment_date) { <small>Próximo: {{ payment.next_payment_date }}</small> }</div><span [class]="'status ' + payment.status">{{ statusLabel(payment.status) }}</span><div class="row-actions"><button class="edit" type="button" (click)="editPayment(payment)">Editar</button>@if (payment.status !== 'paid') { <button class="success" type="button" (click)="markPaymentPaid(payment)">Marcar pagado</button> }</div></article> }
+              </div>
+            </details>
+          }
         </section>
       </section>
     }
