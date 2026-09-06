@@ -96,14 +96,14 @@
               <span class="character-portrait">
                 <span class="file-number">ARCHIVO {{ character.archive }}</span>
                 @if (character.image) {
-                  <img [src]="character.image" [alt]="character.name + ', estudiante de Horizon Academy'" loading="lazy" />
+                  <img [src]="character.image" [alt]="character.name + ', personaje de The Voyager Space Hotel'" loading="lazy" />
                 } @else {
                   <span class="silhouette" aria-hidden="true">
                     <span class="silhouette-head"></span>
                     <span class="silhouette-body"></span>
                   </span>
                 }
-                <span class="classified">Horizon Academy</span>
+                <span class="classified">{{ character.badge }}</span>
               </span>
               <span class="character-summary">
                 <span>
