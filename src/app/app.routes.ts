@@ -4,6 +4,8 @@ import { Landing } from './pages/landing/landing';
 import { Pos } from './pages/pos/pos';
 import { ClientControl } from './pages/client-control/client-control';
 import { Stories } from './pages/stories/stories';
+import { StoriesAccount } from './pages/stories-account/stories-account';
+import { StoriesPublish } from './pages/stories-publish/stories-publish';
 
 export const routes: Routes = [
   {
@@ -12,9 +14,19 @@ export const routes: Routes = [
     title: 'Control de clientes | System Lab',
   },
   {
+    path: 'stories/mi-cuenta',
+    component: StoriesAccount,
+    title: 'Mi cuenta | System Lab Stories',
+  },
+  {
+    path: 'stories/publicar',
+    component: StoriesPublish,
+    title: 'Publicar mi historia | System Lab Stories',
+  },
+  {
     path: 'stories',
     component: Stories,
-    title: 'System Lab Stories | Historias que se viven',
+    title: 'The Voyager Space Hotel | System Lab Stories',
   },
   {
     path: '',

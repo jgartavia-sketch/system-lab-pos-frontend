@@ -10,4 +10,9 @@ import { RouterLink } from '@angular/router';
 export class Stories {
   readonly chapters = [1, 2, 3, 4, 5, 6];
   readonly characterSlots = [1, 2, 3, 4];
+  selectedChapter = 1;
+
+  selectChapter(chapter: number): void {
+    this.selectedChapter = chapter;
+  }
 }
