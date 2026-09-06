@@ -75,11 +75,11 @@ a { color: inherit; text-decoration: none; }
 .stars-a { background-image: radial-gradient(circle, #fff 1px, transparent 1.4px); background-size: 83px 83px; background-position: 17px 31px; }
 .stars-b { background-image: radial-gradient(circle, var(--gold-light) .7px, transparent 1px); background-size: 137px 137px; background-position: 59px 11px; opacity: .22; }
 .hero-copy { position: relative; z-index: 3; max-width: 740px; }
-.original-label { display: inline-flex; padding: 8px 13px; border: 1px solid rgba(213, 173, 99, .42); border-radius: 999px; color: var(--gold-light); font-size: .68rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
-.hero-kicker { margin: 28px 0 14px; color: rgba(244, 239, 230, .54); font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; }
-.hero-copy h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(4rem, 8vw, 8.2rem); font-weight: 400; line-height: .84; letter-spacing: -.06em; }
-.hero-copy h1 em { color: var(--gold-light); font-weight: 400; }
-.hero-intro { max-width: 650px; margin: 34px 0 0; color: rgba(244, 239, 230, .71); font-family: Georgia, serif; font-size: clamp(1.04rem, 1.5vw, 1.3rem); line-height: 1.75; }
+.original-label { display: inline-flex; padding: 8px 13px; border: 1px solid rgba(126, 213, 255, .46); border-radius: 999px; color: #bcecff; font-size: .68rem; font-weight: 850; letter-spacing: .2em; text-transform: uppercase; box-shadow: 0 0 24px rgba(100, 177, 255, .09); }
+.hero-kicker { margin: 28px 0 14px; color: rgba(180, 222, 255, .76); font-size: .72rem; font-weight: 650; letter-spacing: .24em; text-transform: uppercase; }
+.hero-copy h1 { margin: 0; color: #f8fbff; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: clamp(3.7rem, 7.4vw, 7.7rem); font-weight: 850; line-height: .84; letter-spacing: -.07em; text-transform: uppercase; text-shadow: 0 8px 38px rgba(0, 0, 0, .62), 0 0 32px rgba(112, 180, 255, .12); }
+.hero-copy h1 em { display: inline-block; color: transparent; font-weight: 850; font-style: normal; background: linear-gradient(100deg, #ffffff 2%, #8edcff 45%, #b7a5ff 82%, #ffffff 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 8px 24px rgba(72, 135, 255, .24)); }
+.hero-intro { max-width: 650px; margin: 34px 0 0; color: rgba(241, 247, 255, .88); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: clamp(1rem, 1.35vw, 1.18rem); font-weight: 450; line-height: 1.7; text-shadow: 0 2px 16px rgba(0, 0, 0, .82); }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 34px; }
 .gold-button, .ghost-button { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 21px; border-radius: 999px; font-size: .78rem; font-weight: 850; letter-spacing: .04em; transition: transform 180ms ease, box-shadow 180ms ease; }
 .gold-button { color: #17101e; background: linear-gradient(135deg, var(--gold-light), var(--gold)); box-shadow: 0 12px 34px rgba(213, 173, 99, .16); }
