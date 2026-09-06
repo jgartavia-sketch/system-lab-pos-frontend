@@ -60,7 +60,17 @@
         </p>
       </div>
 
-      <div class="character-grid">
+      <div class="character-carousel-shell">
+        <button
+          class="character-nav character-nav-prev"
+          type="button"
+          aria-label="Ver personajes anteriores"
+          (click)="scrollCharacters(-1)"
+        >
+          ←
+        </button>
+
+        <div class="character-grid" #characterCarousel>
         @for (character of characters; track character.archive; let index = $index) {
           <article class="character-card" [class.expanded]="expandedCharacter === index">
             <button
@@ -105,6 +115,16 @@
             </div>
           </article>
         }
+        </div>
+
+        <button
+          class="character-nav character-nav-next"
+          type="button"
+          aria-label="Ver personajes siguientes"
+          (click)="scrollCharacters(1)"
+        >
+          →
+        </button>
       </div>
     </section>
 

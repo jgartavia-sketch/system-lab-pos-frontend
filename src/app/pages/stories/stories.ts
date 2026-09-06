@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -8,6 +8,8 @@ import { RouterLink } from '@angular/router';
   styleUrl: './stories.scss',
 })
 export class Stories {
+  @ViewChild('characterCarousel') characterCarousel?: ElementRef<HTMLElement>;
+
   readonly chapters = [1, 2, 3, 4, 5, 6];
   readonly characters = [
     { archive: '01', name: 'Tripulante 1', image: '', role: 'Por revelar', origin: 'Clasificado', mission: 'Información reservada' },
@@ -24,5 +26,12 @@ export class Stories {
 
   toggleCharacter(index: number): void {
     this.expandedCharacter = this.expandedCharacter === index ? null : index;
+  }
+
+  scrollCharacters(direction: -1 | 1): void {
+    this.characterCarousel?.nativeElement.scrollBy({
+      left: direction * 310,
+      behavior: 'smooth',
+    });
   }
 }

@@ -106,8 +106,16 @@ a { color: inherit; text-decoration: none; }
 .section-heading { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr); gap: clamp(32px, 7vw, 90px); align-items: end; margin-bottom: 44px; }
 .section-heading h2 { max-width: 680px; font-size: clamp(2.5rem, 4.2vw, 4.25rem); line-height: 1.02; text-wrap: balance; }
 .section-heading > p { max-width: 520px; margin: 0; color: rgba(226,238,255,.64); line-height: 1.75; overflow-wrap: anywhere; }
-.character-grid { display: grid; grid-template-columns: repeat(4, minmax(190px, 1fr)); gap: 14px; align-items: start; }
-.character-card { min-width: 0; overflow: hidden; border: 1px solid rgba(130, 207, 255, .14); border-radius: 16px; background: linear-gradient(150deg, rgba(14, 31, 66, .72), rgba(11, 8, 32, .78)); box-shadow: inset 0 1px rgba(255,255,255,.035), 0 22px 70px rgba(0,0,0,.18); backdrop-filter: blur(12px); transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease; }
+.character-carousel-shell { position: relative; }
+.character-grid { display: flex; gap: 14px; align-items: flex-start; overflow-x: auto; padding: 6px 4px 24px; scroll-behavior: smooth; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: rgba(114,204,255,.62) rgba(255,255,255,.05); overscroll-behavior-inline: contain; }
+.character-grid::-webkit-scrollbar { height: 7px; }
+.character-grid::-webkit-scrollbar-track { border-radius: 999px; background: rgba(255,255,255,.05); }
+.character-grid::-webkit-scrollbar-thumb { border-radius: 999px; background: linear-gradient(90deg, #72ccff, #8d78ff); }
+.character-card { flex: 0 0 clamp(225px, 23vw, 285px); min-width: 0; overflow: hidden; border: 1px solid rgba(130, 207, 255, .14); border-radius: 16px; background: linear-gradient(150deg, rgba(14, 31, 66, .72), rgba(11, 8, 32, .78)); box-shadow: inset 0 1px rgba(255,255,255,.035), 0 22px 70px rgba(0,0,0,.18); backdrop-filter: blur(12px); scroll-snap-align: start; transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease; }
+.character-nav { position: absolute; top: 104px; z-index: 8; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgba(126,213,255,.38); border-radius: 50%; color: #eaf8ff; background: rgba(4,12,30,.82); box-shadow: 0 12px 34px rgba(0,0,0,.38), 0 0 24px rgba(80,145,255,.12); backdrop-filter: blur(12px); cursor: pointer; transition: transform 180ms ease, border-color 180ms ease, background 180ms ease; }
+.character-nav:hover { transform: scale(1.08); border-color: rgba(126,213,255,.78); background: rgba(21,45,88,.92); }
+.character-nav-prev { left: -20px; }
+.character-nav-next { right: -20px; }
 .character-card:hover, .character-card.expanded { transform: translateY(-4px); border-color: rgba(126, 213, 255, .5); box-shadow: 0 24px 70px rgba(65, 104, 255, .16), 0 0 32px rgba(126, 78, 255, .1); }
 .character-trigger { display: block; width: 100%; padding: 0; border: 0; color: inherit; background: transparent; text-align: left; cursor: pointer; }
 .character-portrait { position: relative; display: grid; place-items: center; min-height: 210px; overflow: hidden; background: radial-gradient(circle at 50% 42%, rgba(90, 155, 255, .25), transparent 30%), radial-gradient(circle at 72% 22%, rgba(145, 92, 255, .18), transparent 32%), linear-gradient(155deg, #0d1a38, #080718); }
@@ -165,7 +173,7 @@ a { color: inherit; text-decoration: none; }
   .stories-hero { padding-top: 160px; background-position: 62% center; }
   .section-heading { grid-template-columns: 1fr; gap: 22px; }
   .section-heading > p { max-width: 680px; }
-  .character-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .character-card { flex-basis: 245px; }
   .season-intro { grid-template-columns:1fr;gap:24px; }
 }
 
@@ -187,7 +195,9 @@ a { color: inherit; text-decoration: none; }
   .characters-section, .season-section, .stories-footer { width: calc(100% - 32px); }
   .characters-section, .season-section { padding: 88px 0; }
   .section-heading { grid-template-columns: 1fr; gap: 30px; }
-  .character-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .character-grid { margin-right: -16px; padding-right: 28px; }
+  .character-card { flex-basis: min(76vw, 245px); }
+  .character-nav { display: none; }
   .character-portrait { min-height: 190px; }
   .chapter-card { flex-basis:245px;min-height:190px; }
   .reader-heading { flex-direction:column; }
