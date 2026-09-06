@@ -57,8 +57,8 @@
           <h2>Quienes dan vida a The Voyager.</h2>
         </div>
         <p>
-          Antes de abrir el primer capítulo, iremos revelando a los personajes que dan
-          vida a este universo. Cada uno tendrá identidad, historia y créditos propios.
+          Cinco mentes observan el mismo problema desde ángulos distintos. Conocé a los
+          estudiantes de Horizon Academy que cambiarán el destino de la humanidad.
         </p>
       </div>
 
@@ -85,18 +85,18 @@
               <span class="character-portrait">
                 <span class="file-number">ARCHIVO {{ character.archive }}</span>
                 @if (character.image) {
-                  <img [src]="character.image" [alt]="character.name" />
+                  <img [src]="character.image" [alt]="character.name + ', estudiante de Horizon Academy'" loading="lazy" />
                 } @else {
                   <span class="silhouette" aria-hidden="true">
                     <span class="silhouette-head"></span>
                     <span class="silhouette-body"></span>
                   </span>
                 }
-                <span class="classified">Identidad reservada</span>
+                <span class="classified">Horizon Academy</span>
               </span>
               <span class="character-summary">
                 <span>
-                  <small>Próxima revelación</small>
+                  <small>{{ character.tagline }}</small>
                   <strong>{{ character.name }}</strong>
                 </span>
                 <span class="character-toggle" aria-hidden="true">{{ expandedCharacter === index ? '−' : '+' }}</span>
@@ -109,11 +109,13 @@
               [attr.id]="'character-details-' + index"
             >
               <dl>
-                <div><dt>Rol</dt><dd>{{ character.role }}</dd></div>
+                <div><dt>Edad</dt><dd>{{ character.age }}</dd></div>
                 <div><dt>Origen</dt><dd>{{ character.origin }}</dd></div>
-                <div><dt>Misión</dt><dd>{{ character.mission }}</dd></div>
+                <div><dt>Academia</dt><dd>{{ character.academy }}</dd></div>
+                <div><dt>Especialidad</dt><dd>{{ character.specialty }}</dd></div>
               </dl>
-              <p>Su identidad y su lugar dentro de The Voyager serán revelados muy pronto.</p>
+              <p><strong>Personalidad</strong>{{ character.personality }}</p>
+              <p><strong>Aporte al equipo</strong>{{ character.contribution }}</p>
             </div>
           </article>
         }

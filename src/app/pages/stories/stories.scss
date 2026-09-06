@@ -112,33 +112,34 @@ a { color: inherit; text-decoration: none; }
 .character-grid::-webkit-scrollbar-track { border-radius: 999px; background: rgba(255,255,255,.05); }
 .character-grid::-webkit-scrollbar-thumb { border-radius: 999px; background: linear-gradient(90deg, #72ccff, #8d78ff); }
 .character-card { flex: 0 0 clamp(225px, 23vw, 285px); min-width: 0; overflow: hidden; border: 1px solid rgba(130, 207, 255, .14); border-radius: 16px; background: linear-gradient(150deg, rgba(14, 31, 66, .72), rgba(11, 8, 32, .78)); box-shadow: inset 0 1px rgba(255,255,255,.035), 0 22px 70px rgba(0,0,0,.18); backdrop-filter: blur(12px); scroll-snap-align: start; transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease; }
-.character-nav { position: absolute; top: 104px; z-index: 8; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgba(126,213,255,.38); border-radius: 50%; color: #eaf8ff; background: rgba(4,12,30,.82); box-shadow: 0 12px 34px rgba(0,0,0,.38), 0 0 24px rgba(80,145,255,.12); backdrop-filter: blur(12px); cursor: pointer; transition: transform 180ms ease, border-color 180ms ease, background 180ms ease; }
+.character-nav { position: absolute; top: 184px; z-index: 8; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgba(126,213,255,.38); border-radius: 50%; color: #eaf8ff; background: rgba(4,12,30,.82); box-shadow: 0 12px 34px rgba(0,0,0,.38), 0 0 24px rgba(80,145,255,.12); backdrop-filter: blur(12px); cursor: pointer; transition: transform 180ms ease, border-color 180ms ease, background 180ms ease; }
 .character-nav:hover { transform: scale(1.08); border-color: rgba(126,213,255,.78); background: rgba(21,45,88,.92); }
 .character-nav-prev { left: -20px; }
 .character-nav-next { right: -20px; }
 .character-card:hover, .character-card.expanded { transform: translateY(-4px); border-color: rgba(126, 213, 255, .5); box-shadow: 0 24px 70px rgba(65, 104, 255, .16), 0 0 32px rgba(126, 78, 255, .1); }
 .character-trigger { display: block; width: 100%; padding: 0; border: 0; color: inherit; background: transparent; text-align: left; cursor: pointer; }
-.character-portrait { position: relative; display: grid; place-items: center; min-height: 210px; overflow: hidden; background: radial-gradient(circle at 50% 42%, rgba(90, 155, 255, .25), transparent 30%), radial-gradient(circle at 72% 22%, rgba(145, 92, 255, .18), transparent 32%), linear-gradient(155deg, #0d1a38, #080718); }
+.character-portrait { position: relative; display: grid; place-items: center; aspect-ratio: 2 / 3; overflow: hidden; background: radial-gradient(circle at 50% 42%, rgba(90, 155, 255, .25), transparent 30%), radial-gradient(circle at 72% 22%, rgba(145, 92, 255, .18), transparent 32%), linear-gradient(155deg, #0d1a38, #080718); }
 .character-portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .character-portrait::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 55%, rgba(8,7,19,.92)); }
 .file-number { position: absolute; top: 18px; left: 18px; z-index: 3; color: rgba(244,239,230,.4); font-size: .61rem; letter-spacing: .17em; }
 .silhouette { position: relative; width: 112px; height: 160px; opacity: .52; filter: blur(2px); }
 .silhouette-head { position: absolute; top: 8px; left: 35px; width: 46px; height: 55px; border-radius: 48% 48% 44% 44%; background: linear-gradient(#5f74a8, #252c52); }
 .silhouette-body { position: absolute; left: 10px; bottom: -20px; width: 96px; height: 120px; border-radius: 48% 48% 12% 12%; background: linear-gradient(#344777, #141a38); }
-.classified { position: absolute; bottom: 20px; z-index: 3; color: var(--gold-light); font-family: Georgia, serif; font-size: .75rem; font-style: italic; }
+.classified { position: absolute; bottom: 18px; z-index: 3; color: var(--gold-light); font-size: .61rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
 .character-summary { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 82px; padding: 16px 18px; }
 .character-summary > span:first-child { display: grid; gap: 6px; }
-.character-summary small { color: var(--gold); font-size: .58rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.character-summary small { max-width: 185px; color: var(--gold); font-size: .56rem; font-weight: 800; line-height: 1.35; letter-spacing: .11em; text-transform: uppercase; }
 .character-summary strong { color: var(--paper); font-size: 1rem; font-weight: 750; }
 .character-toggle { display: grid; flex: 0 0 30px; place-items: center; width: 30px; height: 30px; border: 1px solid rgba(126,213,255,.28); border-radius: 50%; color: var(--gold-light); font-size: 1.2rem; transition: background 180ms ease, transform 180ms ease; }
 .character-card.expanded .character-toggle { background: rgba(114,204,255,.12); transform: rotate(180deg); }
 .character-details { max-height: 0; overflow: hidden; padding: 0 18px; border-top: 1px solid transparent; opacity: 0; transition: max-height 260ms ease, padding 240ms ease, opacity 180ms ease, border-color 180ms ease; }
-.character-details.open { max-height: 280px; padding: 16px 18px 19px; border-color: rgba(130,207,255,.12); opacity: 1; }
+.character-details.open { max-height: 480px; padding: 16px 18px 19px; border-color: rgba(130,207,255,.12); opacity: 1; }
 .character-details dl { display: grid; gap: 9px; margin: 0; }
 .character-details dl div { display: flex; justify-content: space-between; gap: 16px; }
 .character-details dt { color: rgba(198,215,236,.48); font-size: .62rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .character-details dd { margin: 0; color: rgba(244,249,255,.82); font-size: .72rem; text-align: right; }
 .character-details p { margin: 15px 0 0; color: rgba(198,215,236,.58); font-size: .76rem; line-height: 1.55; }
+.character-details p strong { display: block; margin-bottom: 4px; color: var(--gold-light); font-size: .58rem; letter-spacing: .11em; text-transform: uppercase; }
 
 .season-section { padding: 145px 0; border-top: 1px solid rgba(130, 207, 255, .14); }
 .season-intro { display:grid;grid-template-columns:1fr .8fr;gap:70px;align-items:end;margin-bottom:54px; }
@@ -198,7 +199,6 @@ a { color: inherit; text-decoration: none; }
   .character-grid { margin-right: -16px; padding-right: 28px; }
   .character-card { flex-basis: min(76vw, 245px); }
   .character-nav { display: none; }
-  .character-portrait { min-height: 190px; }
   .chapter-card { flex-basis:245px;min-height:190px; }
   .reader-heading { flex-direction:column; }
   .stories-footer { grid-template-columns: 1fr; text-align: center; justify-items: center; }
