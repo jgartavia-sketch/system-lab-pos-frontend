@@ -85,9 +85,6 @@ a { color: inherit; text-decoration: none; }
 .stars { position: absolute; inset: 0; opacity: .5; pointer-events: none; }
 .stars-a { background-image: radial-gradient(circle, #fff 1px, transparent 1.4px); background-size: 83px 83px; background-position: 17px 31px; }
 .stars-b { background-image: radial-gradient(circle, var(--gold-light) .7px, transparent 1px); background-size: 137px 137px; background-position: 59px 11px; opacity: .22; }
-.costa-rica-decal { position:absolute;top:48%;right:14%;z-index:4;display:flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid rgba(255,255,255,.46);border-radius:7px;color:#fff;background:rgba(2,7,18,.74);box-shadow:0 5px 18px rgba(0,0,0,.55),0 0 18px rgba(114,204,255,.18);transform:rotate(-3deg);text-transform:uppercase;pointer-events:none; }
-.costa-rica-decal strong { font-size:.58rem;letter-spacing:.14em;text-shadow:0 1px 4px #000; }
-.cr-flag { display:block;width:38px;height:24px;border:1px solid rgba(255,255,255,.72);background:linear-gradient(to bottom,#16459b 0 16.66%,#fff 16.66% 33.33%,#ce1126 33.33% 66.66%,#fff 66.66% 83.33%,#16459b 83.33% 100%);box-shadow:0 2px 8px rgba(0,0,0,.45); }
 .hero-copy { position: relative; z-index: 3; max-width: 740px; }
 .original-label { display: inline-flex; padding: 8px 13px; border: 1px solid rgba(126, 213, 255, .46); border-radius: 999px; color: #bcecff; font-size: .68rem; font-weight: 850; letter-spacing: .2em; text-transform: uppercase; box-shadow: 0 0 24px rgba(100, 177, 255, .09); }
 .hero-kicker { margin: 28px 0 14px; color: rgba(180, 222, 255, .76); font-size: .72rem; font-weight: 650; letter-spacing: .24em; text-transform: uppercase; }
@@ -203,10 +200,9 @@ a { color: inherit; text-decoration: none; }
     background:
       linear-gradient(90deg, rgba(7, 6, 16, .94), rgba(7, 6, 16, .64)),
       linear-gradient(0deg, rgba(8, 7, 19, .72), rgba(8, 7, 19, .08) 58%),
-      url('/images/voyager/hero-voyager-space-hotel.webp') 62% center / cover no-repeat,
+      url('/images/voyager/hero-voyager-space-hotel.webp') right 100px / 125% auto no-repeat,
       #070610;
   }
-  .costa-rica-decal { top:31%;right:7%;padding:6px 8px;transform:rotate(-4deg) scale(.94);transform-origin:right center; }
   .hero-copy h1 { font-size: clamp(3.3rem, 17vw, 5.5rem); }
   .characters-section, .season-section, .stories-footer { width: calc(100% - 32px); }
   .characters-section, .season-section { padding: 88px 0; }
@@ -224,13 +220,18 @@ a { color: inherit; text-decoration: none; }
   .stories-brand img { width:38px;height:38px; }
   .stories-brand strong { font-size:.66rem; }
   .stories-brand small { font-size:.88rem; }
-  .stories-hero { padding-left:16px;padding-right:16px;background-position:64% center; }
+  .stories-hero {
+    padding-left:16px;
+    padding-right:16px;
+    background:
+      linear-gradient(90deg, rgba(7, 6, 16, .9), rgba(7, 6, 16, .48)),
+      linear-gradient(0deg, rgba(8, 7, 19, .8), rgba(8, 7, 19, .04) 48%),
+      url('/images/voyager/hero-voyager-space-hotel.webp') right 105px / 125% auto no-repeat,
+      #070610;
+  }
   .hero-copy h1 { font-size:clamp(3rem,16.5vw,4.3rem);line-height:.88; }
   .hero-intro { font-size:.98rem;line-height:1.62; }
   .hero-actions a { flex:1 1 135px;min-width:0;padding-left:15px;padding-right:15px; }
-  .costa-rica-decal { top:29%;right:5%; }
-  .costa-rica-decal strong { display:none; }
-  .cr-flag { width:34px;height:22px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
