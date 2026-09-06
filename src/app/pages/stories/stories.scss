@@ -52,15 +52,15 @@ a { color: inherit; text-decoration: none; }
 
 .stories-hero {
   position: relative;
-  display: grid;
-  grid-template-columns: 1.05fr .95fr;
+  display: flex;
   align-items: center;
   min-height: 900px;
   padding: 150px max(24px, calc((100vw - 1320px) / 2)) 100px;
   background:
-    radial-gradient(circle at 72% 46%, rgba(115, 87, 184, .22), transparent 29%),
-    radial-gradient(circle at 12% 18%, rgba(213, 173, 99, .08), transparent 24%),
-    linear-gradient(140deg, #070610 0%, #0c0a19 58%, #121026 100%);
+    linear-gradient(90deg, rgba(7, 6, 16, .98) 0%, rgba(7, 6, 16, .9) 28%, rgba(7, 6, 16, .44) 56%, rgba(7, 6, 16, .08) 100%),
+    linear-gradient(0deg, rgba(8, 7, 19, .44), rgba(8, 7, 19, .08) 65%),
+    url('/images/voyager/hero-voyager-space-hotel.webp') 68% center / cover no-repeat,
+    #070610;
 }
 
 .stories-hero::after {
@@ -90,16 +90,6 @@ a { color: inherit; text-decoration: none; }
 .premiere-note strong { color: var(--paper); }
 .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 7px rgba(213, 173, 99, .1); animation: pulse 2.4s infinite; }
 
-.voyager-art { position: relative; z-index: 2; display: grid; place-items: center; min-height: 600px; }
-.orbit { position: absolute; border: 1px solid rgba(240, 217, 157, .19); border-radius: 50%; transform: rotate(-18deg); }
-.orbit::after { content: ""; position: absolute; top: 50%; left: -5px; width: 10px; height: 10px; border-radius: 50%; background: var(--gold-light); box-shadow: 0 0 22px var(--gold); }
-.orbit-outer { width: 510px; height: 510px; }
-.orbit-inner { width: 360px; height: 360px; transform: rotate(28deg); border-color: rgba(167, 139, 250, .22); }
-.planet-glow { position: absolute; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle at 35% 28%, #c9b7ff, #755db0 28%, #272047 67%, #0c0a16 100%); box-shadow: 0 0 90px rgba(115, 87, 184, .3), inset -30px -20px 70px rgba(0,0,0,.58); }
-.hotel-mark { position: relative; display: grid; place-items: center; width: 160px; height: 160px; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; background: rgba(8,7,19,.57); backdrop-filter: blur(12px); box-shadow: 0 24px 70px rgba(0,0,0,.36); }
-.hotel-mark span { font-family: Georgia, serif; font-size: 5.8rem; line-height: .78; color: var(--gold-light); }
-.hotel-mark small { margin-top: -8px; font-size: .62rem; letter-spacing: .27em; text-transform: uppercase; }
-.voyager-art > p { position: absolute; bottom: 20px; color: rgba(244,239,230,.38); font-family: Georgia, serif; font-size: .76rem; font-style: italic; letter-spacing: .08em; }
 .scroll-cue { position: absolute; left: max(24px, calc((100vw - 1320px) / 2)); bottom: 38px; z-index: 3; display: flex; align-items: center; gap: 12px; color: rgba(244,239,230,.38); font-size: .64rem; letter-spacing: .16em; text-transform: uppercase; }
 .scroll-cue span { width: 44px; height: 1px; background: var(--gold); }
 
@@ -156,8 +146,7 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 1050px) {
   .stories-header nav { display: none; }
   .stories-header { grid-template-columns: 1fr auto; }
-  .stories-hero { grid-template-columns: 1fr; padding-top: 160px; }
-  .voyager-art { min-height: 520px; }
+  .stories-hero { padding-top: 160px; background-position: 62% center; }
   .character-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .season-intro { grid-template-columns:1fr;gap:24px; }
 }
@@ -169,10 +158,14 @@ a { color: inherit; text-decoration: none; }
   .publish-link { padding: 0 12px; font-size: .62rem; }
   .header-actions { gap: 6px; }
   .stories-hero { min-height: auto; padding: 145px 20px 90px; }
+  .stories-hero {
+    background:
+      linear-gradient(90deg, rgba(7, 6, 16, .94), rgba(7, 6, 16, .64)),
+      linear-gradient(0deg, rgba(8, 7, 19, .72), rgba(8, 7, 19, .08) 58%),
+      url('/images/voyager/hero-voyager-space-hotel.webp') 62% center / cover no-repeat,
+      #070610;
+  }
   .hero-copy h1 { font-size: clamp(3.3rem, 17vw, 5.5rem); }
-  .voyager-art { min-height: 410px; transform: scale(.82); margin: -15px -40px; }
-  .orbit-outer { width: 390px; height: 390px; }
-  .orbit-inner { width: 290px; height: 290px; }
   .characters-section, .season-section, .stories-footer { width: calc(100% - 32px); }
   .characters-section, .season-section { padding: 88px 0; }
   .section-heading { grid-template-columns: 1fr; gap: 30px; }
