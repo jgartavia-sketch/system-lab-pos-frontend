@@ -61,20 +61,47 @@
       </div>
 
       <div class="character-grid">
-        @for (slot of characterSlots; track slot; let index = $index) {
-          <article class="character-card" [class.featured]="index === 0">
-            <div class="character-portrait">
-              <span class="file-number">ARCHIVO 0{{ slot }}</span>
-              <div class="silhouette" aria-hidden="true">
-                <span class="silhouette-head"></span>
-                <span class="silhouette-body"></span>
-              </div>
-              <span class="classified">Identidad reservada</span>
-            </div>
-            <div class="character-copy">
-              <small>Próxima revelación</small>
-              <h3>Tripulante {{ slot }}</h3>
-              <p>Su nombre, misión y lugar dentro de The Voyager serán revelados pronto.</p>
+        @for (character of characters; track character.archive; let index = $index) {
+          <article class="character-card" [class.expanded]="expandedCharacter === index">
+            <button
+              class="character-trigger"
+              type="button"
+              [attr.aria-expanded]="expandedCharacter === index"
+              [attr.aria-controls]="'character-details-' + index"
+              (click)="toggleCharacter(index)"
+            >
+              <span class="character-portrait">
+                <span class="file-number">ARCHIVO {{ character.archive }}</span>
+                @if (character.image) {
+                  <img [src]="character.image" [alt]="character.name" />
+                } @else {
+                  <span class="silhouette" aria-hidden="true">
+                    <span class="silhouette-head"></span>
+                    <span class="silhouette-body"></span>
+                  </span>
+                }
+                <span class="classified">Identidad reservada</span>
+              </span>
+              <span class="character-summary">
+                <span>
+                  <small>Próxima revelación</small>
+                  <strong>{{ character.name }}</strong>
+                </span>
+                <span class="character-toggle" aria-hidden="true">{{ expandedCharacter === index ? '−' : '+' }}</span>
+              </span>
+            </button>
+
+            <div
+              class="character-details"
+              [class.open]="expandedCharacter === index"
+              [attr.id]="'character-details-' + index"
+            >
+              <dl>
+                <div><dt>Rol</dt><dd>{{ character.role }}</dd></div>
+                <div><dt>Origen</dt><dd>{{ character.origin }}</dd></div>
+                <div><dt>Misión</dt><dd>{{ character.mission }}</dd></div>
+              </dl>
+              <p>Su identidad y su lugar dentro de The Voyager serán revelados muy pronto.</p>
             </div>
           </article>
         }
