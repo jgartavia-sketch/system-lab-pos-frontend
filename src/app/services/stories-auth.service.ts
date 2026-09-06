@@ -76,6 +76,7 @@ export interface StoriesChapterBlock {
 export class StoriesAuthService {
   private readonly http = inject(HttpClient);
   private readonly tokenKey = 'system_lab_stories_token';
+  private readonly chapterAssetsVersion = 'b033ebf';
   private readonly apiBase =
     (globalThis as typeof globalThis & { SYSTEM_LAB_API_URL?: string }).SYSTEM_LAB_API_URL ??
     (globalThis.location?.hostname === 'localhost'
@@ -124,7 +125,7 @@ export class StoriesAuthService {
     imageId: string,
   ): Observable<Blob> {
     return this.http.get(
-      `${this.apiBase}/stories/${storySlug}/seasons/${seasonNumber}/chapters/${chapterNumber}/images/${imageId}`,
+      `${this.apiBase}/stories/${storySlug}/seasons/${seasonNumber}/chapters/${chapterNumber}/images/${imageId}?v=${this.chapterAssetsVersion}`,
       { headers: this.authHeaders(), responseType: 'blob' },
     );
   }
