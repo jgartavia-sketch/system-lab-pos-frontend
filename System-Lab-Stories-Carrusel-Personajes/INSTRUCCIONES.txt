@@ -1,0 +1,22 @@
+SYSTEM LAB STORIES - CARRUSEL HORIZONTAL DE PERSONAJES
+
+1. Descomprima este paquete dentro de system-lab-pos-frontend.
+
+2. Desde la raiz del proyecto ejecute:
+   Copy-Item .\System-Lab-Stories-Carrusel-Personajes\src .\ -Recurse -Force
+
+3. Compruebe:
+   git status
+
+4. Suba solamente estos archivos:
+   git add src/app/pages/stories/stories.html
+   git add src/app/pages/stories/stories.scss
+   git add src/app/pages/stories/stories.ts
+   git commit -m "Organiza personajes de Stories en carrusel horizontal"
+   git push origin main
+
+El cambio mantiene las tarjetas compactas y sus acordeones. Los personajes quedan
+en una sola fila horizontal con ajuste por tarjeta, botones anterior/siguiente en
+escritorio y desplazamiento tactil en celular.
+
+No modifica el hero, los capitulos, las cuentas, las rutas ni otras secciones.

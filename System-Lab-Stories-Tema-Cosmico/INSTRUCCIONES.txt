@@ -1,0 +1,23 @@
+SYSTEM LAB STORIES - TEMA COSMICO COMPLETO
+
+Este paquete parte de la version publicada con el hero aprobado.
+Solo reemplaza el CSS de la seccion Stories.
+
+1. Desde la raiz de system-lab-pos-frontend ejecute:
+   Copy-Item .\System-Lab-Stories-Tema-Cosmico\src .\ -Recurse -Force
+
+2. Compruebe:
+   git status
+
+3. Suba solamente el cambio de Stories:
+   git add src/app/pages/stories/stories.scss
+   git commit -m "Extiende el tema cosmico a toda la seccion Stories"
+   git push origin main
+
+Archivo reemplazado:
+   src/app/pages/stories/stories.scss
+
+El cambio conserva el hero, la imagen, la bandera, las rutas y toda la logica.
+Elimina la base amarilla y unifica la interfaz con blanco estelar, azul electrico,
+cian y violeta nebulosa. Tambien incorpora profundidad cosmica al fondo general,
+tarjetas tipo vidrio espacial y estados activos luminosos.

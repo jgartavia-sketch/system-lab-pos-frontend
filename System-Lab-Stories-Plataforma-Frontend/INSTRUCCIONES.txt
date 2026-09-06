@@ -1,0 +1,24 @@
+SYSTEM LAB STORIES - PLATAFORMA FRONTEND
+========================================
+
+Instalar despues del backend en system-lab-pos-frontend.
+
+Copy-Item .\System-Lab-Stories-Plataforma-Frontend\src .\ -Recurse -Force
+
+git status
+git add src/app/pages/stories-account/stories-account.html
+git add src/app/pages/stories-account/stories-account.scss
+git add src/app/pages/stories-account/stories-account.ts
+git add src/app/services/stories-auth.service.ts
+git commit -m "Generaliza la cuenta y corrige la transicion del registro"
+git push origin main
+
+Este cambio:
+- Corrige la pantalla que quedaba en Creando cuenta.
+- Muestra el estado real mientras Render despierta.
+- Abre la biblioteca automaticamente al terminar el registro.
+- Presenta la cuenta como System Lab Stories, no como Voyager.
+- Permite mostrar multiples Stories, cada una con sus temporadas.
+
+No usar git add .
+No agregar client-control.ts ni carpetas de paquetes extraidos.

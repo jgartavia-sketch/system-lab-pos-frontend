@@ -8,24 +8,40 @@
       </span>
     </a>
 
-    <nav aria-label="Navegación de System Lab Stories">
-      <a routerLink="/" fragment="inicio">Inicio</a>
-      <a routerLink="/stories">Stories</a>
-      <a routerLink="/" fragment="proyectos">Proyectos</a>
-      <a routerLink="/" fragment="ecosistema">Ecosistema</a>
-      <a routerLink="/" fragment="nosotros">Nosotros</a>
+    <nav [class.is-open]="menuOpen" aria-label="Navegación de System Lab Stories">
+      <a routerLink="/" fragment="inicio" (click)="closeMenu()">Inicio</a>
+      <a routerLink="/stories" (click)="closeMenu()">Stories</a>
+      <a routerLink="/" fragment="proyectos" (click)="closeMenu()">Proyectos</a>
+      <a routerLink="/" fragment="ecosistema" (click)="closeMenu()">Ecosistema</a>
+      <a routerLink="/" fragment="nosotros" (click)="closeMenu()">Nosotros</a>
+      <a class="mobile-nav-publish" routerLink="/stories/publicar" (click)="closeMenu()">Publicar mi historia</a>
+      <a class="mobile-nav-account" routerLink="/stories/mi-cuenta" (click)="closeMenu()">Mi cuenta</a>
     </nav>
 
     <div class="header-actions">
       <a class="publish-link" routerLink="/stories/publicar">Quiero publicar mi historia</a>
       <a class="return-link" routerLink="/">Volver a System Lab</a>
     </div>
+
+    <button
+      class="stories-menu-button"
+      type="button"
+      aria-label="Abrir menú de navegación"
+      [attr.aria-expanded]="menuOpen"
+      (click)="toggleMenu()"
+    >
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
   <main>
     <section class="stories-hero" id="obra">
       <div class="stars stars-a" aria-hidden="true"></div>
       <div class="stars stars-b" aria-hidden="true"></div>
+      <div class="costa-rica-decal" aria-label="Nave costarricense">
+        <span class="cr-flag" aria-hidden="true"></span>
+        <strong>Costa Rica</strong>
+      </div>
 
       <div class="hero-copy">
         <span class="original-label">A System Lab Original</span>

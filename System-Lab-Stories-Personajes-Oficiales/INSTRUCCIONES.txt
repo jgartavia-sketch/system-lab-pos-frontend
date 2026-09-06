@@ -1,0 +1,46 @@
+SYSTEM LAB STORIES - PERSONAJES OFICIALES
+==========================================
+
+INSTALAR EN EL FRONTEND:
+system-lab-pos-frontend
+
+ESTE PAQUETE INCLUYE
+- Wilber, Charlie, Jenni, Frank y Andrew en el carrusel de Stories.
+- Cinco retratos verticales WebP optimizados para web.
+- Acordeones con edad, origen, academia, especialidad, personalidad y aporte.
+- Carrusel horizontal y comportamiento responsive existentes.
+- Botones Registrarse / Iniciar sesión existentes.
+- Navbar consolidado: Inicio / Stories / Proyectos / Ecosistema / Nosotros.
+- Navegación funcional por anclas desde Stories hacia la portada.
+
+INSTALACION (PowerShell desde la raiz del frontend)
+
+1. Extraer el ZIP dentro de la raiz del repositorio.
+
+2. Copiar el paquete sobre el proyecto:
+   Copy-Item .\System-Lab-Stories-Personajes-Oficiales\src .\ -Recurse -Force
+   Copy-Item .\System-Lab-Stories-Personajes-Oficiales\public .\ -Recurse -Force
+
+3. Revisar los cambios:
+   git status
+
+4. Agregar solamente los archivos del paquete:
+   git add src/app/app.config.ts
+   git add src/app/pages/landing/landing.html
+   git add src/app/pages/stories/stories.html
+   git add src/app/pages/stories/stories.scss
+   git add src/app/pages/stories/stories.ts
+   git add public/images/voyager/characters
+
+5. Commit y push:
+   git commit -m "Presenta los personajes oficiales de Voyager"
+   git push origin main
+
+IMPORTANTE
+- No usar git add .
+- No agregar src/app/pages/client-control/client-control.ts si aparece modificado.
+- No agregar al commit esta carpeta extraida ni los paquetes ZIP anteriores.
+
+VALIDACION
+- npm run build: correcto.
+- Solo permanece la advertencia previa del presupuesto del bundle.

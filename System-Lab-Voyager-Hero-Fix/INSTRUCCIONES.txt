@@ -1,0 +1,24 @@
+CORRECCION DEFINITIVA DEL HERO DE VOYAGER
+
+Este paquete fue construido sobre la version V4 publicada en GitHub.
+Conserva las paginas Mi cuenta y Publicar mi historia.
+
+1. Copie el contenido de esta carpeta dentro de la raiz de:
+   system-lab-pos-frontend
+
+2. Acepte combinar las carpetas y reemplazar los archivos.
+
+3. Ejecute:
+   git add src/app/pages/stories/stories.html
+   git add src/app/pages/stories/stories.scss
+   git add public/images/voyager/hero-voyager-space-hotel.webp
+   git commit -m "Corrige hero de Voyager con imagen del hotel espacial"
+   git push origin main
+
+Archivos incluidos:
+   src/app/pages/stories/stories.html
+   src/app/pages/stories/stories.scss
+   public/images/voyager/hero-voyager-space-hotel.webp
+
+La correccion elimina el emblema circular anterior y conecta la imagen panoramica
+del hotel con bandera de Costa Rica como fondo adaptable del hero.

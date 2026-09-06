@@ -1,0 +1,22 @@
+SYSTEM LAB STORIES - PERSONAJES COMPACTOS EN ACORDEON
+
+1. Descomprima este paquete dentro de system-lab-pos-frontend.
+
+2. Desde la raiz del proyecto ejecute:
+   Copy-Item .\System-Lab-Stories-Personajes-Acordeon\src .\ -Recurse -Force
+
+3. Compruebe los cambios:
+   git status
+
+4. Suba solamente los archivos de Stories:
+   git add src/app/pages/stories/stories.html
+   git add src/app/pages/stories/stories.scss
+   git add src/app/pages/stories/stories.ts
+   git commit -m "Convierte personajes de Stories en acordeones compactos"
+   git push origin main
+
+El paquete corrige el encabezado recortado, reduce el tamaño de las tarjetas y
+las convierte en acordeones accesibles. Cada personaje ya dispone de campos para
+imagen, nombre, rol, origen y mision, listos para recibir los datos definitivos.
+
+No modifica el hero, la imagen del hotel, las rutas, las cuentas ni los capitulos.

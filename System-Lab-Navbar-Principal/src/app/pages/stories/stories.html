@@ -1,0 +1,188 @@
+<div class="stories-page">
+  <header class="stories-header">
+    <a class="stories-brand" routerLink="/" aria-label="Volver a System Lab">
+      <img src="/logo.png" alt="System Lab" />
+      <span>
+        <strong>System Lab</strong>
+        <small>Stories</small>
+      </span>
+    </a>
+
+    <nav aria-label="Navegación de System Lab Stories">
+      <a routerLink="/" fragment="inicio">Inicio</a>
+      <a routerLink="/stories">Stories</a>
+      <a routerLink="/" fragment="proyectos">Proyectos</a>
+      <a routerLink="/" fragment="ecosistema">Ecosistema</a>
+      <a routerLink="/" fragment="nosotros">Nosotros</a>
+    </nav>
+
+    <div class="header-actions">
+      <a class="publish-link" routerLink="/stories/publicar">Quiero publicar mi historia</a>
+      <a class="return-link" routerLink="/">Volver a System Lab</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="stories-hero" id="obra">
+      <div class="stars stars-a" aria-hidden="true"></div>
+      <div class="stars stars-b" aria-hidden="true"></div>
+
+      <div class="hero-copy">
+        <span class="original-label">A System Lab Original</span>
+        <p class="hero-kicker">Primera historia · Próximamente</p>
+        <h1>The Voyager<br /><em>Space Hotel</em></h1>
+        <p class="hero-intro">
+          Hay destinos que se visitan. Otros cambian para siempre a quienes se atreven
+          a llegar. Muy pronto abrirán las puertas del hotel más extraordinario del universo.
+        </p>
+
+        <div class="hero-actions">
+          <a class="gold-button" routerLink="/stories/mi-cuenta">Registrarse</a>
+          <a class="ghost-button" routerLink="/stories/mi-cuenta">Iniciar sesión</a>
+        </div>
+
+        <div class="premiere-note">
+          <span class="pulse" aria-hidden="true"></span>
+          <p><strong>Capítulo 1 en línea</strong> · Fecha de estreno por revelar</p>
+        </div>
+      </div>
+
+      <div class="scroll-cue" aria-hidden="true"><span></span>Descubre la historia</div>
+    </section>
+
+    <section class="characters-section" id="personajes">
+      <div class="section-heading">
+        <div>
+          <p class="section-number">01 / Conocé los personajes</p>
+          <h2>Quienes dan vida a The Voyager.</h2>
+        </div>
+        <p>
+          Antes de abrir el primer capítulo, iremos revelando a los personajes que dan
+          vida a este universo. Cada uno tendrá identidad, historia y créditos propios.
+        </p>
+      </div>
+
+      <div class="character-carousel-shell">
+        <button
+          class="character-nav character-nav-prev"
+          type="button"
+          aria-label="Ver personajes anteriores"
+          (click)="scrollCharacters(-1)"
+        >
+          ←
+        </button>
+
+        <div class="character-grid" #characterCarousel>
+        @for (character of characters; track character.archive; let index = $index) {
+          <article class="character-card" [class.expanded]="expandedCharacter === index">
+            <button
+              class="character-trigger"
+              type="button"
+              [attr.aria-expanded]="expandedCharacter === index"
+              [attr.aria-controls]="'character-details-' + index"
+              (click)="toggleCharacter(index)"
+            >
+              <span class="character-portrait">
+                <span class="file-number">ARCHIVO {{ character.archive }}</span>
+                @if (character.image) {
+                  <img [src]="character.image" [alt]="character.name" />
+                } @else {
+                  <span class="silhouette" aria-hidden="true">
+                    <span class="silhouette-head"></span>
+                    <span class="silhouette-body"></span>
+                  </span>
+                }
+                <span class="classified">Identidad reservada</span>
+              </span>
+              <span class="character-summary">
+                <span>
+                  <small>Próxima revelación</small>
+                  <strong>{{ character.name }}</strong>
+                </span>
+                <span class="character-toggle" aria-hidden="true">{{ expandedCharacter === index ? '−' : '+' }}</span>
+              </span>
+            </button>
+
+            <div
+              class="character-details"
+              [class.open]="expandedCharacter === index"
+              [attr.id]="'character-details-' + index"
+            >
+              <dl>
+                <div><dt>Rol</dt><dd>{{ character.role }}</dd></div>
+                <div><dt>Origen</dt><dd>{{ character.origin }}</dd></div>
+                <div><dt>Misión</dt><dd>{{ character.mission }}</dd></div>
+              </dl>
+              <p>Su identidad y su lugar dentro de The Voyager serán revelados muy pronto.</p>
+            </div>
+          </article>
+        }
+        </div>
+
+        <button
+          class="character-nav character-nav-next"
+          type="button"
+          aria-label="Ver personajes siguientes"
+          (click)="scrollCharacters(1)"
+        >
+          →
+        </button>
+      </div>
+    </section>
+
+    <section class="season-section" id="temporada">
+      <div class="season-intro">
+        <p class="section-number">02 / Primera temporada</p>
+        <h2>Seis capítulos.<br />Un viaje sin regreso.</h2>
+        <p>
+          La primera temporada será completamente gratuita y cada estreno abrirá una
+          nueva puerta dentro del hotel.
+        </p>
+      </div>
+
+      <div class="chapter-experience">
+        <div class="chapter-carousel" aria-label="Capítulos de la primera temporada">
+        @for (chapter of chapters; track chapter; let first = $first; let last = $last) {
+          <button
+            class="chapter-card"
+            [class.active]="selectedChapter === chapter"
+            type="button"
+            (click)="selectChapter(chapter)"
+          >
+            <span class="chapter-card-number">0{{ chapter }}</span>
+            <div>
+              <small>{{ first ? 'Próximo estreno' : (last ? 'Final de temporada' : 'Archivo clasificado') }}</small>
+              <h3>{{ first ? 'El viaje comienza aquí' : 'Título por revelar' }}</h3>
+            </div>
+            <span class="card-arrow">→</span>
+          </button>
+        }
+        </div>
+
+        <article class="chapter-reader-preview">
+          <div class="reader-heading">
+            <span>Temporada 1 · Capítulo 0{{ selectedChapter }}</span>
+            <strong>{{ selectedChapter === 1 ? 'El viaje comienza aquí' : 'Título por revelar' }}</strong>
+          </div>
+          <div class="reader-lock" aria-hidden="true">✦</div>
+          <h3>Este capítulo requiere una cuenta.</h3>
+          <p>
+            La primera temporada será gratuita, pero estará disponible exclusivamente
+            para lectores registrados en System Lab Stories.
+          </p>
+          <a class="gold-button" routerLink="/stories/mi-cuenta">Registrarme para leer</a>
+          <small>¿Ya tenés una cuenta? Podrás iniciar sesión desde la misma sección.</small>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="stories-footer">
+    <a class="stories-brand" routerLink="/">
+      <img src="/logo.png" alt="System Lab" />
+      <span><strong>System Lab</strong><small>Stories</small></span>
+    </a>
+    <p>Historias que no solo se leen. Se viven.</p>
+    <small>© 2026 System Lab CR · Todos los derechos reservados.</small>
+  </footer>
+</div>

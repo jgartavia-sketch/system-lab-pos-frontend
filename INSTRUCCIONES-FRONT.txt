@@ -1,0 +1,13 @@
+SYSTEM LAB - FRONTEND
+
+Extraiga este ZIP dentro de la carpeta raiz system-lab-pos-frontend y acepte reemplazar.
+
+Incluye:
+- src/app/pages/client-control/client-control.html
+- src/app/pages/client-control/client-control.scss
+- src/app/pages/client-control/client-control.ts
+
+Comandos:
+git add src/app/pages/client-control/client-control.html src/app/pages/client-control/client-control.scss src/app/pages/client-control/client-control.ts
+git commit -m "Agrega radares de tareas y control automatico de pagos"
+git push origin main

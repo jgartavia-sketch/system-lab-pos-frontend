@@ -1,0 +1,27 @@
+SYSTEM LAB STORIES - ORDEN DE PERSONAJES
+=========================================
+
+Instalar en el frontend: system-lab-pos-frontend
+
+Nuevo orden del carrusel:
+1. Andrew
+2. Frank
+3. Jenni
+4. Wilber
+5. Charlie
+
+Desde la raiz del repositorio, ejecutar en PowerShell:
+
+Copy-Item .\System-Lab-Stories-Orden-Personajes\src .\ -Recurse -Force
+
+git status
+git add src/app/pages/stories/stories.ts
+git commit -m "Ordena los personajes principales de Voyager"
+git push origin main
+
+IMPORTANTE
+- No usar git add .
+- No agregar src/app/pages/client-control/client-control.ts si aparece modificado.
+- No agregar al commit las carpetas de paquetes extraidos.
+
+Validacion: npm run build completado correctamente.

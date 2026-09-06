@@ -1,0 +1,19 @@
+SYSTEM LAB STORIES - BOTONES PRINCIPALES DE ACCESO
+
+1. Descomprima este paquete dentro de system-lab-pos-frontend.
+
+2. Desde la raiz del proyecto ejecute:
+   Copy-Item .\System-Lab-Stories-Botones-Acceso\src .\ -Recurse -Force
+
+3. Compruebe:
+   git status
+
+4. Suba solamente el archivo de Stories:
+   git add src/app/pages/stories/stories.html
+   git commit -m "Cambia botones principales de Voyager por accesos de usuario"
+   git push origin main
+
+El hero ahora muestra Registrarse e Iniciar sesion. Ambos llevan provisionalmente
+a /stories/mi-cuenta. La logica completa de autenticacion queda pendiente.
+
+No modifica estilos, carrusel, personajes, capitulos ni otras secciones.

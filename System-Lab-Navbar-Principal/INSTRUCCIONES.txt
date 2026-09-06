@@ -1,0 +1,39 @@
+SYSTEM LAB - NAVBAR PRINCIPAL
+=============================
+
+Este paquete se instala en el FRONTEND:
+system-lab-pos-frontend
+
+CAMBIOS
+- Navbar unificado: Inicio / Stories / Proyectos / Ecosistema / Nosotros.
+- En Stories, Inicio, Proyectos, Ecosistema y Nosotros vuelven a la portada
+  y abren directamente la sección correspondiente.
+- Se conserva el hero de Voyager, el carrusel y los botones
+  Registrarse / Iniciar sesión.
+
+INSTALACION (PowerShell, desde la raiz del repositorio frontend)
+
+1. Extraer el ZIP en la raiz del repositorio.
+
+2. Copiar los archivos sobre el proyecto:
+   Copy-Item .\System-Lab-Navbar-Principal\src .\ -Recurse -Force
+
+3. Revisar:
+   git status
+
+4. Agregar exclusivamente estos archivos:
+   git add src/app/app.config.ts src/app/pages/landing/landing.html src/app/pages/stories/stories.html
+
+5. Crear el commit y subirlo:
+   git commit -m "Unifica la navegacion principal de System Lab"
+   git push origin main
+
+IMPORTANTE
+- No usar git add .
+- No agregar src/app/pages/client-control/client-control.ts si aparece modificado;
+  ese archivo no forma parte de este cambio.
+- No agregar al commit la carpeta System-Lab-Navbar-Principal ni otros paquetes ZIP.
+
+VALIDACION REALIZADA
+- npm run build: correcto.
+- Angular reporta solamente la advertencia previa del presupuesto del bundle.

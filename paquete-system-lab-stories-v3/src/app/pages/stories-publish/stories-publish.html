@@ -1,0 +1,41 @@
+<main class="publish-page">
+  <header>
+    <a class="brand" routerLink="/stories">
+      <img src="/logo.png" alt="System Lab" />
+      <span><strong>System Lab</strong><em>Stories</em></span>
+    </a>
+    <div class="header-links"><a routerLink="/stories">Volver a Stories</a><a routerLink="/">System Lab</a></div>
+  </header>
+
+  <section class="publish-shell">
+    <div class="publish-copy">
+      <span class="eyebrow">Para autores y creadores</span>
+      <h1>Tu historia merece algo más que un archivo.</h1>
+      <p>
+        Contanos sobre tu obra. System Lab puede convertirla en una experiencia dentro de Stories
+        o construir un sitio independiente alrededor de su propio universo.
+      </p>
+      <div class="options">
+        <span>Publicación dentro de Stories</span><span>Sitio propio para escritores</span><span>Lanzamiento por capítulos</span><span>Experiencia narrativa digital</span>
+      </div>
+    </div>
+
+    <form class="proposal-form">
+      <div class="form-heading"><small>Solicitud editorial digital</small><h2>Presentá tu historia</h2></div>
+      <div class="two-columns">
+        <label>Nombre del autor<input type="text" placeholder="Tu nombre" /></label>
+        <label>WhatsApp<input type="tel" placeholder="Tu número" /></label>
+      </div>
+      <label>Correo electrónico<input type="email" placeholder="nombre@correo.com" /></label>
+      <label>Título de la obra<input type="text" placeholder="Nombre de tu historia" /></label>
+      <div class="two-columns">
+        <label>Tipo de obra<select><option>Libro o novela</option><option>Cuento</option><option>Cómic</option><option>Otra obra narrativa</option></select></label>
+        <label>Modalidad<select><option>Publicar dentro de Stories</option><option>Crear un sitio independiente</option><option>Necesito asesoría</option></select></label>
+      </div>
+      <label>Sinopsis<textarea rows="5" placeholder="Contanos brevemente de qué trata..."></textarea></label>
+      <label class="accept"><input type="checkbox" /><span>Confirmo que soy autor o representante autorizado de esta obra.</span></label>
+      <button type="button">Enviar mi propuesta</button>
+      <p>El formulario quedará operativo cuando conectemos el backend de System Lab Stories.</p>
+    </form>
+  </section>
+</main>

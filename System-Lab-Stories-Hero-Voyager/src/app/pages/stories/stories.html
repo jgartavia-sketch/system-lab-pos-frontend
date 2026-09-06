@@ -1,0 +1,160 @@
+<div class="stories-page">
+  <header class="stories-header">
+    <a class="stories-brand" routerLink="/" aria-label="Volver a System Lab">
+      <img src="/logo.png" alt="System Lab" />
+      <span>
+        <strong>System Lab</strong>
+        <small>Stories</small>
+      </span>
+    </a>
+
+    <nav aria-label="Navegación de System Lab Stories">
+      <a href="#obra">La obra</a>
+      <a href="#personajes">Personajes</a>
+      <a href="#temporada">Temporada 1</a>
+      <a href="#creadores">Para creadores</a>
+    </nav>
+
+    <a class="return-link" routerLink="/">Volver a System Lab</a>
+  </header>
+
+  <main>
+    <section class="stories-hero" id="obra">
+      <div class="stars stars-a" aria-hidden="true"></div>
+      <div class="stars stars-b" aria-hidden="true"></div>
+
+      <div class="hero-copy">
+        <span class="original-label">A System Lab Original</span>
+        <p class="hero-kicker">Primera historia · Próximamente</p>
+        <h1>The Voyager<br /><em>Space Hotel</em></h1>
+        <p class="hero-intro">
+          Hay destinos que se visitan. Otros cambian para siempre a quienes se atreven
+          a llegar. Muy pronto abrirán las puertas del hotel más extraordinario del universo.
+        </p>
+
+        <div class="hero-actions">
+          <a class="gold-button" href="#personajes">Conocer la tripulación</a>
+          <a class="ghost-button" href="#temporada">Explorar la temporada</a>
+        </div>
+
+        <div class="premiere-note">
+          <span class="pulse" aria-hidden="true"></span>
+          <p><strong>Capítulo 1 en línea</strong> · Fecha de estreno por revelar</p>
+        </div>
+      </div>
+
+      <div class="scroll-cue" aria-hidden="true"><span></span>Descubre la historia</div>
+    </section>
+
+    <section class="manifesto-section">
+      <p class="section-number">01 / El comienzo</p>
+      <div class="manifesto-grid">
+        <h2>Una historia no debería limitarse a una página.</h2>
+        <div>
+          <p>
+            <strong>System Lab Stories</strong> es un espacio para transformar libros,
+            novelas y universos creativos en experiencias digitales que se descubren,
+            se exploran y se recuerdan.
+          </p>
+          <p>
+            The Voyager Space Hotel será la primera obra en despegar: una temporada de
+            seis capítulos disponibles directamente en línea.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="characters-section" id="personajes">
+      <div class="section-heading">
+        <div>
+          <p class="section-number">02 / Archivo de viajeros</p>
+          <h2>Conoce a quienes habitan la historia.</h2>
+        </div>
+        <p>
+          Antes de abrir el primer capítulo, iremos revelando a los personajes que dan
+          vida a este universo. Cada uno tendrá identidad, historia y créditos propios.
+        </p>
+      </div>
+
+      <div class="character-grid">
+        @for (slot of characterSlots; track slot; let index = $index) {
+          <article class="character-card" [class.featured]="index === 0">
+            <div class="character-portrait">
+              <span class="file-number">ARCHIVO 0{{ slot }}</span>
+              <div class="silhouette" aria-hidden="true">
+                <span class="silhouette-head"></span>
+                <span class="silhouette-body"></span>
+              </div>
+              <span class="classified">Identidad reservada</span>
+            </div>
+            <div class="character-copy">
+              <small>Próxima revelación</small>
+              <h3>Tripulante {{ slot }}</h3>
+              <p>Su nombre, misión y lugar dentro de The Voyager serán revelados pronto.</p>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="season-section" id="temporada">
+      <div class="season-intro">
+        <p class="section-number">03 / Primera temporada</p>
+        <h2>Seis capítulos.<br />Un viaje sin regreso.</h2>
+        <p>
+          La primera temporada será completamente gratuita y cada estreno abrirá una
+          nueva puerta dentro del hotel.
+        </p>
+      </div>
+
+      <div class="chapter-list">
+        @for (chapter of chapters; track chapter; let first = $first; let last = $last) {
+          <article class="chapter-row">
+            <span class="chapter-number">0{{ chapter }}</span>
+            <div>
+              <small>{{ first ? 'Próximo estreno' : (last ? 'Final de temporada' : 'Archivo clasificado') }}</small>
+              <h3>{{ first ? 'El viaje comienza aquí' : 'Título por revelar' }}</h3>
+            </div>
+            <span class="chapter-status">{{ first ? 'Próximamente' : 'Clasificado' }}</span>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="creators-section" id="creadores">
+      <div class="creator-card">
+        <span class="creator-orbit" aria-hidden="true"></span>
+        <p class="section-number">System Lab Stories · Para creadores</p>
+        <h2>Tu historia también merece su propio universo digital.</h2>
+        <p>
+          Creamos experiencias en línea para escritores, novelistas, ilustradores y
+          artistas narrativos: desde una publicación dentro de Stories hasta un sitio
+          independiente construido alrededor de la identidad de cada obra.
+        </p>
+        <div class="creator-services" aria-label="Servicios para creadores">
+          <span>Libros digitales</span>
+          <span>Perfiles de personajes</span>
+          <span>Lanzamientos por capítulos</span>
+          <span>Sitios para escritores</span>
+        </div>
+        <a
+          class="gold-button"
+          href="https://wa.me/50662964881?text=Hola%20System%20Lab%2C%20quiero%20crear%20el%20universo%20digital%20de%20mi%20historia"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Quiero publicar mi historia
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="stories-footer">
+    <a class="stories-brand" routerLink="/">
+      <img src="/logo.png" alt="System Lab" />
+      <span><strong>System Lab</strong><small>Stories</small></span>
+    </a>
+    <p>Historias que no solo se leen. Se viven.</p>
+    <small>© 2026 System Lab CR · Todos los derechos reservados.</small>
+  </footer>
+</div>

@@ -1,0 +1,25 @@
+SYSTEM LAB STORIES - NUEVO HERO DE VOYAGER
+
+1. Copie todo el contenido de esta carpeta en la raiz de:
+   system-lab-pos-frontend
+
+2. Cuando Windows pregunte si desea combinar carpetas y reemplazar archivos,
+   seleccione Si.
+
+3. El paquete coloca automaticamente los archivos en:
+   src/app/pages/stories/stories.html
+   src/app/pages/stories/stories.scss
+   src/app/pages/stories/stories.ts
+   public/images/voyager/hero-voyager-space-hotel.webp
+
+4. Para comprobar el proyecto:
+   npm install
+   npm run build
+
+5. Para subir el cambio a GitHub:
+   git add src/app/pages/stories public/images/voyager/hero-voyager-space-hotel.webp
+   git commit -m "Integra hotel espacial en hero de Voyager"
+   git push origin main
+
+La imagen no contiene texto, logos ni marcas de agua. El texto visible permanece
+como contenido HTML del sitio para conservar accesibilidad y adaptacion movil.

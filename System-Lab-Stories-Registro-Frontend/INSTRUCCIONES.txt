@@ -1,0 +1,31 @@
+SYSTEM LAB STORIES - REGISTRO FRONTEND
+======================================
+
+Instalar despues del backend en: system-lab-pos-frontend
+
+Desde la raiz del repositorio en PowerShell:
+
+Copy-Item .\System-Lab-Stories-Registro-Frontend\src .\ -Recurse -Force
+
+git status
+
+git add src/app/pages/stories/stories.html
+git add src/app/pages/stories-account/stories-account.html
+git add src/app/pages/stories-account/stories-account.scss
+git add src/app/pages/stories-account/stories-account.ts
+git add src/app/services/stories-auth.service.ts
+
+git commit -m "Conecta registro y biblioteca privada de Stories"
+git push origin main
+
+Incluye:
+- Boton Registrarse abre directamente Crear cuenta.
+- Boton Iniciar sesion abre directamente su formulario.
+- Nombre, correo, WhatsApp, contraseña y confirmacion.
+- Controles para mostrar u ocultar contraseñas.
+- Codigo de referido opcional y enlace personal compartible.
+- Cuenta privada con biblioteca, pendientes, confirmados y beneficios.
+- Apariencia cosmica alineada con The Voyager.
+
+No usar git add .
+No agregar client-control.ts ni carpetas de paquetes extraidos.

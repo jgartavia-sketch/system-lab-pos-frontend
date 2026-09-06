@@ -1,0 +1,18 @@
+CAMBIO DE TIPOGRAFIA Y COLOR DEL HERO DE VOYAGER
+
+1. Copie la carpeta src de este paquete dentro de la raiz de:
+   system-lab-pos-frontend
+
+2. Acepte combinar carpetas y reemplazar el archivo.
+
+3. Ejecute:
+   git add src/app/pages/stories/stories.scss
+   git commit -m "Renueva tipografia y color del hero de Voyager"
+   git push origin main
+
+Este paquete solo modifica:
+   src/app/pages/stories/stories.scss
+
+No cambia la imagen, las rutas, las cuentas, la publicacion de historias ni el
+contenido de la pagina. Sustituye el amarillo palido del titulo por una paleta
+blanco, azul y violeta, y usa una tipografia moderna de aspecto cinematografico.

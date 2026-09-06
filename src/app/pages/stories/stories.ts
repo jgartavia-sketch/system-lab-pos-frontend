@@ -75,6 +75,15 @@ export class Stories {
   ];
   selectedChapter = 1;
   expandedCharacter: number | null = null;
+  menuOpen = false;
+
+  toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu(): void {
+    this.menuOpen = false;
+  }
 
   selectChapter(chapter: number): void {
     this.selectedChapter = chapter;

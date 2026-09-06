@@ -49,6 +49,32 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+.mobile-menu-button {
+  display: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 13px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+.mobile-menu-button span {
+  display: block;
+  width: 19px;
+  height: 2px;
+  margin: 4px auto;
+  border-radius: 99px;
+  background: currentColor;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.mobile-menu-button[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.mobile-menu-button[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.mobile-menu-button[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
 .site-header {
   position: sticky;
   top: 0;
@@ -1423,12 +1449,45 @@ a {
 
 @media (max-width: 1024px) {
   .site-header {
-    grid-template-columns: auto auto;
+    grid-template-columns: auto 1fr auto auto;
   }
 
   .main-nav {
     display: none;
   }
+
+  .mobile-menu-button {
+    display: block;
+    grid-column: 4;
+  }
+
+  .main-nav.is-open {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    display: grid;
+    gap: 0;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 18px;
+    background: rgba(9, 49, 48, 0.98);
+    box-shadow: 0 22px 46px rgba(5, 35, 35, 0.34);
+    backdrop-filter: blur(20px);
+  }
+
+  .main-nav.is-open a {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    border-radius: 11px;
+    color: #fff;
+    font-size: 0.92rem;
+  }
+
+  .main-nav.is-open a:hover { background: rgba(255,255,255,.08); }
+  .main-nav.is-open a::after { display: none; }
 
   .hero-section {
     grid-template-columns: 1fr;
@@ -1479,6 +1538,10 @@ a {
   .brand-copy span {
     display: none;
   }
+
+  .brand-copy strong { font-size: .95rem; }
+
+  .site-header { grid-template-columns: auto 1fr auto auto; gap: 8px; }
 
   .header-cta {
     min-height: 40px;
@@ -2078,9 +2141,11 @@ a {
   }
 
   .header-cta {
-    padding: 0 10px;
-    font-size: 0.76rem;
+    display: none;
   }
+
+  .site-header { grid-template-columns: auto 1fr auto; }
+  .mobile-menu-button { grid-column: 3; }
 
   .hero-section,
   .section-shell {
