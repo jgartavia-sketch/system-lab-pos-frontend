@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { Landing } from './pages/landing/landing';
-import { Pos } from './pages/pos/pos';
 import { ClientControl } from './pages/client-control/client-control';
 import { Stories } from './pages/stories/stories';
 import { StoriesAccount } from './pages/stories-account/stories-account';
@@ -9,6 +8,8 @@ import { StoriesPublish } from './pages/stories-publish/stories-publish';
 import { StoriesReader } from './pages/stories-reader/stories-reader';
 
 export const routes: Routes = [
+  { path: 'pos', loadComponent: () => import('./pages/pos-hub/pos-hub').then(m => m.PosHub), title: 'System Lab POS' },
+  { path: 'pos/:mode', loadComponent: () => import('./pages/pos-hub/pos-hub').then(m => m.PosHub), title: 'Ingresar | System Lab POS' },
   {
     path: 'stories/leer/:storySlug/:season/:chapter',
     component: StoriesReader,
@@ -41,7 +42,8 @@ export const routes: Routes = [
   },
   {
     path: 'pos-internal',
-    component: Pos,
+    redirectTo: 'pos',
+    pathMatch: 'full',
     title: 'System Lab POS',
   },
   {
