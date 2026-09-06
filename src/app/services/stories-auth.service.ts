@@ -62,7 +62,14 @@ export interface StoriesChapter {
   subtitle: string;
   year: string;
   location: string;
-  content: string[];
+  content: StoriesChapterBlock[];
+}
+
+export interface StoriesChapterBlock {
+  type: 'text' | 'image';
+  text?: string | null;
+  image_id?: string | null;
+  alt?: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -70,35 +77,67 @@ export class StoriesAuthService {
   private readonly http = inject(HttpClient);
   private readonly tokenKey = 'system_lab_stories_token';
   private readonly apiBase =
-    (globalThis as typeof globalThis & { SYSTEM_LAB_API_URL?: string }).SYSTEM_LAB_API_URL
-    ?? (globalThis.location?.hostname === 'localhost'
+    (globalThis as typeof globalThis & { SYSTEM_LAB_API_URL?: string }).SYSTEM_LAB_API_URL ??
+    (globalThis.location?.hostname === 'localhost'
       ? 'http://localhost:8000'
       : 'https://system-lab-pos-backend.onrender.com');
 
-  register(payload: { full_name: string; email: string; phone: string; password: string; referral_code?: string }): Observable<StoriesAuthResponse> {
-    return this.http.post<StoriesAuthResponse>(`${this.apiBase}/stories/auth/register`, payload)
+  register(payload: {
+    full_name: string;
+    email: string;
+    phone: string;
+    password: string;
+    referral_code?: string;
+  }): Observable<StoriesAuthResponse> {
+    return this.http
+      .post<StoriesAuthResponse>(`${this.apiBase}/stories/auth/register`, payload)
       .pipe(tap((response) => this.saveToken(response.access_token)));
   }
 
   login(payload: { email: string; password: string }): Observable<StoriesAuthResponse> {
-    return this.http.post<StoriesAuthResponse>(`${this.apiBase}/stories/auth/login`, payload)
+    return this.http
+      .post<StoriesAuthResponse>(`${this.apiBase}/stories/auth/login`, payload)
       .pipe(tap((response) => this.saveToken(response.access_token)));
   }
 
   getDashboard(): Observable<StoriesDashboard> {
-    return this.http.get<StoriesDashboard>(`${this.apiBase}/stories/account`, { headers: this.authHeaders() });
+    return this.http.get<StoriesDashboard>(`${this.apiBase}/stories/account`, {
+      headers: this.authHeaders(),
+    });
   }
 
-  getChapter(storySlug: string, seasonNumber: number, chapterNumber: number): Observable<StoriesChapter> {
+  getChapter(
+    storySlug: string,
+    seasonNumber: number,
+    chapterNumber: number,
+  ): Observable<StoriesChapter> {
     return this.http.get<StoriesChapter>(
       `${this.apiBase}/stories/${storySlug}/seasons/${seasonNumber}/chapters/${chapterNumber}`,
       { headers: this.authHeaders() },
     );
   }
 
-  hasSession(): boolean { return Boolean(globalThis.localStorage?.getItem(this.tokenKey)); }
-  logout(): void { globalThis.localStorage?.removeItem(this.tokenKey); }
-  private saveToken(token: string): void { globalThis.localStorage?.setItem(this.tokenKey, token); }
+  getChapterImage(
+    storySlug: string,
+    seasonNumber: number,
+    chapterNumber: number,
+    imageId: string,
+  ): Observable<Blob> {
+    return this.http.get(
+      `${this.apiBase}/stories/${storySlug}/seasons/${seasonNumber}/chapters/${chapterNumber}/images/${imageId}`,
+      { headers: this.authHeaders(), responseType: 'blob' },
+    );
+  }
+
+  hasSession(): boolean {
+    return Boolean(globalThis.localStorage?.getItem(this.tokenKey));
+  }
+  logout(): void {
+    globalThis.localStorage?.removeItem(this.tokenKey);
+  }
+  private saveToken(token: string): void {
+    globalThis.localStorage?.setItem(this.tokenKey, token);
+  }
   private authHeaders(): HttpHeaders {
     const token = globalThis.localStorage?.getItem(this.tokenKey) ?? '';
     return new HttpHeaders({ Authorization: `Bearer ${token}` });

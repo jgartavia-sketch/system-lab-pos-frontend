@@ -35,15 +35,29 @@
 
       <section class="chapter-body">
         @for (block of chapter.content; track $index) {
-          @if (isScene(block)) {
-            <h2>{{ block }}</h2>
-          } @else if (isDialogue(block)) {
+          @if (block.type === 'image' && block.image_id) {
+            <figure class="chapter-illustration">
+              @if (illustrationUrls[block.image_id]) {
+                <img
+                  [src]="illustrationUrls[block.image_id]"
+                  [alt]="block.alt ?? ''"
+                  loading="lazy"
+                />
+              } @else if (illustrationErrors.has(block.image_id)) {
+                <div class="image-error">No fue posible cargar esta ilustración.</div>
+              } @else {
+                <div class="image-loading"><span></span><small>Cargando ilustración…</small></div>
+              }
+            </figure>
+          } @else if (isScene(blockText(block))) {
+            <h2>{{ blockText(block) }}</h2>
+          } @else if (isDialogue(blockText(block))) {
             <p class="dialogue">
-              <strong>{{ speaker(block) }}</strong
-              ><span>{{ dialogue(block) }}</span>
+              <strong>{{ speaker(blockText(block)) }}</strong
+              ><span>{{ dialogue(blockText(block)) }}</span>
             </p>
           } @else {
-            <p>{{ block }}</p>
+            <p>{{ blockText(block) }}</p>
           }
         }
       </section>

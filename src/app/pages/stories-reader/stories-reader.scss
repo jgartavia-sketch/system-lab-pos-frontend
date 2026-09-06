@@ -184,6 +184,42 @@ a {
 .dialogue span {
   display: block;
 }
+.chapter-illustration {
+  width: min(960px, calc(100vw - 32px));
+  margin: 64px 50%;
+  overflow: hidden;
+  border: 1px solid rgba(114, 204, 255, 0.2);
+  border-radius: 18px;
+  background: rgba(8, 17, 38, 0.78);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.36);
+  transform: translateX(-50%);
+}
+.chapter-illustration img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.image-loading,
+.image-error {
+  display: grid;
+  min-height: 320px;
+  place-content: center;
+  justify-items: center;
+  gap: 13px;
+  padding: 30px;
+  color: rgba(193, 237, 255, 0.5);
+  font-family: Inter, sans-serif;
+  font-size: 0.68rem;
+  text-align: center;
+}
+.image-loading span {
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(114, 204, 255, 0.15);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
 .chapter-end {
   display: grid;
   justify-items: center;
@@ -301,6 +337,15 @@ a {
   }
   .chapter-body h2 {
     margin-top: 72px;
+  }
+  .chapter-illustration {
+    margin-top: 42px;
+    margin-bottom: 42px;
+    border-radius: 12px;
+  }
+  .image-loading,
+  .image-error {
+    min-height: 210px;
   }
   .chapter-end {
     padding: 75px 20px 90px;
