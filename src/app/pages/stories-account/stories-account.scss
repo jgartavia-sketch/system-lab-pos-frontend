@@ -39,6 +39,7 @@ input:focus { border-color:rgba(114,204,255,.65);box-shadow:0 0 0 3px rgba(114,2
 .form-message { margin:0 0 18px;padding:12px 14px;border-radius:9px;font-size:.75rem;line-height:1.5; }
 .form-message.error { border:1px solid rgba(255,105,135,.3);color:#ffc2cf;background:rgba(138,22,52,.16); }
 .form-message.success { border:1px solid rgba(104,231,194,.3);color:#bfffe9;background:rgba(16,112,84,.16); }
+.connection-message { margin:0;color:rgba(193,237,255,.72);font-size:.68rem;line-height:1.5;text-align:center; }
 .reader-dashboard { width:min(1180px,calc(100% - 40px));margin:auto;padding:70px 0 110px; }
 .dashboard-heading h1 { margin:18px 0 20px;font-size:clamp(3rem,6vw,6rem);font-weight:820;line-height:.94;letter-spacing:-.065em; }
 .dashboard-heading h1 em { color:transparent;font-style:normal;background:linear-gradient(100deg,#fff,#8edcff 48%,#b7a5ff);background-clip:text;-webkit-background-clip:text; }
@@ -47,10 +48,13 @@ input:focus { border-color:rgba(114,204,255,.65);box-shadow:0 0 0 3px rgba(114,2
 .library-panel,.referral-panel { padding:30px;border:1px solid rgba(130,207,255,.17);border-radius:18px;background:linear-gradient(145deg,rgba(14,31,66,.74),rgba(11,8,32,.8));box-shadow:0 26px 80px rgba(0,0,0,.22); }
 .panel-label { display:flex;justify-content:space-between;gap:20px;padding-bottom:18px;border-bottom:1px solid rgba(130,207,255,.12);font-size:.65rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase; }
 .panel-label small { color:var(--gold); }
-.season-card { margin-top:26px;padding:28px;border:1px solid rgba(114,204,255,.2);background:radial-gradient(circle at 90% 10%,rgba(116,92,255,.18),transparent 34%),rgba(3,10,28,.72); }
-.season-card>span { color:var(--gold);font-size:.65rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase; }
-.season-card h2 { margin:12px 0;font-size:clamp(1.7rem,3vw,2.6rem);line-height:1.05; }
-.season-card p,.reward-rule { color:rgba(226,238,255,.58);line-height:1.6; }
+.story-card { margin-top:26px;padding:clamp(26px,5vw,44px);border:1px solid rgba(114,204,255,.2);background-position:center;background-size:cover;box-shadow:inset 0 1px rgba(255,255,255,.05); }
+.story-card>span { color:var(--gold);font-size:.65rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase; }
+.story-card h2 { max-width:560px;margin:12px 0;font-size:clamp(1.9rem,3.5vw,3.2rem);line-height:1; }
+.story-card>p,.reward-rule { max-width:520px;color:rgba(226,238,255,.68);line-height:1.6; }
+.season-access { display:flex;justify-content:space-between;gap:16px;max-width:520px;margin-top:25px;padding:15px 0;border-top:1px solid rgba(114,204,255,.18);border-bottom:1px solid rgba(114,204,255,.18); }
+.season-access small { color:var(--gold-light); }
+.weekly-note { margin-bottom:0;font-size:.72rem; }
 .release-wait { display:flex;align-items:center;gap:10px;margin-top:24px;color:var(--gold-light);font-size:.72rem; }
 .release-wait span { width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 16px var(--gold); }
 .referral-progress { display:flex;align-items:end;gap:12px;margin-top:26px; }

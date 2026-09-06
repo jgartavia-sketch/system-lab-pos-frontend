@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -16,6 +16,7 @@ export class StoriesAccount implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly auth = inject(StoriesAuthService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   mode: 'registro' | 'login' = 'registro';
   loading = false;
@@ -25,6 +26,7 @@ export class StoriesAccount implements OnInit {
   error = '';
   notice = '';
   copied = false;
+  connectingMessage = '';
   dashboard: StoriesDashboard | null = null;
 
   readonly registerForm = this.fb.nonNullable.group({
@@ -71,15 +73,32 @@ export class StoriesAccount implements OnInit {
       return;
     }
     this.loading = true;
+    this.connectingMessage = 'Creando tu cuenta segura…';
+    const slowConnection = globalThis.setTimeout(() => {
+      this.connectingMessage = 'Render está despertando. Tu cuenta se creará una sola vez…';
+      this.cdr.detectChanges();
+    }, 7000);
     this.auth.register({
       full_name: value.fullName,
       email: value.email,
       phone: value.phone,
       password: value.password,
       referral_code: value.referralCode.trim() || undefined,
-    }).pipe(finalize(() => this.loading = false)).subscribe({
-      next: () => { this.notice = 'Cuenta creada. Bienvenido a bordo.'; this.loadDashboard(); },
-      error: (response) => this.error = response.error?.detail ?? 'No fue posible crear la cuenta.',
+    }).pipe(finalize(() => {
+      globalThis.clearTimeout(slowConnection);
+      this.loading = false;
+      this.connectingMessage = '';
+      this.cdr.detectChanges();
+    })).subscribe({
+      next: () => {
+        this.notice = 'Cuenta creada. Bienvenido a System Lab Stories.';
+        this.loadDashboard();
+        this.cdr.detectChanges();
+      },
+      error: (response) => {
+        this.error = response.error?.detail ?? 'No fue posible crear la cuenta.';
+        this.cdr.detectChanges();
+      },
     });
   }
 
@@ -91,9 +110,17 @@ export class StoriesAccount implements OnInit {
       return;
     }
     this.loading = true;
-    this.auth.login(this.loginForm.getRawValue()).pipe(finalize(() => this.loading = false)).subscribe({
-      next: () => this.loadDashboard(),
-      error: (response) => this.error = response.error?.detail ?? 'No fue posible iniciar sesión.',
+    this.connectingMessage = 'Abriendo tu biblioteca…';
+    this.auth.login(this.loginForm.getRawValue()).pipe(finalize(() => {
+      this.loading = false;
+      this.connectingMessage = '';
+      this.cdr.detectChanges();
+    })).subscribe({
+      next: () => { this.loadDashboard(); this.cdr.detectChanges(); },
+      error: (response) => {
+        this.error = response.error?.detail ?? 'No fue posible iniciar sesión.';
+        this.cdr.detectChanges();
+      },
     });
   }
 
@@ -115,12 +142,13 @@ export class StoriesAccount implements OnInit {
   private loadDashboard(): void {
     this.loadingAccount = true;
     this.auth.getDashboard().pipe(finalize(() => this.loadingAccount = false)).subscribe({
-      next: (dashboard) => this.dashboard = dashboard,
+      next: (dashboard) => { this.dashboard = dashboard; this.cdr.detectChanges(); },
       error: () => {
         this.auth.logout();
         this.dashboard = null;
         this.mode = 'login';
         this.error = 'Tu sesión venció. Iniciá sesión nuevamente.';
+        this.cdr.detectChanges();
       },
     });
   }

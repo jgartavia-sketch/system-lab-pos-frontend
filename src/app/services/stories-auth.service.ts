@@ -31,18 +31,25 @@ export interface ReferralSummary {
 export interface StoriesDashboard {
   reader: StoriesReader;
   referrals: ReferralSummary;
-  seasons: Array<{
-    number: number;
+  stories: Array<{
+    slug: string;
     title: string;
-    access: string;
-    price_public: boolean;
-    chapters: Array<{
+    tagline: string;
+    cover_url: string;
+    status: string;
+    seasons: Array<{
       number: number;
       title: string;
-      status: string;
-      release_at: string | null;
-      can_read: boolean;
-      can_download_pdf: boolean;
+      access: string;
+      price_public: boolean;
+      chapters: Array<{
+        number: number;
+        title: string;
+        status: string;
+        release_at: string | null;
+        can_read: boolean;
+        can_download_pdf: boolean;
+      }>;
     }>;
   }>;
 }

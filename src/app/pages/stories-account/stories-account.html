@@ -2,7 +2,7 @@
   <header>
     <a class="brand" routerLink="/stories"><img src="/logo.png" alt="System Lab" /><span><strong>System Lab</strong><em>Stories</em></span></a>
     <div class="header-links">
-      <a routerLink="/stories">Volver a The Voyager</a><a routerLink="/">System Lab</a>
+      <a routerLink="/stories">Volver a Stories</a><a routerLink="/">System Lab</a>
       @if (dashboard) { <button type="button" (click)="logout()">Cerrar sesión</button> }
     </div>
   </header>
@@ -12,16 +12,19 @@
       <div class="dashboard-heading">
         <span class="eyebrow">Cuenta de viajero</span>
         <h1>Bienvenido a bordo,<br /><em>{{ dashboard.reader.full_name }}</em>.</h1>
-        <p>Esta es tu biblioteca privada. Los capítulos aparecerán aquí conforme llegue su fecha oficial de estreno.</p>
+        <p>Esta es tu biblioteca privada de System Lab Stories. Cada universo, temporada y capítulo disponible vivirá dentro de esta cuenta.</p>
       </div>
       <div class="dashboard-grid">
         <article class="library-panel">
           <div class="panel-label"><span>Tu biblioteca</span><small>Acceso concedido</small></div>
-          @for (season of dashboard.seasons; track season.number) {
-            <div class="season-card">
-              <span>Temporada {{ season.number }}</span><h2>{{ season.title }}</h2>
-              <p>Temporada completa incluida. Cada capítulo se habilitará semanalmente según el calendario oficial.</p>
-              @if (season.chapters.length === 0) { <div class="release-wait"><span></span>El Capítulo 1 aparecerá muy pronto</div> }
+          @for (story of dashboard.stories; track story.slug) {
+            <div class="story-card" [style.background-image]="'linear-gradient(90deg, rgba(3, 8, 22, .96), rgba(3, 8, 22, .68)), url(' + story.cover_url + ')'">
+              <span>System Lab Stories Original</span><h2>{{ story.title }}</h2><p>{{ story.tagline }}</p>
+              @for (season of story.seasons; track season.number) {
+                <div class="season-access"><strong>{{ season.title }}</strong><small>{{ season.access === 'granted' ? 'Incluida en tu biblioteca' : 'Acceso pendiente' }}</small></div>
+                <p class="weekly-note">Cada capítulo se habilitará semanalmente según su calendario oficial.</p>
+                @if (season.chapters.length === 0) { <div class="release-wait"><span></span>El primer capítulo aparecerá muy pronto</div> }
+              }
             </div>
           }
         </article>
@@ -43,8 +46,8 @@
   } @else {
     <section class="account-shell">
       <div class="account-intro">
-        <span class="eyebrow">Acceso de viajeros</span><h1>Tu viaje comienza con una cuenta.</h1>
-        <p>Registrate para acceder a la primera temporada gratuita de <strong>The Voyager Space Hotel</strong>, guardar tu progreso y recibir tu enlace personal de referidos.</p>
+        <span class="eyebrow">Acceso a System Lab Stories</span><h1>Todos los universos.<br />Una sola cuenta.</h1>
+        <p>Registrate una sola vez para acceder a tus Stories, temporadas y capítulos, guardar tu progreso y recibir tu enlace personal de referidos.</p>
         <div class="credit-card"><span>Programa de referidos</span><strong>5 viajeros = 50%</strong><p>Cada cinco personas confirmadas generan un 50% de descuento para una temporada futura.</p><small>Los registros nuevos aparecerán como pendientes hasta confirmar su acceso legítimo a la historia.</small></div>
       </div>
       <div class="auth-card">
@@ -60,13 +63,15 @@
             <label>Confirmar contraseña<span class="password-field"><input formControlName="confirmation" [type]="showConfirmation ? 'text' : 'password'" autocomplete="new-password" placeholder="Repetí tu contraseña" /><button type="button" (click)="showConfirmation = !showConfirmation" [attr.aria-label]="showConfirmation ? 'Ocultar contraseña' : 'Mostrar contraseña'">{{ showConfirmation ? '◉' : '◎' }}</button></span></label>
             <label>Código de referido <small>(opcional)</small><input formControlName="referralCode" type="text" maxlength="16" placeholder="Ej. VGR8X2K" /></label>
             <label class="accept"><input formControlName="accept" type="checkbox" /><span>Acepto los términos y el tratamiento de mis datos.</span></label>
-            <button class="submit-button" type="submit" [disabled]="loading">{{ loading ? 'Creando cuenta…' : 'Crear mi cuenta gratuita' }}</button>
+            <button class="submit-button" type="submit" [disabled]="loading">{{ loading ? 'Conectando…' : 'Crear mi cuenta gratuita' }}</button>
+            @if (connectingMessage) { <p class="connection-message">{{ connectingMessage }}</p> }
           </form>
         } @else {
           <form [formGroup]="loginForm" (ngSubmit)="login()">
             <label>Correo electrónico<input formControlName="email" type="email" autocomplete="email" placeholder="nombre@correo.com" /></label>
             <label>Contraseña<span class="password-field"><input formControlName="password" [type]="showPassword ? 'text' : 'password'" autocomplete="current-password" placeholder="Tu contraseña" /><button type="button" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">{{ showPassword ? '◉' : '◎' }}</button></span></label>
-            <button class="submit-button" type="submit" [disabled]="loading">{{ loading ? 'Ingresando…' : 'Ingresar a mi cuenta' }}</button>
+            <button class="submit-button" type="submit" [disabled]="loading">{{ loading ? 'Conectando…' : 'Ingresar a mi cuenta' }}</button>
+            @if (connectingMessage) { <p class="connection-message">{{ connectingMessage }}</p> }
           </form>
         }
         @if (loadingAccount) { <p class="development-note">Preparando tu biblioteca…</p> }
