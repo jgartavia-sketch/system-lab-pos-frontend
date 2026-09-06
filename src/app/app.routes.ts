@@ -6,8 +6,14 @@ import { ClientControl } from './pages/client-control/client-control';
 import { Stories } from './pages/stories/stories';
 import { StoriesAccount } from './pages/stories-account/stories-account';
 import { StoriesPublish } from './pages/stories-publish/stories-publish';
+import { StoriesReader } from './pages/stories-reader/stories-reader';
 
 export const routes: Routes = [
+  {
+    path: 'stories/leer/:storySlug/:season/:chapter',
+    component: StoriesReader,
+    title: 'Lector | System Lab Stories',
+  },
   {
     path: 'admin/clientes',
     component: ClientControl,

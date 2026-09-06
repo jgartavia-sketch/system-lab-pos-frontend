@@ -52,8 +52,24 @@ input:focus { border-color:rgba(114,204,255,.65);box-shadow:0 0 0 3px rgba(114,2
 .story-card>span { color:var(--gold);font-size:.65rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase; }
 .story-card h2 { max-width:560px;margin:12px 0;font-size:clamp(1.9rem,3.5vw,3.2rem);line-height:1; }
 .story-card>p,.reward-rule { max-width:520px;color:rgba(226,238,255,.68);line-height:1.6; }
-.season-access { display:flex;justify-content:space-between;gap:16px;max-width:520px;margin-top:25px;padding:15px 0;border-top:1px solid rgba(114,204,255,.18);border-bottom:1px solid rgba(114,204,255,.18); }
+.season-accordion { max-width:560px;margin-top:25px;border-top:1px solid rgba(114,204,255,.18);border-bottom:1px solid rgba(114,204,255,.18); }
+.season-access { display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:17px 0;border:0;color:inherit;background:transparent;text-align:left;cursor:pointer; }
+.season-access>span { display:flex;justify-content:space-between;gap:18px;align-items:center;flex:1; }
 .season-access small { color:var(--gold-light); }
+.season-access i { color:var(--gold-light);font-size:1.4rem;font-style:normal;transition:transform 200ms ease; }
+.season-accordion.open .season-access i { transform:rotate(180deg); }
+.chapter-list { max-height:0;overflow:hidden;opacity:0;transition:max-height 320ms ease,opacity 180ms ease,padding 240ms ease; }
+.season-accordion.open .chapter-list { max-height:620px;padding:0 0 16px;opacity:1; }
+.library-chapter { display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;min-height:66px;padding:10px 12px;border:1px solid rgba(130,207,255,.1);border-bottom:0;color:rgba(226,238,255,.48);background:rgba(3,8,22,.46);text-align:left; }
+.library-chapter:last-child { border-bottom:1px solid rgba(130,207,255,.1); }
+.library-chapter.available { color:#fff;border-color:rgba(114,204,255,.35);background:linear-gradient(100deg,rgba(30,110,190,.24),rgba(116,92,255,.12));cursor:pointer; }
+.library-chapter.available:hover { border-color:rgba(193,237,255,.62);background:linear-gradient(100deg,rgba(30,110,190,.36),rgba(116,92,255,.2)); }
+.library-chapter:disabled { cursor:not-allowed; }
+.chapter-number { color:var(--gold);font-family:Georgia,serif;font-size:1.25rem; }
+.chapter-copy { display:grid;gap:4px;min-width:0; }
+.chapter-copy small { color:rgba(193,237,255,.52);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase; }
+.chapter-copy strong { overflow-wrap:anywhere;font-size:.82rem; }
+.chapter-status { color:var(--gold-light);font-size:.61rem;font-weight:800;white-space:nowrap; }
 .weekly-note { margin-bottom:0;font-size:.72rem; }
 .release-wait { display:flex;align-items:center;gap:10px;margin-top:24px;color:var(--gold-light);font-size:.72rem; }
 .release-wait span { width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 16px var(--gold); }
@@ -73,4 +89,4 @@ input:focus { border-color:rgba(114,204,255,.65);box-shadow:0 0 0 3px rgba(114,2
 .reward-rule { display:block;margin-top:18px;font-size:.67rem; }
 .development-note { margin:18px 0 0;color:rgba(244,239,230,.3);font-size:.64rem;line-height:1.5;text-align:center; }
 @media(max-width:850px){.account-shell{grid-template-columns:1fr;gap:44px}.dashboard-grid{grid-template-columns:1fr}.header-links a:last-of-type{display:none}}
-@media(max-width:520px){header,.account-shell{width:calc(100% - 28px)}.header-links a{padding:9px 11px;font-size:.6rem}.auth-card{padding:25px 18px}.account-intro h1{font-size:3.35rem}}
+@media(max-width:520px){header,.account-shell,.reader-dashboard{width:calc(100% - 28px)}.header-links a{padding:9px 11px;font-size:.6rem}.auth-card{padding:25px 18px}.account-intro h1{font-size:3.35rem}.library-panel,.referral-panel{padding:20px 15px}.story-card{padding:22px 14px}.season-access>span{align-items:flex-start;flex-direction:column;gap:5px}.library-chapter{grid-template-columns:34px minmax(0,1fr)}.chapter-status{grid-column:2;white-space:normal}.panel-label{gap:10px}.panel-label small{text-align:right}}

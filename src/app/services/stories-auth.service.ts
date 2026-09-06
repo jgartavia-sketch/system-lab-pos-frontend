@@ -54,6 +54,17 @@ export interface StoriesDashboard {
   }>;
 }
 
+export interface StoriesChapter {
+  story_slug: string;
+  season_number: number;
+  chapter_number: number;
+  title: string;
+  subtitle: string;
+  year: string;
+  location: string;
+  content: string[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class StoriesAuthService {
   private readonly http = inject(HttpClient);
@@ -76,6 +87,13 @@ export class StoriesAuthService {
 
   getDashboard(): Observable<StoriesDashboard> {
     return this.http.get<StoriesDashboard>(`${this.apiBase}/stories/account`, { headers: this.authHeaders() });
+  }
+
+  getChapter(storySlug: string, seasonNumber: number, chapterNumber: number): Observable<StoriesChapter> {
+    return this.http.get<StoriesChapter>(
+      `${this.apiBase}/stories/${storySlug}/seasons/${seasonNumber}/chapters/${chapterNumber}`,
+      { headers: this.authHeaders() },
+    );
   }
 
   hasSession(): boolean { return Boolean(globalThis.localStorage?.getItem(this.tokenKey)); }

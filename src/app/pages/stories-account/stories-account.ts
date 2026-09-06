@@ -28,6 +28,7 @@ export class StoriesAccount implements OnInit {
   copied = false;
   connectingMessage = '';
   dashboard: StoriesDashboard | null = null;
+  openSeason: string | null = null;
 
   readonly registerForm = this.fb.nonNullable.group({
     fullName: ['', [Validators.required, Validators.minLength(3)]],
@@ -129,6 +130,20 @@ export class StoriesAccount implements OnInit {
     this.dashboard = null;
     this.mode = 'login';
     this.notice = 'Sesión cerrada correctamente.';
+  }
+
+  seasonKey(storySlug: string, seasonNumber: number): string {
+    return `${storySlug}-${seasonNumber}`;
+  }
+
+  toggleSeason(storySlug: string, seasonNumber: number): void {
+    const key = this.seasonKey(storySlug, seasonNumber);
+    this.openSeason = this.openSeason === key ? null : key;
+  }
+
+  openChapter(storySlug: string, seasonNumber: number, chapterNumber: number, canRead: boolean): void {
+    if (!canRead) return;
+    void this.router.navigate(['/stories/leer', storySlug, seasonNumber, chapterNumber]);
   }
 
   async copyReferral(): Promise<void> {

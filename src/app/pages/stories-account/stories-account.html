@@ -21,9 +21,34 @@
             <div class="story-card" [style.background-image]="'linear-gradient(90deg, rgba(3, 8, 22, .96), rgba(3, 8, 22, .68)), url(' + story.cover_url + ')'">
               <span>System Lab Stories Original</span><h2>{{ story.title }}</h2><p>{{ story.tagline }}</p>
               @for (season of story.seasons; track season.number) {
-                <div class="season-access"><strong>{{ season.title }}</strong><small>{{ season.access === 'granted' ? 'Incluida en tu biblioteca' : 'Acceso pendiente' }}</small></div>
-                <p class="weekly-note">Cada capítulo se habilitará semanalmente según su calendario oficial.</p>
-                @if (season.chapters.length === 0) { <div class="release-wait"><span></span>El primer capítulo aparecerá muy pronto</div> }
+                <section class="season-accordion" [class.open]="openSeason === seasonKey(story.slug, season.number)">
+                  <button
+                    class="season-access"
+                    type="button"
+                    [attr.aria-expanded]="openSeason === seasonKey(story.slug, season.number)"
+                    (click)="toggleSeason(story.slug, season.number)"
+                  >
+                    <span><strong>{{ season.title }}</strong><small>{{ season.access === 'granted' ? 'Incluida en tu biblioteca' : 'Acceso pendiente' }}</small></span>
+                    <i aria-hidden="true">⌄</i>
+                  </button>
+
+                  <div class="chapter-list">
+                    <p class="weekly-note">Los capítulos se habilitarán según su calendario oficial.</p>
+                    @for (chapter of season.chapters; track chapter.number) {
+                      <button
+                        class="library-chapter"
+                        type="button"
+                        [class.available]="chapter.can_read"
+                        [disabled]="!chapter.can_read"
+                        (click)="openChapter(story.slug, season.number, chapter.number, chapter.can_read)"
+                      >
+                        <span class="chapter-number">{{ chapter.number < 10 ? '0' + chapter.number : chapter.number }}</span>
+                        <span class="chapter-copy"><small>Capítulo {{ chapter.number }}</small><strong>{{ chapter.title }}</strong></span>
+                        <span class="chapter-status">{{ chapter.can_read ? 'Leer ahora →' : 'Próximamente' }}</span>
+                      </button>
+                    }
+                  </div>
+                </section>
               }
             </div>
           }
