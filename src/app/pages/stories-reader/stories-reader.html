@@ -7,9 +7,19 @@
   </header>
 
   @if (loading) {
-    <section class="reader-state"><span class="loader"></span><p>Preparando el capítulo…</p></section>
+    <section class="reader-state">
+      <span class="loader"></span>
+      <p>{{ loadingMessage }}</p>
+    </section>
   } @else if (error) {
-    <section class="reader-state error-state"><strong>Acceso no disponible</strong><p>{{ error }}</p><a routerLink="/stories/mi-cuenta">Volver a mi biblioteca</a></section>
+    <section class="reader-state error-state">
+      <strong>No pudimos abrir el capítulo</strong>
+      <p>{{ error }}</p>
+      <div>
+        <button type="button" (click)="loadChapter()">Intentar de nuevo</button
+        ><a routerLink="/stories/mi-cuenta">Volver a mi biblioteca</a>
+      </div>
+    </section>
   } @else if (chapter) {
     <article class="book">
       <header class="chapter-cover">
@@ -17,7 +27,10 @@
         <span>Temporada {{ chapter.season_number }} · Capítulo {{ chapter.chapter_number }}</span>
         <h1>{{ chapter.title }}</h1>
         <em>{{ chapter.subtitle }}</em>
-        <div><small>{{ chapter.year }}</small><small>{{ chapter.location }}</small></div>
+        <div>
+          <small>{{ chapter.year }}</small
+          ><small>{{ chapter.location }}</small>
+        </div>
       </header>
 
       <section class="chapter-body">
@@ -25,7 +38,10 @@
           @if (isScene(block)) {
             <h2>{{ block }}</h2>
           } @else if (isDialogue(block)) {
-            <p class="dialogue"><strong>{{ speaker(block) }}</strong><span>{{ dialogue(block) }}</span></p>
+            <p class="dialogue">
+              <strong>{{ speaker(block) }}</strong
+              ><span>{{ dialogue(block) }}</span>
+            </p>
           } @else {
             <p>{{ block }}</p>
           }
