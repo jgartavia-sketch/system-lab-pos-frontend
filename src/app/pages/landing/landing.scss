@@ -860,6 +860,7 @@ a {
 
 .product-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   margin-top: 18px;
 }
 
@@ -904,130 +905,6 @@ a {
 
 .connect-card {
   grid-column: auto;
-}
-
-.connect-details {
-  position: relative;
-  z-index: 3;
-  margin-top: 22px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.connect-details summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 18px 0;
-  color: #ffffff;
-  font-size: 0.92rem;
-  font-weight: 850;
-  cursor: pointer;
-  list-style: none;
-  user-select: none;
-}
-
-.connect-details summary::-webkit-details-marker {
-  display: none;
-}
-
-.connect-summary-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 30px;
-  width: 30px;
-  height: 30px;
-  border: 1px solid rgba(143, 243, 231, 0.2);
-  border-radius: 50%;
-  color: #8ff3e7;
-  background: rgba(20, 184, 166, 0.08);
-  font-size: 1.15rem;
-  font-weight: 500;
-  transition:
-    transform 240ms ease,
-    background 240ms ease,
-    border-color 240ms ease;
-}
-
-.connect-details[open] .connect-summary-icon {
-  transform: rotate(45deg);
-  border-color: rgba(143, 243, 231, 0.38);
-  background: rgba(20, 184, 166, 0.14);
-}
-
-.connect-details-content {
-  display: grid;
-  gap: 14px;
-  padding: 2px 0 22px;
-}
-
-.connect-detail-block {
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.connect-detail-block:last-of-type {
-  border-bottom: 0;
-}
-
-.connect-detail-block strong {
-  display: block;
-  color: #ffffff;
-  font-size: 0.98rem;
-}
-
-.connect-detail-block p {
-  margin: 7px 0 0;
-  color: rgba(255, 255, 255, 0.64);
-  font-size: 0.9rem;
-  line-height: 1.65;
-}
-
-.connect-detail-highlight {
-  margin: 6px 0;
-  padding: 18px;
-  border: 1px solid rgba(143, 243, 231, 0.2);
-  border-radius: 18px;
-  background:
-    radial-gradient(circle at 100% 0%, rgba(143, 243, 231, 0.1), transparent 34%),
-    rgba(20, 184, 166, 0.055);
-}
-
-.development-label {
-  display: inline-flex;
-  margin-bottom: 10px;
-  padding: 6px 9px;
-  border-radius: 999px;
-  color: #8ff3e7;
-  background: rgba(20, 184, 166, 0.12);
-  font-size: 0.68rem;
-  font-weight: 900;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.connect-closing {
-  margin: 4px 0 0;
-  padding-top: 4px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 0.88rem;
-  line-height: 1.6;
-}
-
-.connect-closing strong {
-  color: #8ff3e7;
-}
-
-@media (max-width: 720px) {
-  .connect-details summary {
-    align-items: flex-start;
-  }
-
-  .connect-detail-highlight {
-    padding: 16px;
-  }
 }
 
 .projects-section {
@@ -1091,48 +968,6 @@ a {
   box-shadow: 0 18px 52px rgba(15, 61, 62, 0.08);
 }
 
-
-.investment-card-promo {
-  padding-top: 52px;
-}
-
-.promo-ribbon {
-  position: absolute;
-  top: 25px;
-  right: -52px;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 210px;
-  min-height: 54px;
-  padding: 8px 20px;
-  color: #ffffff;
-  background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
-  box-shadow: 0 10px 26px rgba(15, 118, 110, 0.25);
-  transform: rotate(42deg);
-  text-align: center;
-  pointer-events: none;
-}
-
-.promo-ribbon span {
-  font-size: 0.82rem;
-  font-weight: 950;
-  line-height: 1;
-  letter-spacing: 0.14em;
-}
-
-.promo-ribbon small {
-  margin-top: 4px;
-  color: rgba(255, 255, 255, 0.86);
-  font-size: 0.57rem;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
 .investment-card-monthly {
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.12);
@@ -1157,34 +992,6 @@ a {
 .investment-card-monthly .investment-kicker {
   color: #8ff3e7;
   background: rgba(143, 243, 231, 0.1);
-}
-
-.investment-price {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  margin: 24px 0 18px;
-}
-
-.investment-price strong {
-  color: var(--brand-900);
-  font-size: clamp(2.8rem, 6vw, 5.5rem);
-  line-height: 0.92;
-  letter-spacing: -0.06em;
-}
-
-.investment-price span {
-  color: var(--muted);
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
-.investment-card-monthly .investment-price strong {
-  color: #ffffff;
-}
-
-.investment-card-monthly .investment-price span {
-  color: rgba(255, 255, 255, 0.6);
 }
 
 .investment-card > p {
@@ -1262,11 +1069,6 @@ a {
 }
 
 @media (max-width: 720px) {
-  .promo-ribbon {
-    top: 21px;
-    right: -60px;
-    width: 205px;
-  }
 
   .investment-grid {
     grid-template-columns: 1fr;
@@ -1274,12 +1076,6 @@ a {
 
   .investment-card {
     padding: 28px;
-  }
-
-  .investment-price {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
   }
 
   .investment-note {
@@ -1860,47 +1656,8 @@ a {
     0 22px 54px rgba(35, 18, 66, 0.3);
 }
 
-.connect-card > .product-status {
+.connect-card .product-status {
   color: #c69aff;
-  background: rgba(164, 91, 255, 0.14);
-}
-
-.connect-card .connect-details {
-  border-top-color: rgba(198, 154, 255, 0.18);
-  border-bottom-color: rgba(198, 154, 255, 0.18);
-}
-
-.connect-card .connect-summary-icon {
-  color: #c69aff;
-  border-color: rgba(198, 154, 255, 0.26);
-  background: rgba(164, 91, 255, 0.1);
-}
-
-.connect-card
-  .connect-details[open]
-  .connect-summary-icon {
-  border-color: rgba(198, 154, 255, 0.48);
-  background: rgba(164, 91, 255, 0.18);
-}
-
-.connect-card .connect-detail-highlight {
-  border-color: rgba(198, 154, 255, 0.25);
-
-  background:
-    radial-gradient(
-      circle at 100% 0%,
-      rgba(198, 154, 255, 0.13),
-      transparent 34%
-    ),
-    rgba(164, 91, 255, 0.06);
-}
-
-.connect-card .development-label,
-.connect-card .connect-closing strong {
-  color: #c69aff;
-}
-
-.connect-card .development-label {
   background: rgba(164, 91, 255, 0.14);
 }
 
@@ -1988,14 +1745,6 @@ a {
   /* POS + Connect */
   .product-card {
     width: 100%;
-  }
-
-  .connect-details summary {
-    width: 100%;
-  }
-
-  .connect-details-content {
-    min-width: 0;
   }
 
   /* CTA de Connect */
@@ -2099,14 +1848,6 @@ a {
   }
 
   /* Connect */
-  .connect-details summary {
-    gap: 12px;
-    font-size: 0.86rem;
-  }
-
-  .connect-detail-highlight {
-    padding: 14px;
-  }
 
   .connect-card .primary-button {
     font-size: 0.9rem;
@@ -2187,5 +1928,296 @@ a {
   .cta-card {
     padding-left: 18px;
     padding-right: 18px;
+  }
+}
+
+/* Acordeones de productos: se conserva la identidad azul y violeta. */
+.product-accordion {
+  --product-accent: #73c9ff;
+  --product-padding: 28px;
+  padding: 0;
+}
+
+.product-accordion.connect-card {
+  --product-accent: #c69aff;
+}
+
+.product-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 32px;
+  gap: 14px 16px;
+  padding: var(--product-padding);
+  cursor: pointer;
+  list-style: none;
+}
+
+.product-summary::-webkit-details-marker {
+  display: none;
+}
+
+.product-summary .product-status,
+.product-summary h3,
+.product-summary-hint {
+  grid-column: 1;
+}
+
+.product-summary .product-status {
+  justify-self: start;
+  font-size: 0.875rem;
+}
+
+.product-summary h3 {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.product-summary-hint {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+}
+
+.product-summary-icon {
+  grid-area: 1 / 2 / 4 / 3;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  color: var(--product-accent);
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.product-accordion[open] > .product-summary {
+  margin-bottom: 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.product-accordion[open] .product-summary-icon {
+  transform: rotate(45deg);
+}
+
+.product-summary:focus-visible {
+  outline: 3px solid var(--product-accent);
+  outline-offset: -5px;
+  border-radius: 20px;
+}
+
+.product-accordion-content {
+  min-width: 0;
+  padding: 0 var(--product-padding) var(--product-padding);
+}
+
+.product-accordion-content p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+}
+
+.product-benefits {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-benefits li {
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.product-benefits li:last-child {
+  border-bottom: 0;
+}
+
+.product-benefits strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #ffffff;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.product-access {
+  max-width: 100%;
+  min-height: 48px;
+  margin-top: 22px;
+  padding: 14px 20px;
+  line-height: 1.4;
+  text-align: center;
+  white-space: normal;
+}
+
+.product-access:focus-visible,
+.getting-started > a:focus-visible,
+.footer-copy a:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 5px;
+}
+
+/* Un plan por tarjeta, con su pago inicial y su mensualidad. */
+.plan-card h3 {
+  margin: 20px 0 12px;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.plan-card .investment-kicker {
+  font-size: 0.875rem;
+}
+
+.plan-prices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin: 28px 0;
+  padding: 24px 0;
+  border-top: 1px solid var(--line-light);
+  border-bottom: 1px solid var(--line-light);
+}
+
+.plan-prices dt {
+  margin-bottom: 10px;
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.plan-prices dd {
+  margin: 0;
+  color: var(--brand-900);
+  font-size: clamp(1.5rem, 3.5vw, 2.75rem);
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.investment-card-monthly .plan-prices {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.investment-card-monthly .plan-prices dt {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.investment-card-monthly .plan-prices dd {
+  color: #ffffff;
+}
+
+.plan-card > .plan-includes {
+  color: var(--brand-900);
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.investment-card-monthly > .plan-includes {
+  color: #8ff3e7;
+}
+
+.plan-card .investment-list {
+  margin-bottom: 0;
+}
+
+.getting-started {
+  margin-top: 58px;
+  padding-top: 42px;
+  border-top: 1px solid var(--line-light);
+}
+
+.getting-started .section-heading {
+  margin-bottom: 26px;
+}
+
+.getting-started-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+}
+
+.getting-started-steps li {
+  padding: 24px;
+  border: 1px solid var(--line-light);
+  border-radius: 20px;
+  background: var(--brand-050);
+}
+
+.getting-started-number {
+  color: var(--brand-700);
+  font-size: 0.875rem;
+  font-weight: 850;
+}
+
+.getting-started-steps h3 {
+  margin: 14px 0 10px;
+  color: var(--brand-900);
+  font-size: 1.15rem;
+  line-height: 1.35;
+}
+
+.getting-started-steps p {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.footer-copy a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+
+.footer-copy a:hover {
+  color: #8ff3e7;
+}
+
+.footer-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+@media (max-width: 720px) {
+  .getting-started-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .product-access,
+  .getting-started > .primary-button {
+    width: 100%;
+    white-space: normal;
+    line-height: 1.4;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-accordion {
+    --product-padding: 22px;
+  }
+
+  .plan-prices {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .product-accordion {
+    --product-padding: 18px;
+    padding: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-summary-icon {
+    transition: none;
   }
 }

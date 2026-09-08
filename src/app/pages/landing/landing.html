@@ -112,15 +112,15 @@
         </div>
 
         <div class="floating-card card-pos">
-          <span>En desarrollo</span>
+          <span>Punto de venta</span>
           <strong>System Lab POS</strong>
           <small>Gestión comercial inteligente</small>
         </div>
 
         <div class="floating-card card-growth">
-          <span>Enfoque</span>
-          <strong>Business first</strong>
-          <small>Tecnología alineada al negocio</small>
+          <span>Presencia y clientes</span>
+          <strong>System Lab Connect</strong>
+          <small>Sitio web, redes y fidelización</small>
         </div>
       </div>
     </section>
@@ -267,114 +267,91 @@
         </article>
 
         <div class="product-grid">
-          <article class="product-card">
-            <span class="product-status development">Acceso por autorización</span>
-            <h3>System Lab POS</h3>
-            <p>
-              Plataforma comercial orientada a ventas, inventario, cajas,
-              clientes, reportes y toma de decisiones.
-            </p>
-            <small>Acceso privado para negocios autorizados por System Lab.</small>
-            <a class="primary-button" href="/pos">Explorar POS →</a>
-          </article>
+          <details class="product-card product-accordion">
+            <summary class="product-summary">
+              <span class="product-status development">Acceso por autorización</span>
+              <h3>System Lab POS</h3>
+              <span class="product-summary-hint">Ver qué incluye</span>
+              <span class="product-summary-icon" aria-hidden="true">+</span>
+            </summary>
 
-          <article class="product-card connect-card">
-            <span class="product-status">Disponible · En actualización continua</span>
-            <h3>System Lab Connect</h3>
-            <p>
-              La capa de comunicación y relación con clientes del ecosistema System Lab.
-              Centraliza seguimiento comercial, atención, fidelización y canales digitales
-              dentro de una misma estrategia.
-            </p>
-
-            <details class="connect-details">
-              <summary>
-                Ver qué incluye System Lab Connect
-                <span class="connect-summary-icon" aria-hidden="true">+</span>
-              </summary>
-
-              <div class="connect-details-content">
-                <div class="connect-detail-block">
-                  <strong>Comunicación integrada</strong>
-                  <p>
-                    Connect está diseñado para reunir la comunicación del negocio con su
-                    operación digital, evitando herramientas aisladas que no comparten
-                    contexto ni información de clientes.
-                  </p>
-                </div>
-
-                <div class="connect-detail-block">
-                  <strong>Seguimiento comercial</strong>
-                  <p>
-                    Permite construir procesos para acompañar prospectos y clientes,
-                    organizar conversaciones, detectar oportunidades y dar continuidad
-                    a cada relación comercial.
-                  </p>
-                </div>
-
-                <div class="connect-detail-block">
-                  <strong>Fidelización y retención</strong>
-                  <p>
-                    La comunicación puede trabajar junto a registros, puntos, referidos,
-                    promociones y dinámicas comerciales para fortalecer la permanencia
-                    del cliente dentro del ecosistema del negocio.
-                  </p>
-                </div>
-
-                <div class="connect-detail-block connect-detail-highlight">
-                  <span class="development-label">En desarrollo</span>
-                  <strong>Automatización integrada de WhatsApp</strong>
-                  <p>
-                    No estamos desarrollando un bot independiente ni una automatización
-                    aislada. WhatsApp se integrará directamente a System Lab Connect para
-                    trabajar con la información, los clientes, el seguimiento y las
-                    estrategias del sistema general.
-                  </p>
-                  <p>
-                    La meta es que las respuestas automáticas, recordatorios, seguimiento
-                    y acciones comerciales tengan contexto real del negocio y formen parte
-                    de una sola operación digital.
-                  </p>
-                </div>
-
-                <div class="connect-detail-block">
-                  <strong>Redes sociales</strong>
-                  <p>
-                    Connect continuará evolucionando hacia integraciones con Facebook,
-                    Instagram y nuevos canales para acercar la gestión comercial y la
-                    comunicación a un mismo entorno.
-                  </p>
-                </div>
-
-                <p class="connect-closing">
-                  <strong>Una sola idea:</strong> menos herramientas separadas y más
-                  información trabajando junta para hacer crecer el negocio.
-                </p>
-              </div>
-            </details>
-
-            <div style="margin-top: 22px;">
-              <p style="margin: 0 0 14px; color: rgba(255, 255, 255, 0.78); line-height: 1.7;">
-                <strong style="color: #ffffff;">Connect empieza con una conversación.</strong>
-                No es un producto estándar que se compra en línea. Primero queremos conocer
-                tu negocio, entender cómo trabajas y qué quieres mejorar para determinar
-                cómo System Lab Connect puede integrarse a tu operación.
+            <div class="product-accordion-content">
+              <p>
+                Tu punto de venta para registrar ventas, controlar existencias,
+                administrar la caja y consultar los resultados del negocio.
               </p>
+              <ul class="product-benefits">
+                <li>
+                  <strong>Ventas y caja</strong>
+                  <p>Pedidos, cobros, apertura y cierre de caja, ingresos y egresos.</p>
+                </li>
+                <li>
+                  <strong>Productos e inventario</strong>
+                  <p>Catálogo, precios, existencias y movimientos de inventario.</p>
+                </li>
+                <li>
+                  <strong>Clientes y reportes</strong>
+                  <p>Registro de clientes, consulta de ventas y reportes para tomar decisiones.</p>
+                </li>
+                <li>
+                  <strong>Equipo y operación por negocio</strong>
+                  <p>Usuarios con permisos por local. Mesas, comandas y cocina en las modalidades correspondientes.</p>
+                </li>
+              </ul>
+              <p>Elegí tu modalidad e iniciá sesión con tu cuenta autorizada.</p>
+              <a class="primary-button product-access" routerLink="/pos">Ingresar al POS</a>
+            </div>
+          </details>
 
+          <details class="product-card product-accordion connect-card">
+            <summary class="product-summary">
+              <span class="product-status">Disponible</span>
+              <h3>System Lab Connect</h3>
+              <span class="product-summary-hint">Ver qué incluye</span>
+              <span class="product-summary-icon" aria-hidden="true">+</span>
+            </summary>
+
+            <div class="product-accordion-content">
+              <p>
+                Tu sitio web profesional, la gestión de tu Facebook y las herramientas
+                de fidelización y referidos, con un equipo humano que te acompaña.
+              </p>
+              <ul class="product-benefits">
+                <li>
+                  <strong>Sitio web profesional</strong>
+                  <p>Página personalizada para tu negocio con dominio, hosting, correo empresarial y certificado SSL.</p>
+                </li>
+                <li>
+                  <strong>Community manager para tu Facebook</strong>
+                  <p>Administramos la página del negocio y creamos publicaciones, concursos y dinámicas para conectar con tu público.</p>
+                </li>
+                <li>
+                  <strong>Sistema de fidelización</strong>
+                  <p>Puntos y recompensas que motivan a tus clientes a regresar y seguir comprando.</p>
+                </li>
+                <li>
+                  <strong>Sistema de referidos</strong>
+                  <p>Incentivos para que tus clientes recomienden el negocio y atraigan nuevos registros.</p>
+                </li>
+                <li>
+                  <strong>Mejor experiencia del cliente</strong>
+                  <p>Un sitio donde tus clientes pueden consultar información del negocio, acceder a sus beneficios y contactarte fácilmente.</p>
+                </li>
+                <li>
+                  <strong>Acompañamiento humano</strong>
+                  <p>Soporte, asesoría y estrategias de posicionamiento para aprovechar tus herramientas y fortalecer tu marca.</p>
+                </li>
+              </ul>
               <a
-                class="primary-button"
+                class="primary-button product-access"
                 href="https://wa.me/50662964881?text=Hola%2C%20vengo%20desde%20System%20Lab.%20Me%20interesa%20System%20Lab%20Connect%20y%20quiero%20contarles%20un%20poco%20sobre%20mi%20negocio."
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Descubrir si Connect es para mi negocio
+                Hablemos de Connect por WhatsApp
               </a>
             </div>
-
-            <small>
-              Disponible hoy y evolucionando continuamente como parte del ecosistema System Lab.
-            </small>
-          </article>
+          </details>
         </div>
       </div>
     </section>
@@ -533,74 +510,99 @@
       <div class="section-shell">
         <div class="section-heading investment-heading">
           <span class="eyebrow">Inversión clara</span>
-          <h2>Una entrada accesible. Un acompañamiento que no se detiene.</h2>
+          <h2>Dos planes. POS y Connect incluidos en ambos.</h2>
           <p>
-            System Lab no trabaja con cargos escondidos ni módulos separados para inflar la factura.
-            La inversión se divide en una puesta en marcha inicial y una mensualidad de acompañamiento continuo.
+            Elegí el plan para tu negocio. Cada uno tiene un pago inicial de puesta en marcha
+            y una mensualidad por tecnología, gestión digital y acompañamiento continuo.
           </p>
         </div>
 
         <div class="investment-grid">
-          <article class="investment-card investment-card-initial investment-card-promo">
-            <div class="promo-ribbon" aria-label="Promoción por tiempo limitado">
-              <span>PROMO</span>
-              <small>Tiempo limitado</small>
-            </div>
-
-            <span class="investment-kicker">Puesta en marcha</span>
-            <div class="investment-price">
-              <strong>₡40.000</strong>
-              <span>precio promocional inicial</span>
-            </div>
-
-            <p>
-              Incluye la infraestructura necesaria para publicar tu ecosistema digital de forma profesional:
-            </p>
-
+          <article class="investment-card plan-card" aria-labelledby="plan-supermercado">
+            <span class="investment-kicker">Supermercados y minisúper</span>
+            <h3 id="plan-supermercado">Plan Supermercado</h3>
+            <p>Para la operación comercial y la presencia digital de tu supermercado.</p>
+            <dl class="plan-prices">
+              <div>
+                <dt>Pago inicial</dt>
+                <dd>₡60.000</dd>
+              </div>
+              <div>
+                <dt>Mensualidad</dt>
+                <dd>₡45.000</dd>
+              </div>
+            </dl>
+            <p class="plan-includes">Incluye System Lab POS + System Lab Connect</p>
             <ul class="investment-list">
-              <li>Dominio profesional</li>
-              <li>Correo corporativo</li>
-              <li>Hosting web</li>
-              <li>Certificado SSL de sitio seguro</li>
+              <li>POS: ventas, caja, inventario, clientes y reportes</li>
+              <li>Sitio web personalizado, dominio, hosting, correo empresarial y SSL</li>
+              <li>Gestión de Facebook, publicaciones y dinámicas</li>
+              <li>Sistemas de fidelización y referidos</li>
+              <li>Soporte continuo, seguimiento y mejoras del sistema</li>
+              <li>Asesoría estratégica y posicionamiento de marca</li>
             </ul>
-
-            <small>
-              Esta infraestructura se renueva cada año para mantener dominio, correo, hosting y seguridad activos.
-            </small>
           </article>
 
-          <article class="investment-card investment-card-monthly">
-            <span class="investment-kicker">Acompañamiento continuo</span>
-            <div class="investment-price">
-              <strong>₡25.000</strong>
-              <span>por mes</span>
-            </div>
-
-            <p>
-              La mensualidad no es solo soporte técnico. Es el acompañamiento que convierte la tecnología en una herramienta de crecimiento.
-            </p>
-
+          <article class="investment-card investment-card-monthly plan-card" aria-labelledby="plan-pyme">
+            <span class="investment-kicker">Pequeñas y medianas empresas</span>
+            <h3 id="plan-pyme">Plan PYME</h3>
+            <p>Para restaurantes, heladerías, talleres, salones y otros negocios.</p>
+            <dl class="plan-prices">
+              <div>
+                <dt>Pago inicial</dt>
+                <dd>₡40.000</dd>
+              </div>
+              <div>
+                <dt>Mensualidad</dt>
+                <dd>₡25.000</dd>
+              </div>
+            </dl>
+            <p class="plan-includes">Incluye System Lab POS + System Lab Connect</p>
             <ul class="investment-list">
-              <li>Soporte tecnológico continuo</li>
-              <li>Seguimiento y mejoras del sistema</li>
-              <li>Asesoría estratégica</li>
-              <li>Posicionamiento y presencia digital</li>
-              <li>Dinámicas de atracción y retención</li>
-              <li>Apoyo en contenido y gestión comercial digital</li>
+              <li>POS: ventas, caja, inventario, clientes y reportes</li>
+              <li>Sitio web personalizado, dominio, hosting, correo empresarial y SSL</li>
+              <li>Gestión de Facebook, publicaciones y dinámicas</li>
+              <li>Sistemas de fidelización y referidos</li>
+              <li>Soporte continuo, seguimiento y mejoras del sistema</li>
+              <li>Asesoría estratégica y posicionamiento de marca</li>
             </ul>
-
-            <small>
-              La idea es simple: que System Lab siga trabajando contigo después de publicar, no que desaparezca cuando el sitio queda en línea.
-            </small>
           </article>
         </div>
 
         <div class="investment-note">
-          <strong>Una sola visión:</strong>
+          <strong>Infraestructura profesional:</strong>
           <span>
-            infraestructura profesional + tecnología + estrategia + asistencia continua.
+            se renueva cada año para mantener dominio, correo, hosting y seguridad activos.
           </span>
         </div>
+
+        <section class="getting-started" aria-labelledby="getting-started-title">
+          <div class="section-heading">
+            <span class="eyebrow">El inicio de tu servicio</span>
+            <h2 id="getting-started-title">¿Cómo empezamos?</h2>
+            <p>Con el contrato formalizado y el pago inicial realizado, ponemos en marcha tu servicio.</p>
+          </div>
+          <ol class="getting-started-steps">
+            <li>
+              <span class="getting-started-number" aria-hidden="true">01</span>
+              <h3>Formalizamos y arrancamos</h3>
+              <p>Formalizamos el contrato y realizás el pago inicial del plan elegido.</p>
+            </li>
+            <li>
+              <span class="getting-started-number" aria-hidden="true">02</span>
+              <h3>Tu POS desde el primer día</h3>
+              <p>Ese mismo día habilitamos tu acceso a System Lab POS para que puedas ingresar al sistema.</p>
+            </li>
+            <li>
+              <span class="getting-started-number" aria-hidden="true">03</span>
+              <h3>Comenzamos tu página web</h3>
+              <p>En paralelo, iniciamos la creación de tu sitio personalizado con System Lab Connect. Su publicación se coordina conforme avanza el desarrollo.</p>
+            </li>
+          </ol>
+          <a class="primary-button" href="https://wa.me/50662964881" target="_blank" rel="noopener noreferrer">
+            Consultar mi plan por WhatsApp
+          </a>
+        </section>
       </div>
     </section>
 
@@ -691,7 +693,11 @@
     <div class="footer-copy">
       <span>Ciudad Quesada, San Carlos, Alajuela, CR</span>
       <span>WhatsApp: 6296 4881</span>
-      <span>Correo corporativo próximamente</span>
+      <a href="mailto:info@systemlabcr.com">info&#64;systemlabcr.com</a>
+      <nav class="footer-socials" aria-label="Redes sociales de System Lab">
+        <a href="https://www.facebook.com/profile.php?id=61590201334265" target="_blank" rel="noopener noreferrer">Facebook</a>
+        <a href="https://www.instagram.com/systemlabcr/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      </nav>
     </div>
 
     <div class="footer-bottom">
