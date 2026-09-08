@@ -358,16 +358,29 @@
 
     <section class="projects-section" id="proyectos">
       <div class="section-shell">
-        <div class="section-heading">
-          <span class="eyebrow">Proyectos reales</span>
-          <h2>Software aplicado a negocios que ya están operando.</h2>
-          <p>
-            Cada proyecto responde a un sector distinto, pero todos comparten
-            la misma filosofía: usar tecnología para mejorar resultados.
-          </p>
+        <div class="projects-heading">
+          <div class="section-heading">
+            <span class="eyebrow">Clientes y proyectos</span>
+            <h2 id="clients-title">Tecnología en negocios reales.</h2>
+            <p>Conocé los sitios y sistemas que acompañamos.</p>
+          </div>
+          <div class="carousel-controls" aria-label="Controles del carrusel de clientes">
+            <button type="button" aria-label="Ver clientes anteriores" aria-controls="clients-carousel" [disabled]="!canScrollClientsBack" (click)="scrollClients(-1)">←</button>
+            <button type="button" aria-label="Ver clientes siguientes" aria-controls="clients-carousel" [disabled]="!canScrollClientsForward" (click)="scrollClients(1)">→</button>
+          </div>
         </div>
 
-        <div class="projects-grid">
+        <div
+          #clientsCarousel
+          class="clients-carousel"
+          id="clients-carousel"
+          role="region"
+          aria-roledescription="carrusel"
+          aria-labelledby="clients-title"
+          tabindex="0"
+          (scroll)="updateClientsCarousel()"
+          (keydown)="onClientsCarouselKey($event)"
+        >
           <article class="project-card">
             <div class="project-top">
               <span>Restaurantes</span>
@@ -377,13 +390,15 @@
             <img
               src="https://raw.githubusercontent.com/jgartavia-sketch/shirleys-frontend/main/public/shirleys-logo.png"
               alt="Shirley's Restaurante & Catering"
-              style="width: 92px; height: 92px; object-fit: contain; margin-top: 20px;"
+              class="client-logo"
+              loading="lazy"
+              width="130"
+              height="60"
             />
 
             <h3>Shirley's Restaurante & Catering</h3>
             <p>
-              Experiencia web, pedidos, catering, clientes, puntos,
-              QR y herramientas administrativas.
+              Sitio web, pedidos, catering, puntos y herramientas administrativas.
             </p>
 
             <a
@@ -404,13 +419,15 @@
             <img
               src="https://raw.githubusercontent.com/jgartavia-sketch/taller-automotriz-jamiro/main/public/logo-jamiro-v2.png"
               alt="Taller Automotriz Jamiro"
-              style="width: 110px; height: 92px; object-fit: contain; margin-top: 20px;"
+              class="client-logo"
+              loading="lazy"
+              width="130"
+              height="60"
             />
 
             <h3>Taller Automotriz Jamiro</h3>
             <p>
-              Sitio comercial, tienda, servicios, club de clientes,
-              fidelización, puntos y referidos.
+              Sitio web, tienda, servicios y club de clientes con puntos y referidos.
             </p>
 
             <a
@@ -431,13 +448,15 @@
             <img
               src="https://raw.githubusercontent.com/jgartavia-sketch/zenit-salon-demo/main/public/logo-zenit.png"
               alt="Zenit Salon"
-              style="width: 110px; height: 92px; object-fit: contain; margin-top: 20px;"
+              class="client-logo"
+              loading="lazy"
+              width="130"
+              height="60"
             />
 
             <h3>Zenit Salon</h3>
             <p>
-              Experiencia premium, productos, servicios, registro,
-              fidelización y gestión comercial.
+              Servicios, productos, registro de clientes y sistema de fidelización.
             </p>
 
             <a
@@ -458,13 +477,15 @@
             <img
               src="https://raw.githubusercontent.com/jgartavia-sketch/agromind-frontend/main/public/logo/agromind-horizontal-tagline.png"
               alt="AgroMind CR"
-              style="width: 92px; height: 92px; object-fit: contain; margin-top: 20px;"
+              class="client-logo"
+              loading="lazy"
+              width="130"
+              height="60"
             />
 
             <h3>AgroMind CR</h3>
             <p>
-              Producto propio enfocado en digitalizar la gestión de fincas
-              y acompañar la evolución tecnológica del sector agro.
+              Gestión de fincas, mapas, tareas y finanzas con acompañamiento humano.
             </p>
 
             <a
@@ -476,22 +497,43 @@
             </a>
           </article>
 
-          <article class="project-card">
+        </div>
+      </div>
+    </section>
+
+    <section class="artists-section" id="artistas" aria-labelledby="artists-title">
+      <div class="section-shell">
+        <div class="section-heading">
+          <span class="eyebrow">Arte y cultura</span>
+          <h2 id="artists-title">Apoyamos a artistas de distintos gremios.</h2>
+          <p>
+            Música, literatura, artes visuales y escénicas: acompañamos el talento
+            con sitios web profesionales, presencia digital y herramientas
+            para acercar su trabajo al público.
+          </p>
+        </div>
+
+        <div class="artists-layout">
+          <div class="artists-list">
+          <article class="project-card artist-card">
             <div class="project-top">
-              <span>Artistas</span>
-              <strong>05</strong>
+              <span>Música</span>
+              <strong>01</strong>
             </div>
 
             <img
               src="https://raw.githubusercontent.com/jgartavia-sketch/bryan-villalobos-frontend/main/public/images/logo-bryan.png"
               alt="Bryan Villalobos Góngora"
-              style="width: 150px; height: 92px; object-fit: contain; margin-top: 20px;"
+              class="client-logo"
+              loading="lazy"
+              width="150"
+              height="60"
             />
 
             <h3>Bryan Villalobos Góngora</h3>
             <p>
-              Sitio web profesional para artista con música, videos,
-              biografía, servicios, agenda y contacto directo.
+              Música, videos, biografía, agenda y contacto para contrataciones
+              en su sitio web oficial.
             </p>
 
             <a
@@ -499,9 +541,21 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              Visitar proyecto
+              Conocer a Bryan
             </a>
           </article>
+          </div>
+
+          <aside class="writers-card" aria-labelledby="writers-title">
+            <span class="eyebrow">Un espacio para escritores</span>
+            <h3 id="writers-title">System Lab Stories</h3>
+            <p>
+              También apoyamos a quienes crean historias. En Stories tenemos un
+              espacio para escritores y lectores, con obras que se pueden descubrir
+              y leer desde nuestra plataforma.
+            </p>
+            <a class="primary-button" routerLink="/stories">Explorar Stories</a>
+          </aside>
         </div>
       </div>
     </section>
