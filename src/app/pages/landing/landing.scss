@@ -479,7 +479,6 @@ a {
 }
 
 .brand-statement-section,
-.solutions-section,
 .ecosystem-section,
 .projects-section,
 .method-section,
@@ -527,11 +526,6 @@ a {
   line-height: 1.8;
 }
 
-.solutions-section {
-  background:
-    linear-gradient(180deg, #f9fcfb 0%, #eef7f5 100%);
-}
-
 .section-heading {
   max-width: 760px;
   margin-bottom: 46px;
@@ -553,17 +547,11 @@ a {
   margin-top: 0;
 }
 
-.solutions-grid,
 .product-grid {
   display: grid;
   gap: 18px;
 }
 
-.solutions-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.solution-card,
 .project-card {
   position: relative;
   overflow: hidden;
@@ -578,7 +566,6 @@ a {
     box-shadow 220ms ease;
 }
 
-.solution-card::before,
 .project-card::before,
 .product-card::before,
 .featured-product-card::before,
@@ -606,7 +593,6 @@ a {
     opacity 180ms ease;
 }
 
-.solution-card > *,
 .project-card > *,
 .product-card > *,
 .featured-product-card > *,
@@ -615,14 +601,12 @@ a {
   z-index: 2;
 }
 
-.solution-card:hover,
 .project-card:hover {
   transform: translateY(-6px);
   border-color: rgba(20, 184, 166, 0.28);
   box-shadow: 0 22px 54px rgba(15, 61, 62, 0.12);
 }
 
-.solution-card:hover::before,
 .project-card:hover::before,
 .product-card:hover::before,
 .featured-product-card:hover::before,
@@ -631,22 +615,6 @@ a {
   opacity: 1;
 }
 
-.solution-index {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  height: 30px;
-  padding: 0 10px;
-  border: 1px solid rgba(20, 184, 166, 0.16);
-  border-radius: 999px;
-  color: var(--brand-700);
-  background: rgba(20, 184, 166, 0.09);
-  font-size: 0.72rem;
-  font-weight: 900;
-}
-
-.solution-card h3,
 .project-card h3 {
   margin: 22px 0 12px;
   color: var(--brand-900);
@@ -654,7 +622,6 @@ a {
   letter-spacing: -0.02em;
 }
 
-.solution-card p,
 .project-card p {
   margin: 0;
   color: var(--muted);
@@ -1176,10 +1143,6 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .solutions-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .method-copy {
     position: static;
   }
@@ -1281,7 +1244,6 @@ a {
   }
 
   .brand-statement-section,
-  .solutions-section,
   .ecosystem-section,
   .projects-section,
   .method-section,
@@ -1293,12 +1255,10 @@ a {
     gap: 24px;
   }
 
-  .solutions-grid,
   .product-grid {
     grid-template-columns: 1fr;
   }
 
-  .solution-card,
   .project-card,
   .product-card,
   .featured-product-card,
@@ -1544,7 +1504,6 @@ a {
   .product-card,
   .featured-product-card,
   .project-card,
-  .solution-card,
   .investment-card,
   .cta-card {
     min-width: 0;
@@ -1604,7 +1563,6 @@ a {
 @media (max-width: 480px) {
 
   /* Espaciado más seguro */
-  .solution-card,
   .project-card,
   .product-card {
     padding: 22px;
@@ -1732,7 +1690,6 @@ a {
 
   .featured-product-card,
   .product-card,
-  .solution-card,
   .project-card,
   .investment-card,
   .cta-card {
