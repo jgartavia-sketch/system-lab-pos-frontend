@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { groupOrderDays, OrderDay, posDate, posDay, stepQuantity } from './pos-order-groups';
 import { PosDashboard } from './pos-dashboard';
+import { appointmentOverview, AppointmentDay } from './pos-appointments';
 
 @Component({selector:'app-pos-hub', standalone:true, imports:[CommonModule,FormsModule,RouterLink,PosDashboard],templateUrl:'./pos-hub.html',styleUrl:'./pos-hub.scss'})
 export class PosHub implements OnInit, OnDestroy {
@@ -26,7 +27,7 @@ export class PosHub implements OnInit, OnDestroy {
   constructor(private route:ActivatedRoute,private router:Router,private cd:ChangeDetectorRef){}
   today(){return posDay(new Date());}
   blankProduct(){return {name:'',category:'General',sku:'',price:0,cost:0,tax_rate:0,minimum:0,track_stock:true,active:true};}
-  ngOnInit(){this.params=this.route.paramMap.subscribe(p=>{this.mode=p.get('mode')||'';this.tab='dashboard';this.bid=0;this.data=null;this.resetCart();void this.initialize();});this.poll=setInterval(()=>{if(this.bid&&!this.busy&&['kitchen','orders','dashboard'].includes(this.tab))void this.refresh().catch((e:any)=>{this.error=e.message;this.cd.detectChanges();});},5000);}
+  ngOnInit(){this.params=this.route.paramMap.subscribe(p=>{this.mode=p.get('mode')||'';this.tab='dashboard';this.bid=0;this.data=null;this.resetCart();void this.initialize();});this.poll=setInterval(()=>{if(this.bid&&!this.busy&&['kitchen','orders','dashboard','appointments'].includes(this.tab))void this.refresh().catch((e:any)=>{this.error=e.message;this.cd.detectChanges();});},5000);}
   ngOnDestroy(){clearInterval(this.poll);this.params?.unsubscribe();}
   async request(path:string,method='GET',body?:any){
     const ctl=new AbortController();const timeout=setTimeout(()=>ctl.abort(),45000);
@@ -60,7 +61,12 @@ export class PosHub implements OnInit, OnDestroy {
     if(t[0]==='cash')return this.rights.cash;
     if(['sale','customers','appointments'].includes(t[0]))return this.rights.sell;
     return true;
-  }).map(t=>t[0]==='dashboard'&&this.rights.manage?['dashboard','Panel administrativo']:t);}
+  }).map(t=>t[0]==='dashboard'&&this.rights.manage?['dashboard','Panel administrativo']:t[0]==='appointments'&&this.tableReservations?['appointments','Reservaciones']:t);}
+  get tableReservations(){return this.mode==='restaurante';}
+  get agenda(){return appointmentOverview(this.data?.appointments||[],this.today());}
+  appointmentTime(value:string){return posDate(value).toLocaleTimeString('es-CR',{timeZone:'America/Costa_Rica',hour:'2-digit',minute:'2-digit'});}
+  appointmentStatus(value:string){return ({pending:'Por confirmar',confirmed:'Confirmada',completed:'Completada',cancelled:'Cancelada'} as Record<string,string>)[value]||this.status(value);}
+  trackAppointmentDay(_index:number,group:AppointmentDay){return group.day;}
   roleName(role:string){return role==='owner'?'Dueño':this.roles.find(r=>r.id===role)?.name||role;}
   get needsApproval(){return this.discount>0||this.cart.some(i=>+i.price!==+(this.data?.products.find((p:any)=>p.id===i.product_id)?.price??i.price));}
   canCancel(o:any){return this.rights.manage||(this.rights.sell&&o.status==='open'&&o.account_id===this.account.id);}
@@ -79,7 +85,7 @@ export class PosHub implements OnInit, OnDestroy {
   async refresh(){if(!this.bid)return;const bid=this.bid;const data=await this.request('/business/'+bid+'/state');if(bid!==this.bid)return;this.data=data;this.orderDays=groupOrderDays(data.orders);this.kitchenDays=groupOrderDays(data.orders,true);this.dashboardRevision=JSON.stringify([data.orders.map((o:any)=>[o.id,o.revision]),data.movements.filter((m:any)=>m.kind!=='stock').map((m:any)=>m.id)]);if(!this.visibleTabs.some(t=>t[0]===this.tab))this.tab='dashboard';this.cd.detectChanges();}
   path(p:string){return '/business/'+this.bid+p;}
   async mutate(p:string,body:any,method='POST'){const r=await this.request(this.path(p),method,body);await this.refresh();return r;}
-  async navigate(tab:string){if(!this.visibleTabs.some(t=>t[0]===tab))return;this.tab=tab;this.menuOpen=false;if(tab==='team')await this.loadTeam();if(tab==='audit')await this.loadAudit();if(tab==='reports')await this.loadReport();}
+  async navigate(tab:string){if(!this.visibleTabs.some(t=>t[0]===tab))return;this.tab=tab;this.menuOpen=false;if(tab==='team')await this.loadTeam();if(tab==='audit')await this.loadAudit();if(tab==='reports')await this.loadReport();if(tab==='appointments')await this.run(async()=>{await this.refresh();});}
   dayOpen(section:string,day:string){return this.openedDays[section+':'+day]??day===this.today();}
   toggleDay(section:string,day:string,event:Event){this.openedDays[section+':'+day]=(event.target as HTMLDetailsElement).open;}
   trackDay(_index:number,day:OrderDay){return day.day;}
@@ -110,8 +116,8 @@ export class PosHub implements OnInit, OnDestroy {
   async saveCash(){await this.run(async()=>{await this.mutate('/cash',this.cashForm);this.cashForm={kind:'expense',amount:0,reason:''};this.notice='Movimiento registrado.';});}
   async loadReport(){await this.run(async()=>{this.report=await this.request(this.path('/reports')+'?start='+this.start+'&end='+this.end);});}
   exportCSV(){if(!this.report)return;const rows=[['Venta','Fecha','Método','Subtotal','Descuento','Impuesto','Total'],...this.report.orders.map((o:any)=>[o.id,this.date(o.paid_at),this.paymentName(o.payment_method),o.subtotal,o.discount,o.tax,o.total])];const csv='\ufeff'+rows.map(r=>r.map((v:any)=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');const u=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='ventas-'+this.start+'.csv';a.click();URL.revokeObjectURL(u);}
-  async saveAppointment(){await this.run(async()=>{await this.mutate('/appointments'+(this.appointmentId?'/'+this.appointmentId:''),{...this.appointment,customer_id:+this.appointment.customer_id,at:new Date(this.appointment.at).toISOString()},this.appointmentId?'PUT':'POST');this.appointmentId=0;this.appointment={customer_id:0,title:'',at:'',status:'pending',notes:''};this.notice='Cita guardada.';});}
-  editAppointment(p:any){this.appointmentId=p.id;const d=new Date(p.at);this.appointment={customer_id:p.customer_id,title:p.title,at:new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16),status:p.status,notes:p.notes};}
+  async saveAppointment(){await this.run(async()=>{await this.mutate('/appointments'+(this.appointmentId?'/'+this.appointmentId:''),{...this.appointment,customer_id:+this.appointment.customer_id,at:new Date(this.appointment.at).toISOString()},this.appointmentId?'PUT':'POST');this.appointmentId=0;this.appointment={customer_id:0,title:'',at:'',status:'pending',notes:''};this.notice=this.tableReservations?'Reservación guardada.':'Cita guardada.';});}
+  editAppointment(p:any){this.appointmentId=p.id;const d=new Date(p.at);this.appointment={customer_id:p.customer_id,title:p.title,at:new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16),status:p.status,notes:p.notes};const form=document.getElementById('pos-appointment-form');form?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});form?.querySelector<HTMLInputElement>('input[name="at"]')?.focus({preventScroll:true});}
   async changePassword(){await this.run(async()=>{const r=await this.request('/auth/password','POST',{current:this.currentPassword,password:this.nextPassword});this.token=r.token;sessionStorage.setItem('systemlab-pos-token',this.token);this.currentPassword='';this.nextPassword='';this.notice='Contraseña actualizada. Las sesiones anteriores quedaron cerradas.';});}
   async loadTeam(){await this.run(async()=>{this.team=await this.request(this.path('/team'));});}
   async saveStaff(){await this.run(async()=>{if(this.staff.password.trim().length<8)throw Error('La contraseña debe tener al menos 8 caracteres.');await this.request(this.path('/team'),'POST',this.staff);this.staff={name:'',email:'',password:'',role:'waiter',can_pay:true};this.team=await this.request(this.path('/team'));this.notice='Empleado creado con acceso a este local.';});}
