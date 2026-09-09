@@ -756,21 +756,6 @@ a {
   line-height: 1.8;
 }
 
-.product-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-  margin-top: 26px;
-}
-
-.product-tags span {
-  padding: 8px 11px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 999px;
-  color: rgba(255, 255, 255, 0.84);
-  font-size: 0.78rem;
-}
-
 .text-link,
 .project-card a {
   display: inline-flex;
@@ -781,80 +766,6 @@ a {
 
 .ecosystem-section .text-link {
   color: #8ff3e7;
-}
-
-.featured-mark {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 340px;
-  padding: 22px 26px;
-  text-align: center;
-  background: transparent;
-}
-
-.featured-mark::before {
-  content: "";
-  position: absolute;
-  inset: 12% 8%;
-  z-index: 0;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(143, 243, 231, 0.16) 0%,
-    rgba(20, 184, 166, 0.08) 34%,
-    transparent 72%
-  );
-  filter: blur(18px);
-  pointer-events: none;
-}
-
-.featured-mark > * {
-  position: relative;
-  z-index: 1;
-}
-
-.agromind-featured-logo {
-  width: min(100%, 300px);
-  height: auto;
-  max-height: 210px;
-  object-fit: contain;
-  margin-bottom: 22px;
-  mix-blend-mode: screen;
-  filter:
-    brightness(1.06)
-    contrast(1.06)
-    drop-shadow(0 18px 30px rgba(0, 0, 0, 0.14));
-}
-
-.agromind-origin {
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.agromind-motto {
-  display: flex;
-  flex-direction: column;
-  margin-top: 10px;
-  color: #ffffff;
-  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
-  line-height: 1;
-  letter-spacing: -0.035em;
-}
-
-.agromind-motto em {
-  margin-top: 5px;
-  color: #8ff3e7;
-  font-size: clamp(2.5rem, 4.6vw, 4.8rem);
-  font-style: normal;
-  font-weight: 850;
-  line-height: 0.94;
-  letter-spacing: -0.055em;
 }
 
 .product-grid {
@@ -926,13 +837,6 @@ a {
 .project-top strong {
   color: rgba(15, 61, 62, 0.14);
   font-size: 2.2rem;
-}
-
-.project-card-highlight {
-  border-color: rgba(20, 184, 166, 0.25);
-  background:
-    radial-gradient(circle at 90% 10%, rgba(20, 184, 166, 0.09), transparent 30%),
-    #ffffff;
 }
 
 
@@ -1440,10 +1344,6 @@ a {
     padding: 28px;
   }
 
-  .featured-mark {
-    min-height: 250px;
-  }
-
   .method-grid {
     gap: 40px;
   }
@@ -1558,15 +1458,6 @@ a {
 
 .featured-product-card .product-status {
   background: rgba(73, 200, 92, 0.13);
-}
-
-.featured-product-card .product-tags span {
-  border-color: rgba(104, 221, 102, 0.22);
-  background: rgba(73, 200, 92, 0.045);
-}
-
-.featured-product-card .agromind-motto em {
-  color: #79df72;
 }
 
 
@@ -1713,29 +1604,6 @@ a {
     font-size: clamp(2.4rem, 12vw, 3.8rem);
   }
 
-  .featured-mark {
-    width: 100%;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .agromind-featured-logo {
-    width: min(100%, 260px);
-  }
-
-  .agromind-origin {
-    text-align: center;
-    line-height: 1.5;
-  }
-
-  .agromind-motto {
-    text-align: center;
-  }
-
-  .product-tags {
-    gap: 8px;
-  }
-
   /* POS + Connect */
   .product-card {
     width: 100%;
@@ -1819,27 +1687,8 @@ a {
   }
 
   /* AgroMind */
-  .featured-mark {
-    min-height: 220px;
-  }
-
-  .agromind-featured-logo {
-    width: min(100%, 220px);
-  }
-
-  .agromind-motto {
-    font-size: 1.35rem;
-  }
-
-  .agromind-motto em {
-    font-size: clamp(2.25rem, 13vw, 3.4rem);
-  }
 
   /* Pills */
-  .product-tags span {
-    font-size: 0.72rem;
-    padding: 7px 9px;
-  }
 
   /* Connect */
 
@@ -2338,4 +2187,29 @@ a {
   .artist-card { transition: none; }
   .clients-carousel .project-card:hover,
   .artist-card:hover { transform: none; }
+}
+
+/* Producto insignia en formato compacto. */
+.featured-product-card.featured-product-compact {
+  grid-template-columns: 80px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  max-width: 980px;
+  margin-inline: auto;
+  padding: 24px;
+  border-radius: 22px;
+}
+
+.agromind-compact-logo { width: 80px; height: 80px; object-fit: contain; }
+.featured-product-compact .featured-copy h3 { margin: 10px 0 8px; font-size: 1.65rem; line-height: 1.2; }
+.featured-product-compact .featured-copy p { font-size: 1rem; line-height: 1.6; }
+.featured-product-compact .product-status { font-size: 0.75rem; }
+.agromind-access { color: #073c30; background: #79df72; min-height: 48px; text-align: center; white-space: normal; line-height: 1.4; }
+.agromind-access:hover { background: #96eb90; }
+.agromind-access:focus-visible { outline: 3px solid #ffffff; outline-offset: 4px; }
+
+@media (max-width: 720px) {
+  .featured-product-card.featured-product-compact { grid-template-columns: 64px minmax(0, 1fr); gap: 18px; padding: 22px; }
+  .agromind-compact-logo { width: 64px; height: 64px; }
+  .agromind-access { grid-column: 1 / -1; width: 100%; }
 }
