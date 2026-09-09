@@ -1,0 +1,25 @@
+<p class="intro">Registrá compras de insumos, servicios, alquileres y otras salidas, aunque las pagués por SINPE, transferencia o fuera de caja.</p>
+<p *ngIf="error" class="message error" role="alert">{{error}}</p><p *ngIf="notice" class="message success" role="status">{{notice}}</p>
+<form class="panel form-grid" #entryForm="ngForm" (ngSubmit)="entryForm.valid && save()">
+  <h2>Registrar ingreso o salida</h2>
+  <label>Tipo de movimiento<select name="kind" [(ngModel)]="draft.kind"><option *ngFor="let kind of kinds" [value]="kind.id">{{kind.name}}</option></select></label>
+  <label>Monto (₡)<input name="amount" type="number" [(ngModel)]="draft.amount" min="0.01" max="999999999" step="0.01" required></label>
+  <label>Categoría<input name="category" [(ngModel)]="draft.category" placeholder="Ej.: limpieza, ingredientes, electricidad" minlength="2" maxlength="80" required></label>
+  <label>Fecha y hora de Costa Rica<input name="at" type="datetime-local" [(ngModel)]="draft.occurred_at" required></label>
+  <label>Medio de pago<select name="method" [(ngModel)]="draft.method"><option *ngFor="let method of methods" [value]="method.id">{{method.name}}</option></select></label>
+  <label>Proveedor / beneficiario<input name="supplier" [(ngModel)]="draft.supplier" maxlength="160"></label>
+  <label>Factura / referencia<input name="reference" [(ngModel)]="draft.reference" maxlength="100"></label>
+  <label>Descripción<input name="reason" [(ngModel)]="draft.reason" minlength="3" maxlength="500" required placeholder="Detalle de la compra o movimiento"></label>
+  <label class="check" *ngIf="draft.method==='cash'"><input type="checkbox" name="fromRegister" [(ngModel)]="draft.from_register" [disabled]="!hasRegister">Afectar el efectivo de la caja abierta</label>
+  <p class="hint" *ngIf="draft.method==='cash'">{{hasRegister ? 'Marcá la casilla si el dinero sale o entra físicamente en esta caja.' : 'La caja está cerrada. Este movimiento se registrará fuera de caja.'}}</p>
+  <p class="hint" *ngIf="draft.kind==='purchase'">Las compras de inventario se muestran como salidas de dinero. La utilidad usa el costo de lo vendido para evitar descontarlas dos veces. Cargá las cantidades de existencias desde Inventario.</p>
+  <p class="hint" *ngIf="draft.kind==='other_income'">Usá esta opción para ingresos operativos que no sean ventas ya registradas en el POS.</p>
+  <p class="hint" *ngIf="draft.kind==='capital_in'||draft.kind==='withdrawal'">Los aportes, préstamos y retiros se muestran en el flujo de dinero; no se consideran utilidad del negocio.</p>
+  <button class="primary" [disabled]="busy || entryForm.invalid">{{busy ? 'Guardando…' : 'Guardar movimiento'}}</button>
+</form>
+<section class="panel">
+  <form class="filters" #period="ngForm" (ngSubmit)="period.valid && load()"><div><h2>Historial de ingresos y salidas</h2><p class="hint">Hasta 1000 registros por consulta. Los movimientos antiguos de efectivo siguen en Caja.</p></div><label>Desde<input type="date" name="start" [(ngModel)]="start" required></label><label>Hasta<input type="date" name="end" [(ngModel)]="end" required [min]="start"></label><button [disabled]="loading || period.invalid">Consultar</button></form>
+  <p *ngIf="loading" role="status">Cargando movimientos…</p><p *ngIf="!loading&&!entries.length">No hay movimientos en este período.</p>
+  <article class="data-row" *ngFor="let entry of entries"><div><strong>{{kindName(entry.kind)}} · {{money(entry.amount)}}</strong><p>{{entry.category}} · {{date(entry.occurred_at)}} · {{methodName(entry.method)}}</p><p>{{entry.reason}}</p><small *ngIf="entry.supplier||entry.reference">{{entry.supplier}} · {{entry.reference}}</small><small>{{entry.cash_movement_id ? 'Afecta caja' : 'Fuera de caja'}}</small><p class="hint" *ngIf="entry.voided_at">Anulado: {{entry.void_reason}}</p></div><button *ngIf="!entry.voided_at" (click)="voiding=entry;voidReason=''" [disabled]="busy">Anular</button></article>
+</section>
+<form class="panel form-grid" *ngIf="voiding" #voidForm="ngForm" (ngSubmit)="voidForm.valid && voidEntry()"><h2>Anular movimiento #{{voiding.id}}</h2><p>Se conserva el registro y su motivo. {{money(voiding.amount)}} · {{voiding.reason}}</p><label>Motivo de la anulación<input name="voidReason" [(ngModel)]="voidReason" minlength="3" maxlength="500" required></label><div class="actions"><button [disabled]="busy||voidForm.invalid">Confirmar anulación</button><button type="button" (click)="voiding=null" [disabled]="busy">Cerrar</button></div></form>

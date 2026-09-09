@@ -6,8 +6,8 @@ describe('Panel de indicadores', () => {
   it('representa un solo día y resultados negativos sin coordenadas inválidas', () => {
     const dashboard = new PosDashboard({detectChanges:()=>{}} as ChangeDetectorRef);
     const chart = dashboard.buildChart([{date:'2026-09-09',gross_profit:0,estimated_margin:-500}]);
-    expect(chart.series).toHaveLength(2);
-    expect(chart.series[1].dots[0].y).toBeGreaterThan(chart.zero);
+    expect(chart.series.map((line:any)=>line.key)).toEqual(['income','outflows','profit']);
+    expect(chart.series[2].dots[0].y).toBeGreaterThan(chart.zero);
     expect(chart.series[0].dots[0].x).toBe(494);
     expect(chart.series[1].points).not.toMatch(/NaN|Infinity/);
     expect(dashboard.buildChart([]).series[0].points).toBe('');

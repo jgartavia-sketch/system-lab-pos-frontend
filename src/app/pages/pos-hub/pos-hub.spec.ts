@@ -50,4 +50,12 @@ describe('Interacciones del POS', () => {
     expect(fixture.nativeElement.querySelector('[name="businessName"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('[name="ownerEmail"]')).toBeNull();
   });
+  it('estima empaque para llevar y servicio en el local sin duplicarlos', () => {
+    component.data.business.service_rate=10;
+    component.data.products=[{...product,tax_rate:0,packaging_fee:400}];
+    component.add(component.data.products[0]);component.add(component.data.products[0]);
+    component.fulfillment='pickup';expect(component.packagingTotal).toBe(800);expect(component.serviceTotal).toBe(0);expect(component.estimatedTotal).toBe(3800);
+    component.fulfillment='dine_in';expect(component.packagingTotal).toBe(0);expect(component.serviceTotal).toBe(300);expect(component.estimatedTotal).toBe(3300);
+    component.resetCart();expect(component.sourceChannel).toBe('pos');expect(component.externalOrderId).toBe('');
+  });
 });

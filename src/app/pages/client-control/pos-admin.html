@@ -12,6 +12,19 @@
   <div class="panel" *ngIf="account && !account.ceo"><h3>Acceso exclusivo de System Lab</h3><p>Para agregar un local a tu cuenta, solicitá la autorización de System Lab.</p><a href="/pos">Volver al POS</a></div>
   <ng-container *ngIf="account?.ceo && adminData">
     <p class="scope-note">Solo System Lab crea cuentas de dueños y autoriza locales. Cada dueño administra sus empleados desde «Mi equipo» dentro del POS.</p>
+    <details class="panel">
+      <summary>Configurar Shirley’s · POS + SL Connect</summary>
+      <p>Creá su cuenta, local y catálogo de 68 productos en una sola operación. Incluye categorías, precios y empaques del menú. Una repetición conserva la configuración existente.</p>
+      <form class="form-grid" #shirleysForm="ngForm" (ngSubmit)="shirleysForm.valid && setupShirleys()">
+        <label>Nombre del dueño<input name="shirleysOwner" [(ngModel)]="shirleys.name" required minlength="2" maxlength="160"></label>
+        <label>Correo del dueño<input name="shirleysEmail" type="email" [(ngModel)]="shirleys.email" required maxlength="255" autocomplete="off"></label>
+        <label>Contraseña inicial<input name="shirleysPassword" type="password" [(ngModel)]="shirleys.password" required minlength="8" maxlength="128" autocomplete="new-password"><small>Al menos 8 caracteres.</small></label>
+        <label>Nombre del local<input name="shirleysBusiness" [(ngModel)]="shirleys.business_name" required minlength="2" maxlength="160"></label>
+        <label>Número de mesas<input name="shirleysTables" type="number" [(ngModel)]="shirleys.tables" required min="0" max="200" step="1"></label>
+        <p>Los costos quedan pendientes de completar y el inventario sin seguimiento hasta registrar existencias. La conexión con el sitio requiere la clave privada configurada en ambos servidores.</p>
+        <div class="actions"><button class="primary" [disabled]="busy || shirleysForm.invalid">Crear Shirley’s con su catálogo</button></div>
+      </form>
+    </details>
     <form id="pos-business-form" class="panel form-grid" #businessForm="ngForm" (ngSubmit)="businessForm.valid && saveBusiness()">
       <h3>{{businessEdit ? 'Editar local' : 'Crear y asignar local'}}</h3>
       <label *ngIf="!businessEdit">Cuenta del cliente<select name="businessOwner" [(ngModel)]="businessOwner"><option [ngValue]="0">Guardar local para asignarlo después</option><option *ngFor="let u of adminData.accounts" [ngValue]="u.id">{{u.name}} · {{u.email}}</option></select></label>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { posDay } from './pos-order-groups';
 
@@ -8,6 +8,7 @@ export class PosDashboard implements OnChanges, OnDestroy {
   @Input({required:true}) api = '';
   @Input({required:true}) businessId = 0;
   @Input() revision = '';
+  @Output() showFinances = new EventEmitter<void>();
   start = posDay(new Date()).slice(0, 8) + '01';
   end = posDay(new Date());
   appliedStart = this.start;
@@ -69,7 +70,8 @@ export class PosDashboard implements OnChanges, OnDestroy {
     }
   }
   buildChart(rows: any[]) {
-    const definitions = [{key:'gross_profit',label:'Utilidad bruta',color:'#08755f'},{key:'estimated_margin',label:'Resultado tras egresos',color:'#396ccb'}];
+    rows = rows.map(row=>({...row,income:row.income ?? row.net_sales ?? (Number(row.sales||0)-Number(row.tax||0)),outflows:row.outflows ?? (Number(row.cost||0)+Number(row.cash_expenses||0)),profit:row.profit ?? row.estimated_margin ?? 0}));
+    const definitions = [{key:'income',label:'Ingresos',color:'#08755f'},{key:'outflows',label:'Salidas: costos y gastos',color:'#c55735'},{key:'profit',label:'Utilidad estimada',color:'#396ccb'}];
     const values = rows.flatMap(row => definitions.map(series => Number(row[series.key] || 0)));
     const min = Math.min(0,...values), max = Math.max(0,...values), padding = (max-min || 10)*0.1;
     const low = min-padding, high = max+padding;

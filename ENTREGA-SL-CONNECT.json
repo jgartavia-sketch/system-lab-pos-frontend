@@ -1,0 +1,27 @@
+{
+  "repositorio": "system-lab-pos-frontend",
+  "tipo": "frontend",
+  "base_github": "c0b9c2cb2a5efc2e4da3014ff444436e848521fc",
+  "mensaje": "Agrega ingresos gastos y clientes SL Connect al panel POS",
+  "archivos": [
+    "ENTREGA-SL-CONNECT.json",
+    "LEEME-SL-CONNECT.md",
+    "PUSH-SL-CONNECT.ps1",
+    "src/app/pages/client-control/pos-admin.html",
+    "src/app/pages/client-control/pos-admin.ts",
+    "src/app/pages/pos-hub/pos-api-client.ts",
+    "src/app/pages/pos-hub/pos-connect.html",
+    "src/app/pages/pos-hub/pos-connect.spec.ts",
+    "src/app/pages/pos-hub/pos-connect.ts",
+    "src/app/pages/pos-hub/pos-dashboard.html",
+    "src/app/pages/pos-hub/pos-dashboard.scss",
+    "src/app/pages/pos-hub/pos-dashboard.spec.ts",
+    "src/app/pages/pos-hub/pos-dashboard.ts",
+    "src/app/pages/pos-hub/pos-finances.html",
+    "src/app/pages/pos-hub/pos-finances.ts",
+    "src/app/pages/pos-hub/pos-hub.html",
+    "src/app/pages/pos-hub/pos-hub.spec.ts",
+    "src/app/pages/pos-hub/pos-hub.ts",
+    "src/app/pages/pos-hub/pos-panels.scss"
+  ]
+}

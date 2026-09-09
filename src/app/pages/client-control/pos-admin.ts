@@ -21,6 +21,7 @@ export class PosAdmin implements OnInit {
   businessEdit = 0;
   businessOwner = 0;
   newAccount = { name: '', email: '', password: '', business_ids: [] as number[] };
+  shirleys = {name:'',email:'',password:'',business_name:'Shirley’s',tables:10};
   access: any = null;
   resetPassword = '';
   modes = [{id:'restaurante',name:'Restaurante'},{id:'heladeria',name:'Heladería'},{id:'supermercado',name:'Supermercado'},{id:'taller',name:'Taller mecánico'},{id:'salon',name:'Salón de belleza'}];
@@ -34,6 +35,7 @@ export class PosAdmin implements OnInit {
   private clearSession() {
     this.token = ''; this.account = null; this.adminData = null; this.access = null;
     this.resetPassword = ''; this.newAccount.password = '';
+    this.shirleys.password = '';
     sessionStorage.removeItem('systemlab-pos-token');
   }
   async request(path: string, method = 'GET', body?: any) {
@@ -108,6 +110,14 @@ export class PosAdmin implements OnInit {
       this.businessOwner = user.id;
       this.adminData = await this.request('/admin');
       this.notice = 'Cuenta creada. Podés asignarle más locales desde este panel.';
+    });
+  }
+  async setupShirleys() {
+    await this.run(async () => {
+      const result = await this.request('/admin/shirleys', 'POST', this.shirleys);
+      this.shirleys.password = '';
+      this.adminData = await this.request('/admin');
+      this.notice = result.created === false ? 'Shirley’s ya estaba configurado. Se conservaron su cuenta y catálogo.' : `Shirley’s creado con ${result.products} productos, sus categorías y los cargos de empaque. La cuenta ya puede ingresar al POS.`;
     });
   }
   editAccess(user: any) { this.resetPassword = ''; this.access = {...user, business_ids:[...user.business_ids]}; this.cd.detectChanges(); document.getElementById('pos-access-form')?.scrollIntoView({behavior:'smooth',block:'start'}); }

@@ -4,12 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { groupOrderDays, OrderDay, posDate, posDay, stepQuantity } from './pos-order-groups';
 import { PosDashboard } from './pos-dashboard';
+import { PosFinances } from './pos-finances';
+import { PosConnect } from './pos-connect';
 import { appointmentOverview, AppointmentDay } from './pos-appointments';
 
-@Component({selector:'app-pos-hub', standalone:true, imports:[CommonModule,FormsModule,RouterLink,PosDashboard],templateUrl:'./pos-hub.html',styleUrl:'./pos-hub.scss'})
+@Component({selector:'app-pos-hub', standalone:true, imports:[CommonModule,FormsModule,RouterLink,PosDashboard,PosFinances,PosConnect],templateUrl:'./pos-hub.html',styleUrl:'./pos-hub.scss'})
 export class PosHub implements OnInit, OnDestroy {
   modes=[{id:'restaurante',name:'Restaurante',icon:'01',copy:'Mesas, comandas, cocina y venta rápida.'},{id:'heladeria',name:'Heladería',icon:'02',copy:'Mostrador, productos, pedidos y existencias.'},{id:'supermercado',name:'Supermercado',icon:'03',copy:'Venta por código, inventario y control de caja.'},{id:'taller',name:'Taller mecánico',icon:'04',copy:'Órdenes de trabajo, repuestos, servicios y citas.'},{id:'salon',name:'Salón de belleza',icon:'05',copy:'Servicios, productos, clientes y agenda.'}];
-  tabs=[['dashboard','Resumen'],['sale','Nueva venta'],['orders','Pedidos'],['kitchen','Cocina'],['products','Productos'],['inventory','Inventario'],['customers','Clientes'],['cash','Caja'],['reports','Reportes'],['appointments','Agenda'],['team','Mi equipo'],['audit','Autorizaciones'],['account','Mi cuenta']];
+  tabs=[['dashboard','Resumen'],['sale','Nueva venta'],['orders','Pedidos'],['kitchen','Cocina'],['products','Productos'],['inventory','Inventario'],['customers','Clientes'],['cash','Caja'],['finances','Ingresos y gastos'],['reports','Reportes'],['appointments','Agenda'],['team','Mi equipo'],['audit','Autorizaciones'],['account','Mi cuenta']];
   api='https://system-lab-pos-backend.onrender.com/pos-api';
   mode=''; token=sessionStorage.getItem('systemlab-pos-token')||''; account:any=null; businesses:any[]=[]; bid=0; data:any=null; tab='dashboard';
   error=''; notice=''; busy=false; booting=true; loginEmail=''; loginPassword=''; search=''; category='';
@@ -23,10 +25,11 @@ export class PosHub implements OnInit, OnDestroy {
   team:any=null; staff:any={name:'',email:'',password:'',role:'waiter',can_pay:true}; staffEdit:any=null; staffPassword=''; linkStaff=0; linkRole='waiter'; linkPay=true;
   auditRows:any[]=[]; pinPassword=''; pinCode=''; approvalEmail=''; approvalPin=''; adjustmentReason=''; comanda:any=null; menuOpen=false; basketVisible=false;
   roles=[{id:'admin',name:'Administrador'},{id:'cashier',name:'Cajero'},{id:'waiter',name:'Salonero'},{id:'kitchen',name:'Cocina'}];
+  sourceChannel='pos'; fulfillment='dine_in'; externalOrderId='';
   currentPassword=''; nextPassword=''; private poll:any; private params:any;
   constructor(private route:ActivatedRoute,private router:Router,private cd:ChangeDetectorRef){}
   today(){return posDay(new Date());}
-  blankProduct(){return {name:'',category:'General',sku:'',price:0,cost:0,tax_rate:0,minimum:0,track_stock:true,active:true};}
+  blankProduct(){return {name:'',category:'General',sku:'',price:0,cost:0,tax_rate:0,minimum:0,track_stock:true,active:true,packaging_fee:0,cost_known:true};}
   ngOnInit(){this.params=this.route.paramMap.subscribe(p=>{this.mode=p.get('mode')||'';this.tab='dashboard';this.bid=0;this.data=null;this.resetCart();void this.initialize();});this.poll=setInterval(()=>{if(this.bid&&!this.busy&&['kitchen','orders','dashboard','appointments'].includes(this.tab))void this.refresh().catch((e:any)=>{this.error=e.message;this.cd.detectChanges();});},5000);}
   ngOnDestroy(){clearInterval(this.poll);this.params?.unsubscribe();}
   async request(path:string,method='GET',body?:any){
@@ -56,7 +59,7 @@ export class PosHub implements OnInit, OnDestroy {
   get rights():any{return this.data?.permissions||{};}
   get visibleTabs(){return this.tabs.filter(t=>{
     if(t[0]==='kitchen')return ['restaurante','heladeria'].includes(this.mode);
-    if(['products','inventory','reports','audit'].includes(t[0]))return this.rights.manage;
+    if(['products','inventory','reports','audit','finances'].includes(t[0]))return this.rights.manage;
     if(t[0]==='team')return this.rights.team;
     if(t[0]==='cash')return this.rights.cash;
     if(['sale','customers','appointments'].includes(t[0]))return this.rights.sell;
@@ -75,14 +78,20 @@ export class PosHub implements OnInit, OnDestroy {
   jumpToCart(){this.basketVisible=true;document.getElementById('pos-basket')?.scrollIntoView({behavior:'smooth',block:'start'});}
 
   get subtotal(){return this.cart.reduce((v,i)=>v+Math.round(+i.price*+i.quantity*100)/100,0);}
-  get estimatedTotal(){const sub=this.subtotal;return Math.max(0,sub-this.discount)+this.cart.reduce((v,i)=>v+Math.round((+i.price*+i.quantity)*(sub?Math.max(0,sub-this.discount)/sub:1)*+i.tax_rate)/100,0);}
+  get estimatedTotal(){const sub=this.subtotal;return this.packagingTotal+this.serviceTotal+Math.max(0,sub-this.discount)+this.cart.reduce((v,i)=>v+Math.round((+i.price*+i.quantity)*(sub?Math.max(0,sub-this.discount)/sub:1)*+i.tax_rate)/100,0);}
+  get packagingTotal(){return ['pickup','express'].includes(this.fulfillment)?Math.round(this.cart.reduce((sum,item)=>sum+Number(this.data?.products.find((p:any)=>p.id===item.product_id)?.packaging_fee??item.packaging_fee??0)*Number(item.quantity),0)*100)/100:0;}
+  get serviceTotal(){return this.fulfillment==='dine_in'?Math.round(Math.max(0,this.subtotal-this.discount)*Number(this.data?.business?.service_rate||0))/100:0;}
+  fulfillmentName(value:string){return ({dine_in:'En el local',pickup:'Para llevar',express:'Express'} as Record<string,string>)[value]||value;}
+  sourceName(value:string){return ({pos:'Mostrador / POS',website:'Sitio web',whatsapp:'WhatsApp directo'} as Record<string,string>)[value]||'Mostrador / POS';}
+  async refreshFinance(){await this.run(async()=>{await this.refresh();});}
+  async importedOrder(order:any){const keepCart=!!this.cart.length;if(keepCart)this.tab='orders';else this.edit(order);await this.refreshFinance();this.notice='Pedido del sitio importado #'+order.id+(keepCart?'. Tu carrito anterior se conserva en Nueva venta.':'. Revisá sus datos antes de cobrar o enviarlo a cocina.');this.cd.detectChanges();}
   get totalLabel(){return this.mode==='taller'?'Orden de trabajo':this.mode==='salon'?'Servicio / venta':'Pedido';}
   money(v:any){return new Intl.NumberFormat('es-CR',{style:'currency',currency:'CRC'}).format(Number(v||0));}
   date(v:string){return v?posDate(v).toLocaleString('es-CR',{timeZone:'America/Costa_Rica'}):'—';}
   status(v:string){return ({open:'Abierto',queued:'En cola',preparing:'En preparación',ready:'Listo',paid:'Pagado',cancelled:'Cancelado',refunded:'Devuelto',served:'Entregado',pending:'Pendiente',confirmed:'Confirmada',completed:'Completada'} as any)[v]||v;}
   paymentName(v:string){return ({cash:'Efectivo',card:'Tarjeta',sinpe:'SINPE',transfer:'Transferencia'} as any)[v]||v;}
   async enter(b:any){await this.run(async()=>{this.bid=b.id;this.tab='dashboard';this.resetCart();this.report=null;this.team=null;this.openedDays={};await this.refresh();if(this.rights.role==='kitchen')this.tab='kitchen';});}
-  async refresh(){if(!this.bid)return;const bid=this.bid;const data=await this.request('/business/'+bid+'/state');if(bid!==this.bid)return;this.data=data;this.orderDays=groupOrderDays(data.orders);this.kitchenDays=groupOrderDays(data.orders,true);this.dashboardRevision=JSON.stringify([data.orders.map((o:any)=>[o.id,o.revision]),data.movements.filter((m:any)=>m.kind!=='stock').map((m:any)=>m.id)]);if(!this.visibleTabs.some(t=>t[0]===this.tab))this.tab='dashboard';this.cd.detectChanges();}
+  async refresh(){if(!this.bid)return;const bid=this.bid;const data=await this.request('/business/'+bid+'/state');if(bid!==this.bid)return;this.data=data;this.orderDays=groupOrderDays(data.orders);this.kitchenDays=groupOrderDays(data.orders,true);this.dashboardRevision=JSON.stringify([data.orders.map((o:any)=>[o.id,o.revision]),data.movements.filter((m:any)=>m.kind!=='stock').map((m:any)=>m.id),data.finance_revision||'']);if(!this.visibleTabs.some(t=>t[0]===this.tab))this.tab='dashboard';this.cd.detectChanges();}
   path(p:string){return '/business/'+this.bid+p;}
   async mutate(p:string,body:any,method='POST'){const r=await this.request(this.path(p),method,body);await this.refresh();return r;}
   async navigate(tab:string){if(!this.visibleTabs.some(t=>t[0]===tab))return;this.tab=tab;this.menuOpen=false;if(tab==='team')await this.loadTeam();if(tab==='audit')await this.loadAudit();if(tab==='reports')await this.loadReport();if(tab==='appointments')await this.run(async()=>{await this.refresh();});}
@@ -96,11 +105,11 @@ export class PosHub implements OnInit, OnDestroy {
   kitchenKey(event:KeyboardEvent,track:HTMLElement){if(event.target!==event.currentTarget)return;if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();this.scrollKitchen(track,event.key==='ArrowLeft'?-1:1);}}
   add(p:any){this.onScroll();const existing=this.cart.find(i=>i.product_id===p.id);if(existing)existing.quantity=+existing.quantity+1;else this.cart.push({product_id:p.id,name:p.name,price:p.price,tax_rate:p.tax_rate,quantity:1});}
   scan(){const p=this.products.find((p:any)=>p.sku===this.search);if(p){this.add(p);this.search='';}}
-  resetCart(){this.cartKey=crypto.randomUUID();this.cart=[];this.label='Mostrador';this.tableNumber=null;this.customerId=null;this.notes='';this.discount=0;this.editingOrder=0;this.approvalEmail='';this.approvalPin='';this.adjustmentReason='';}
+  resetCart(){this.cartKey=crypto.randomUUID();this.cart=[];this.label='Mostrador';this.tableNumber=null;this.customerId=null;this.notes='';this.discount=0;this.sourceChannel='pos';this.fulfillment='dine_in';this.externalOrderId='';this.editingOrder=0;this.approvalEmail='';this.approvalPin='';this.adjustmentReason='';}
   useTable(n:number){const order=this.pending.find((o:any)=>o.table_number===n);if(order){this.edit(order);return;}this.resetCart();this.tableNumber=n;this.label='Mesa '+n;this.tab='sale';}
   occupied(n:number){return this.pending.some((o:any)=>o.table_number===n);}
-  edit(o:any){if(!['open','queued'].includes(o.status)){this.tab='orders';return;}this.editingOrder=o.id;this.editingRevision=o.revision;this.cart=o.items.map((i:any)=>({...i,quantity:+i.quantity}));this.label=o.label;this.tableNumber=o.table_number;this.customerId=o.customer_id;this.notes=o.notes;this.discount=+o.discount;this.tab='sale';}
-  async saveOrder(checkout=false,sendKitchen=false){await this.run(async()=>{if(!this.cart.length)throw Error('Agregá al menos un producto.');if(this.cart.some(i=>!Number.isFinite(+i.quantity)||+i.quantity<=0||+i.quantity>999999))throw Error('Indicá una cantidad válida mayor que cero.');const body={expected_revision:this.editingOrder?this.editingRevision:null,request_key:this.cartKey,label:this.label,table_number:this.tableNumber?+this.tableNumber:null,customer_id:this.customerId?+this.customerId:null,notes:this.notes,discount:+this.discount,send_to_kitchen:sendKitchen,adjustment_reason:this.adjustmentReason,approval:this.needsApproval&&!this.rights.manage?{email:this.approvalEmail,pin:this.approvalPin}:null,items:this.cart.map(i=>({product_id:i.product_id,quantity:+i.quantity,unit_price:+i.price}))};const o=await this.mutate('/orders'+(this.editingOrder?'/'+this.editingOrder:''),body,this.editingOrder?'PUT':'POST');this.resetCart();this.tab='orders';this.notice=(sendKitchen?'Comanda enviada a cocina #':'Pedido guardado #')+o.id;if(checkout)this.openPayment(o);});this.approvalPin='';}
+  edit(o:any){if(!['open','queued'].includes(o.status)){this.tab='orders';return;}this.editingOrder=o.id;this.editingRevision=o.revision;this.sourceChannel=o.source_channel||'pos';this.fulfillment=o.fulfillment||'dine_in';this.externalOrderId=o.external_id||'';this.cart=o.items.map((i:any)=>({...i,quantity:+i.quantity}));this.label=o.label;this.tableNumber=o.table_number;this.customerId=o.customer_id;this.notes=o.notes;this.discount=+o.discount;this.tab='sale';}
+  async saveOrder(checkout=false,sendKitchen=false){await this.run(async()=>{if(!this.cart.length)throw Error('Agregá al menos un producto.');if(this.cart.some(i=>!Number.isFinite(+i.quantity)||+i.quantity<=0||+i.quantity>999999))throw Error('Indicá una cantidad válida mayor que cero.');const body={expected_revision:this.editingOrder?this.editingRevision:null,request_key:this.cartKey,source_channel:this.sourceChannel,fulfillment:this.fulfillment,label:this.label,table_number:this.tableNumber?+this.tableNumber:null,customer_id:this.customerId?+this.customerId:null,notes:this.notes,discount:+this.discount,send_to_kitchen:sendKitchen,adjustment_reason:this.adjustmentReason,approval:this.needsApproval&&!this.rights.manage?{email:this.approvalEmail,pin:this.approvalPin}:null,items:this.cart.map(i=>({product_id:i.product_id,quantity:+i.quantity,unit_price:+i.price}))};const o=await this.mutate('/orders'+(this.editingOrder?'/'+this.editingOrder:''),body,this.editingOrder?'PUT':'POST');this.resetCart();this.tab='orders';this.notice=(sendKitchen?'Comanda enviada a cocina #':'Pedido guardado #')+o.id;if(checkout)this.openPayment(o);});this.approvalPin='';}
   async transition(o:any,status:string){if(status==='cancelled'&&!confirm('¿Cancelar este pedido?'))return;await this.run(async()=>{await this.mutate('/orders/'+o.id+'/status',{status});});}
   openPayment(o:any){this.paymentOrder=o;this.method='cash';this.received=+o.total;}
   async pay(){await this.run(async()=>{const o=await this.mutate('/orders/'+this.paymentOrder.id+'/pay',{method:this.method,received:+this.received});this.paymentOrder=null;this.receipt=o;this.notice='Venta registrada. Inventario actualizado.';});}
