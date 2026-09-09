@@ -1,0 +1,33 @@
+<section class="business-dashboard" aria-label="Indicadores del negocio">
+  <form class="panel period-form" #period="ngForm" (ngSubmit)="period.valid && load()"><div><h2>Resultados del negocio</h2><p>Consultá las ventas y la utilidad del período.</p></div><label>Desde<input name="dashboardStart" type="date" [(ngModel)]="start" required></label><label>Hasta<input name="dashboardEnd" type="date" [(ngModel)]="end" required [min]="start"></label><button [disabled]="loading || period.invalid">Consultar</button></form>
+  <p *ngIf="error" class="error" role="alert">{{error}}</p><p *ngIf="loading" class="loading" role="status">Actualizando indicadores…</p>
+  <ng-container *ngIf="report">
+    <p class="period-label">{{dayLabel(appliedStart)}} – {{dayLabel(appliedEnd)}} · Hora de Costa Rica</p>
+    <div class="financial-metrics">
+      <article><span>Ventas cobradas</span><strong>{{money(report.sales)}}</strong><small>Incluyen impuestos; excluyen ventas devueltas.</small></article>
+      <article><span>Ventas sin impuestos</span><strong>{{money(netSales)}}</strong><small>Descuentos aplicados.</small></article>
+      <article><span>Costo de lo vendido</span><strong>{{money(report.cost)}}</strong><small>Costo guardado en cada venta.</small></article>
+      <article class="profit" [class.negative]="grossProfit<0"><span>Utilidad bruta</span><strong>{{money(grossProfit)}}</strong><small>Ventas sin impuestos menos costo.</small></article>
+      <article><span>Egresos de caja</span><strong>{{money(report.cash_expenses)}}</strong><small>Egresos registrados en el período.</small></article>
+      <article [class.negative]="report.estimated_margin<0"><span>Resultado tras egresos</span><strong>{{money(report.estimated_margin)}}</strong><small>Estimación: utilidad bruta menos egresos.</small></article>
+    </div>
+    <div class="panel profit-chart"><div class="chart-heading"><h2>Utilidad por día</h2><div class="chart-legend"><span><i class="gross-key"></i>Utilidad bruta</span><span><i class="result-key"></i>Resultado tras egresos</span></div></div>
+      <div class="chart-scroll" *ngIf="report.daily?.length; else noDaily" tabindex="0" role="region" aria-label="Gráfica de utilidad por día; el detalle está disponible en la tabla inferior">
+        <svg viewBox="0 0 900 250" role="img" aria-label="Evolución diaria de la utilidad bruta y del resultado tras egresos">
+          <g *ngFor="let tick of chart.ticks"><line x1="134" x2="854" [attr.y1]="tick.y" [attr.y2]="tick.y" class="grid-line"/><text x="120" [attr.y]="tick.y+4" text-anchor="end">{{money(tick.value)}}</text></g>
+          <line x1="134" x2="854" [attr.y1]="chart.zero" [attr.y2]="chart.zero" class="zero-line"/>
+          <g *ngFor="let series of chart.series"><polyline [attr.points]="series.points" fill="none" [attr.stroke]="series.color" stroke-width="3" vector-effect="non-scaling-stroke"/><circle *ngFor="let dot of series.dots" [attr.cx]="dot.x" [attr.cy]="dot.y" r="3.5" [attr.fill]="series.color"><title>{{dot.label}}</title></circle></g>
+          <text *ngFor="let day of chart.dates" [attr.x]="day.x" y="240" text-anchor="middle">{{day.label}}</text>
+        </svg>
+      </div>
+      <ng-template #noDaily><p>No hay detalle diario disponible para este período.</p></ng-template>
+      <p class="calculation-note">La utilidad bruta usa el costo registrado al guardar cada pedido. El resultado tras egresos es una estimación: la utilidad neta requiere incluir todos los gastos del negocio y revisar que las compras de inventario no se descuenten dos veces.</p>
+      <details *ngIf="report.daily?.length"><summary>Ver detalle diario</summary><div class="table-scroll"><table><thead><tr><th>Fecha</th><th>Ventas sin impuestos</th><th>Costo</th><th>Utilidad bruta</th><th>Egresos</th><th>Resultado</th></tr></thead><tbody><tr *ngFor="let day of report.daily"><td>{{dayLabel(day.date)}}</td><td>{{money(day.net_sales)}}</td><td>{{money(day.cost)}}</td><td>{{money(day.gross_profit)}}</td><td>{{money(day.cash_expenses)}}</td><td>{{money(day.estimated_margin)}}</td></tr></tbody></table></div></details>
+    </div>
+    <div class="dashboard-details">
+      <article class="panel"><h2>Actividad de ventas</h2><div class="stat-row"><span>Ventas cobradas</span><strong>{{report.tickets}}</strong></div><div class="stat-row"><span>Ticket promedio</span><strong>{{money(report.average)}}</strong></div><div class="stat-row"><span>Descuentos aplicados</span><strong>{{money(report.discount)}}</strong></div><div class="stat-row"><span>Impuestos cobrados</span><strong>{{money(report.tax)}}</strong></div><div class="stat-row" *ngFor="let method of ['cash','card','sinpe','transfer']"><span>{{paymentName(method)}}</span><strong>{{money(report.payments[method])}}</strong></div></article>
+      <article class="panel"><h2>Productos más vendidos</h2><p *ngIf="!topProducts.length">Todavía no hay ventas cobradas en este período.</p><div class="product-rank" *ngFor="let product of topProducts"><div class="stat-row"><span>{{product.name}}</span><strong>{{product.quantity}} unidades</strong></div><div class="rank-track" aria-hidden="true"><span [style.width.%]="productWidth(product)"></span></div></div></article>
+    </div>
+    <p class="calculation-note">Las ventas devueltas se excluyen de su fecha de venta. El fondo inicial y los ingresos manuales de caja no se suman a las ventas.</p>
+  </ng-container>
+</section>

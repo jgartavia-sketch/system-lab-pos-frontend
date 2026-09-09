@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { PosAdmin } from './pos-admin';
 
-type Tab = 'services' | 'progress' | 'payments';
+type Tab = 'services' | 'progress' | 'payments' | 'pos';
 type WorkStatus = 'pending' | 'in_progress' | 'completed' | 'blocked';
 type PaymentStatus = 'pending' | 'paid' | 'overdue';
 type PaymentStage = 'overdue' | 'pending' | 'scheduled' | 'paid';
@@ -22,13 +24,13 @@ interface Dashboard { services: ServiceDefinition[]; clients: ManagedClient[]; }
 
 @Component({
   selector: 'app-client-control',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PosAdmin],
   templateUrl: './client-control.html',
   styleUrl: './client-control.scss',
 })
 export class ClientControl {
   private readonly http = inject(HttpClient);
-  private readonly apiBase =
+  protected readonly apiBase =
     (globalThis as typeof globalThis & { SYSTEM_LAB_API_URL?: string }).SYSTEM_LAB_API_URL
     ?? (globalThis.location.hostname === 'localhost' || globalThis.location.hostname === '127.0.0.1'
       ? 'http://localhost:8000'
@@ -72,7 +74,7 @@ export class ClientControl {
     this.dashboard().clients.reduce((total, client) => total + client.payments.filter((item) => item.status !== 'paid').length, 0),
   );
 
-  constructor() { this.loadDashboard(); }
+  constructor() { if (inject(ActivatedRoute).snapshot.queryParamMap.get('tab') === 'pos') this.activeTab.set('pos'); this.loadDashboard(); }
 
   protected setTab(tab: Tab): void { this.activeTab.set(tab); }
 

@@ -17,7 +17,10 @@
       <button [class.active]="activeTab() === 'services'" (click)="setTab('services')">01 · Servicios</button>
       <button [class.active]="activeTab() === 'progress'" (click)="setTab('progress')">02 · Estado de proyectos</button>
       <button [class.active]="activeTab() === 'payments'" (click)="setTab('payments')">03 · Historial de pagos</button>
+      <button [class.active]="activeTab() === 'pos'" (click)="setTab('pos')">04 · POS: usuarios y locales</button>
     </nav>
+
+    @if (activeTab() === 'pos') { <app-pos-admin [api]="apiBase + '/pos-api'" /> }
 
     @if (error()) { <div class="alert">{{ error() }} <button (click)="loadDashboard()">Reintentar</button></div> }
     @if (loading()) { <div class="loading">Cargando centro de control…</div> }
