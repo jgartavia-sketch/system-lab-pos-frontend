@@ -1804,3 +1804,46 @@ tbody tr:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* CatÃ¡logo POS por categorÃ­as: cards acordeÃ³n */
+.category-accordions {
+  display: grid;
+  gap: 12px;
+}
+.category-card {
+  border: 1px solid #dbe4e8;
+  border-radius: 12px;
+  background: #f8fbfa;
+  overflow: hidden;
+}
+.category-card > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 17px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.category-card > summary::-webkit-details-marker { display: none; }
+.category-card > summary span:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.category-card > summary strong { font-size: 16px; }
+.category-card[open] > summary {
+  border-bottom: 1px solid #dbe4e8;
+  background: #eef7f3;
+}
+.category-products { padding: 14px; }
+.category-products button[hidden] { display: none !important; }
+.category-card .accordion-chevron::before { content: "âŒ„"; font-size: 20px; }
+.category-card[open] .accordion-chevron::before { content: "âŒƒ"; }
+
+.danger {
+  border-color: #d5a0a0 !important;
+  color: #9a2525 !important;
+  background: #fff7f7 !important;
+}
+.danger:hover { background: #ffe9e9 !important; }

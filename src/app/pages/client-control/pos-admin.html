@@ -46,7 +46,7 @@
     <section aria-label="Cuentas del POS"><h3>Cuentas y locales autorizados</h3>
       <details class="panel account-row" *ngFor="let u of adminData.accounts">
         <summary><span><strong>{{u.name}}</strong><small>{{u.email}}</small></span><span class="pill">{{u.ceo ? 'CEO' : u.active ? 'Activa' : 'Suspendida'}} · {{u.business_ids.length}} locales como dueño</span></summary>
-        <div class="rows"><p *ngIf="!u.business_ids.length">Sin locales asignados como dueño. Los accesos de empleados se gestionan en Mi equipo.</p><div class="list-row" *ngFor="let b of localsFor(u)"><span>{{b.name}} · {{modeName(b.mode)}}</span><small>{{b.active ? 'Activo' : 'Suspendido'}}</small></div><div class="actions"><button class="primary" (click)="newLocalFor(u)">Agregar nuevo local</button><button (click)="editAccess(u)">Administrar acceso y locales existentes</button></div></div>
+        <div class="rows"><p *ngIf="!u.business_ids.length">Sin locales asignados como dueño. Los accesos de empleados se gestionan en Mi equipo.</p><div class="list-row" *ngFor="let b of localsFor(u)"><span>{{b.name}} · {{modeName(b.mode)}}</span><small>{{b.active ? 'Activo' : 'Suspendido'}}</small></div><div class="actions"><button class="primary" (click)="newLocalFor(u)">Agregar nuevo local</button><button (click)="editAccess(u)">Administrar acceso y locales existentes</button><button *ngIf="!u.ceo" class="danger" (click)="deleteAccount(u)" [disabled]="busy">Eliminar cuenta</button></div></div>
       </details>
     </section>
     <form id="pos-access-form" class="panel form-grid" *ngIf="access" (ngSubmit)="saveAccess()">

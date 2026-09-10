@@ -130,6 +130,18 @@ export class PosAdmin implements OnInit {
       else { this.adminData = await this.request('/admin'); this.notice = 'Locales y acceso actualizados. El cliente debe volver a ingresar.'; }
     });
   }
+  async deleteAccount(user: any) {
+    if (user.ceo) return;
+    const answer = confirm(`Â¿Eliminar definitivamente la cuenta de ${user.name} (${user.email})?` +
+      "\n\nSolo se eliminarÃ¡ si todavÃ­a no tiene historial operativo. Esta acciÃ³n no se puede deshacer.");
+    if (!answer) return;
+    await this.run(async () => {
+      await this.request('/admin/accounts/' + user.id, 'DELETE');
+      if (this.access?.id === user.id) this.access = null;
+      this.adminData = await this.request('/admin');
+      this.notice = 'Cuenta eliminada correctamente.';
+    });
+  }
   async resetAccountPassword() {
     await this.run(async () => {
       if (this.resetPassword.trim().length < 8) throw Error('La contraseña debe tener al menos 8 caracteres.');
