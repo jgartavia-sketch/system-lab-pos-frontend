@@ -1,0 +1,204 @@
+<section class="finance-shell">
+  <section class="finance-kpis" aria-label="Resumen financiero">
+    <article>
+      <span>Entradas</span>
+      <strong>{{ currency === 'CRC' ? '₡' : '$' }}{{ summary().income | number:'1.0-2' }}</strong>
+    </article>
+    <article>
+      <span>Salidas</span>
+      <strong>{{ currency === 'CRC' ? '₡' : '$' }}{{ summary().expenses | number:'1.0-2' }}</strong>
+    </article>
+    <article class="profit" [class.negative]="summary().profit < 0">
+      <span>Utilidad real</span>
+      <strong>{{ currency === 'CRC' ? '₡' : '$' }}{{ summary().profit | number:'1.0-2' }}</strong>
+    </article>
+    <article>
+      <span>Movimientos</span>
+      <strong>{{ summary().movement_count }}</strong>
+    </article>
+  </section>
+
+  <section class="finance-toolbar">
+    <div>
+      <span class="eyebrow">Finanzas System Lab</span>
+      <h2>Entradas, salidas y utilidad real</h2>
+      <p>Control mensual del dinero que realmente entra y sale del negocio.</p>
+    </div>
+
+    <div class="toolbar-filters">
+      <label>
+        Mes
+        <input type="month" [(ngModel)]="month" (ngModelChange)="load()" />
+      </label>
+      <label>
+        Resumen en
+        <select [(ngModel)]="currency" (ngModelChange)="load()">
+          <option value="CRC">CRC</option>
+          <option value="USD">USD</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  @if (error()) {
+    <div class="finance-alert">{{ error() }}</div>
+  }
+
+  <section class="finance-grid">
+    <form class="finance-card finance-form" (ngSubmit)="save()">
+      <span class="eyebrow">Nuevo movimiento</span>
+      <h3>Registrar dinero</h3>
+
+      <div class="type-switch">
+        <button
+          type="button"
+          [class.active]="movementType === 'income'"
+          (click)="movementType = 'income'; typeChanged()">
+          + Entrada
+        </button>
+        <button
+          type="button"
+          class="expense-button"
+          [class.active]="movementType === 'expense'"
+          (click)="movementType = 'expense'; typeChanged()">
+          − Salida
+        </button>
+      </div>
+
+      <label>
+        Monto
+        <input
+          type="number"
+          min="1"
+          step="0.01"
+          [(ngModel)]="amount"
+          name="financeAmount"
+          placeholder="25000"
+          required />
+      </label>
+
+      <div class="form-row">
+        <label>
+          Moneda
+          <select [(ngModel)]="currency" name="financeCurrency" (ngModelChange)="load()">
+            <option value="CRC">CRC</option>
+            <option value="USD">USD</option>
+          </select>
+        </label>
+
+        <label>
+          Fecha
+          <input
+            type="date"
+            [(ngModel)]="movementDate"
+            name="financeDate"
+            required />
+        </label>
+      </div>
+
+      <label>
+        Categoría
+        <select [(ngModel)]="category" name="financeCategory">
+          @for (item of categories(); track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Concepto
+        <input
+          [(ngModel)]="concept"
+          name="financeConcept"
+          maxlength="180"
+          placeholder="Ej. Mensualidad Shirley's"
+          required />
+      </label>
+
+      <label>
+        Cliente relacionado <small>(opcional)</small>
+        <select [(ngModel)]="clientId" name="financeClient">
+          <option [ngValue]="null">System Lab / general</option>
+          @for (client of clients; track client.id) {
+            <option [ngValue]="client.id">{{ client.name }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Método de pago
+        <select [(ngModel)]="paymentMethod" name="financePaymentMethod">
+          @for (item of paymentMethods; track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Detalle <small>(opcional)</small>
+        <textarea
+          [(ngModel)]="notes"
+          name="financeNotes"
+          placeholder="Factura, proveedor, observaciones..."></textarea>
+      </label>
+
+      <button
+        class="save-button"
+        type="submit"
+        [disabled]="saving() || !amount || concept.trim().length < 2">
+        {{ saving() ? 'Guardando…' : 'Guardar movimiento' }}
+      </button>
+    </form>
+
+    <section class="finance-card finance-history">
+      <header class="history-head">
+        <div>
+          <span class="eyebrow">Libro de movimientos</span>
+          <h3>{{ month }}</h3>
+        </div>
+        <strong>{{ movements().length }} registros</strong>
+      </header>
+
+      @if (loading()) {
+        <p class="empty">Cargando movimientos…</p>
+      }
+
+      @if (!loading() && !movements().length) {
+        <p class="empty">No hay movimientos registrados en este mes.</p>
+      }
+
+      @for (item of movements(); track item.id) {
+        <article class="movement">
+          <span [class]="'movement-badge ' + item.movement_type">
+            {{ item.movement_type === 'income' ? 'Entrada' : 'Salida' }}
+          </span>
+
+          <div class="movement-main">
+            <strong>{{ item.concept }}</strong>
+            <small>{{ item.category }} · {{ clientName(item.client_id) }}</small>
+            <small>{{ item.movement_date }} · {{ item.payment_method || 'Sin método' }}</small>
+            @if (item.notes) {
+              <small class="notes">{{ item.notes }}</small>
+            }
+          </div>
+
+          <div
+            class="movement-amount"
+            [class.expense]="item.movement_type === 'expense'">
+            <strong>
+              {{ item.movement_type === 'expense' ? '−' : '+' }}{{ symbol(item.currency) }}{{ item.amount | number:'1.0-2' }}
+            </strong>
+            <small>{{ item.currency }}</small>
+          </div>
+
+          <button
+            class="delete-button"
+            type="button"
+            (click)="remove(item)">
+            Eliminar
+          </button>
+        </article>
+      }
+    </section>
+  </section>
+</section>

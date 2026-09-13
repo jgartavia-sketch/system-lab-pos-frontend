@@ -5,8 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PosAdmin } from './pos-admin';
 import { ClientEvents } from './client-events';
+import { ClientFinances } from './client-finances';
 
-type Tab = 'services' | 'progress' | 'payments' | 'pos' | 'events';
+type Tab = 'services' | 'progress' | 'payments' | 'pos' | 'events' | 'finances';
 type WorkStatus = 'pending' | 'in_progress' | 'completed' | 'blocked';
 type PaymentStatus = 'pending' | 'paid' | 'overdue';
 type PaymentStage = 'overdue' | 'pending' | 'scheduled' | 'paid';
@@ -25,7 +26,7 @@ interface Dashboard { services: ServiceDefinition[]; clients: ManagedClient[]; }
 
 @Component({
   selector: 'app-client-control',
-  imports: [CommonModule, FormsModule, PosAdmin, ClientEvents],
+  imports: [CommonModule, FormsModule, PosAdmin, ClientEvents, ClientFinances],
   templateUrl: './client-control.html',
   styleUrl: './client-control.scss',
 })
