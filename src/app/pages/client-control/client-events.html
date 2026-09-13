@@ -1,0 +1,25 @@
+<section class="events-layout">
+  <form class="event-form panel" (ngSubmit)="addEvent()">
+    <span class="eyebrow">Agenda System Lab</span><h2>Agregar evento</h2>
+    <label>Cliente<select [(ngModel)]="selectedClientId" name="eventClient" required>@for (client of clients; track client.id) {<option [ngValue]="client.id">{{ client.name }}</option>}</select></label>
+    <label>Título<input [(ngModel)]="title" name="eventTitle" minlength="2" maxlength="180" placeholder="Ej. Grabación de contenido" required /></label>
+    <label>Fecha<input type="date" [(ngModel)]="eventDate" name="eventDate" required /></label>
+    <label>Descripción breve<textarea [(ngModel)]="description" name="eventDescription" maxlength="500" placeholder="Detalles importantes del evento"></textarea></label>
+    <button class="primary" type="submit" [disabled]="!selectedClientId || title.trim().length < 2 || !eventDate">Guardar evento</button>
+    @if (error()) { <p class="event-error">{{ error() }}</p> }
+    <div class="upcoming"><span class="eyebrow">Próximos eventos</span>
+      @if (!upcoming().length) { <p class="empty">No hay eventos próximos.</p> }
+      @for (item of upcoming(); track item.id) {<article><time>{{ item.event_date }}</time><div><strong>{{ item.title }}</strong><small>{{ clientName(item.client_id) }}</small></div><button type="button" (click)="deleteEvent(item)" aria-label="Eliminar evento">×</button></article>}
+    </div>
+  </form>
+
+  <section class="calendar panel">
+    <header><button type="button" (click)="previousMonth()">‹</button><div><span class="eyebrow">Calendario</span><h2>{{ monthLabel() }}</h2></div><button type="button" (click)="nextMonth()">›</button></header>
+    <div class="weekdays">@for (day of ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom']; track day) {<span>{{ day }}</span>}</div>
+    <div class="calendar-grid">
+      @for (cell of calendarDays(); track cell.date) {<div class="day" [class.outside]="!cell.current" [class.today]="cell.today"><span class="day-number">{{ cell.day }}</span>
+        <div class="day-events">@for (item of eventsForDate(cell.date); track item.id) {<button type="button" class="event-chip" [title]="clientName(item.client_id) + (item.description ? ' · ' + item.description : '')"><strong>{{ item.title }}</strong><small>{{ clientName(item.client_id) }}</small></button>}</div>
+      </div>}
+    </div>
+  </section>
+</section>
