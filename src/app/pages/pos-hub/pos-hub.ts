@@ -8,7 +8,13 @@ import { PosFinances } from './pos-finances';
 import { PosConnect } from './pos-connect';
 import { appointmentOverview, AppointmentDay } from './pos-appointments';
 
-@Component({selector:'app-pos-hub', standalone:true, imports:[CommonModule,FormsModule,RouterLink,PosDashboard,PosFinances,PosConnect],templateUrl:'./pos-hub.html',styleUrl:'./pos-hub.scss'})
+@Component({
+  selector:'app-pos-hub',
+  standalone:true,
+  imports:[CommonModule,FormsModule,RouterLink,PosDashboard,PosFinances,PosConnect],
+  templateUrl:'./pos-hub.html',
+  styleUrls:['./pos-hub.scss','./pos-print.scss']
+})
 export class PosHub implements OnInit, OnDestroy {
   modes=[{id:'restaurante',name:'Restaurante',icon:'01',copy:'Mesas, comandas, cocina y venta rápida.'},{id:'heladeria',name:'Heladería',icon:'02',copy:'Mostrador, productos, pedidos y existencias.'},{id:'supermercado',name:'Supermercado',icon:'03',copy:'Venta por código, inventario y control de caja.'},{id:'taller',name:'Taller mecánico',icon:'04',copy:'Órdenes de trabajo, repuestos, servicios y citas.'},{id:'salon',name:'Salón de belleza',icon:'05',copy:'Servicios, productos, clientes y agenda.'}];
   tabs=[['dashboard','Resumen'],['sale','Nueva venta'],['orders','Pedidos'],['kitchen','Cocina'],['products','Productos'],['inventory','Inventario'],['customers','Clientes'],['cash','Caja'],['finances','Ingresos y gastos'],['reports','Reportes'],['appointments','Agenda'],['team','Mi equipo'],['audit','Autorizaciones'],['account','Mi cuenta']];
@@ -27,11 +33,23 @@ export class PosHub implements OnInit, OnDestroy {
   roles=[{id:'admin',name:'Administrador'},{id:'cashier',name:'Cajero'},{id:'waiter',name:'Salonero'},{id:'kitchen',name:'Cocina'}];
   sourceChannel='pos'; fulfillment='dine_in'; externalOrderId='';
   currentPassword=''; nextPassword=''; private poll:any; private params:any;
+  private autoPrintingComanda=false;
+
   constructor(private route:ActivatedRoute,private router:Router,private cd:ChangeDetectorRef){}
+
   today(){return posDay(new Date());}
   blankProduct(){return {name:'',category:'General',sku:'',price:0,cost:0,tax_rate:0,minimum:0,track_stock:true,active:true,packaging_fee:0,cost_known:true};}
   ngOnInit(){this.params=this.route.paramMap.subscribe(p=>{this.mode=p.get('mode')||'';this.tab='dashboard';this.bid=0;this.data=null;this.resetCart();void this.initialize();});this.poll=setInterval(()=>{if(this.bid&&!this.busy&&['kitchen','orders','dashboard','appointments'].includes(this.tab))void this.refresh().catch((e:any)=>{this.error=e.message;this.cd.detectChanges();});},5000);}
   ngOnDestroy(){clearInterval(this.poll);this.params?.unsubscribe();}
+
+  @HostListener('window:afterprint')
+  afterPrint(){
+    if(!this.autoPrintingComanda)return;
+    this.autoPrintingComanda=false;
+    this.comanda=null;
+    this.cd.detectChanges();
+  }
+
   async request(path:string,method='GET',body?:any){
     const ctl=new AbortController();const timeout=setTimeout(()=>ctl.abort(),45000);
     try{
@@ -42,6 +60,7 @@ export class PosHub implements OnInit, OnDestroy {
     }catch(e:any){if(e.name==='AbortError')throw Error('El servidor tardó en responder. Esperá unos segundos y reintentá.');throw e;}
     finally{clearTimeout(timeout);}
   }
+
   async run(action:()=>Promise<void>){if(this.busy)return;this.busy=true;this.error='';this.notice='';try{await action();}catch(e:any){this.error=e.message||'No se pudo completar la operación.';}finally{this.busy=false;this.cd.detectChanges();}}
   async initialize(){this.booting=true;await this.run(async()=>{if(this.token){const r=await this.request('/auth/me');this.account=r.account;this.businesses=r.businesses;}});this.booting=false;this.cd.detectChanges();}
   async login(){await this.run(async()=>{const r=await this.request('/auth/login','POST',{email:this.loginEmail,password:this.loginPassword});this.token=r.token;sessionStorage.setItem('systemlab-pos-token',this.token);this.loginPassword='';const me=await this.request('/auth/me');this.account=me.account;this.businesses=me.businesses;});}
@@ -109,8 +128,63 @@ export class PosHub implements OnInit, OnDestroy {
   useTable(n:number){const order=this.pending.find((o:any)=>o.table_number===n);if(order){this.edit(order);return;}this.resetCart();this.tableNumber=n;this.label='Mesa '+n;this.tab='sale';}
   occupied(n:number){return this.pending.some((o:any)=>o.table_number===n);}
   edit(o:any){if(!['open','queued'].includes(o.status)){this.tab='orders';return;}this.editingOrder=o.id;this.editingRevision=o.revision;this.sourceChannel=o.source_channel||'pos';this.fulfillment=o.fulfillment||'dine_in';this.externalOrderId=o.external_id||'';this.cart=o.items.map((i:any)=>({...i,quantity:+i.quantity}));this.label=o.label;this.tableNumber=o.table_number;this.customerId=o.customer_id;this.notes=o.notes;this.discount=+o.discount;this.tab='sale';}
-  async saveOrder(checkout=false,sendKitchen=false){await this.run(async()=>{if(!this.cart.length)throw Error('Agregá al menos un producto.');if(this.cart.some(i=>!Number.isFinite(+i.quantity)||+i.quantity<=0||+i.quantity>999999))throw Error('Indicá una cantidad válida mayor que cero.');const body={expected_revision:this.editingOrder?this.editingRevision:null,request_key:this.cartKey,source_channel:this.sourceChannel,fulfillment:this.fulfillment,label:this.label,table_number:this.tableNumber?+this.tableNumber:null,customer_id:this.customerId?+this.customerId:null,notes:this.notes,discount:+this.discount,send_to_kitchen:sendKitchen,adjustment_reason:this.adjustmentReason,approval:this.needsApproval&&!this.rights.manage?{email:this.approvalEmail,pin:this.approvalPin}:null,items:this.cart.map(i=>({product_id:i.product_id,quantity:+i.quantity,unit_price:+i.price}))};const o=await this.mutate('/orders'+(this.editingOrder?'/'+this.editingOrder:''),body,this.editingOrder?'PUT':'POST');this.resetCart();this.tab='orders';this.notice=(sendKitchen?'Comanda enviada a cocina #':'Pedido guardado #')+o.id;if(checkout)this.openPayment(o);});this.approvalPin='';}
-  async transition(o:any,status:string){if(status==='cancelled'&&!confirm('¿Cancelar este pedido?'))return;await this.run(async()=>{await this.mutate('/orders/'+o.id+'/status',{status});});}
+
+  async saveOrder(checkout=false,sendKitchen=false){
+    await this.run(async()=>{
+      if(!this.cart.length)throw Error('Agregá al menos un producto.');
+      if(this.cart.some(i=>!Number.isFinite(+i.quantity)||+i.quantity<=0||+i.quantity>999999))throw Error('Indicá una cantidad válida mayor que cero.');
+      const body={
+        expected_revision:this.editingOrder?this.editingRevision:null,
+        request_key:this.cartKey,
+        source_channel:this.sourceChannel,
+        fulfillment:this.fulfillment,
+        label:this.label,
+        table_number:this.tableNumber?+this.tableNumber:null,
+        customer_id:this.customerId?+this.customerId:null,
+        notes:this.notes,
+        discount:+this.discount,
+        send_to_kitchen:sendKitchen,
+        adjustment_reason:this.adjustmentReason,
+        approval:this.needsApproval&&!this.rights.manage?{email:this.approvalEmail,pin:this.approvalPin}:null,
+        items:this.cart.map(i=>({product_id:i.product_id,quantity:+i.quantity,unit_price:+i.price}))
+      };
+      const o=await this.mutate('/orders'+(this.editingOrder?'/'+this.editingOrder:''),body,this.editingOrder?'PUT':'POST');
+      this.resetCart();
+      this.tab='orders';
+      this.notice=(sendKitchen?'Comanda enviada a cocina #':'Pedido guardado #')+o.id;
+      if(sendKitchen)this.queueComandaPrint(o);
+      if(checkout)this.openPayment(o);
+    });
+    this.approvalPin='';
+  }
+
+  async transition(o:any,status:string){
+    if(status==='cancelled'&&!confirm('¿Cancelar este pedido?'))return;
+    await this.run(async()=>{
+      const updated=await this.mutate('/orders/'+o.id+'/status',{status});
+      if(status==='queued')this.queueComandaPrint(updated);
+    });
+  }
+
+  private queueComandaPrint(o:any){
+    this.receipt=null;
+    this.comanda=o;
+    this.autoPrintingComanda=true;
+    this.cd.detectChanges();
+
+    // El pequeño retraso permite que Angular pinte la comanda antes de abrir
+    // automáticamente el diálogo de impresión del navegador.
+    setTimeout(()=>{
+      try{
+        window.print();
+      }catch{
+        this.autoPrintingComanda=false;
+        this.notice='Comanda enviada a cocina. La impresión automática no pudo abrirse; usá Ver comanda para reimprimir.';
+        this.cd.detectChanges();
+      }
+    },120);
+  }
+
   openPayment(o:any){this.paymentOrder=o;this.method='cash';this.received=+o.total;}
   async pay(){await this.run(async()=>{const o=await this.mutate('/orders/'+this.paymentOrder.id+'/pay',{method:this.method,received:+this.received});this.paymentOrder=null;this.receipt=o;this.notice='Venta registrada. Inventario actualizado.';});}
   async refund(o:any){const reason=prompt('Motivo de devolución total (reintegra todas las existencias):');if(!reason)return;await this.run(async()=>{await this.mutate('/orders/'+o.id+'/refund',{reason});this.notice='Devolución registrada. Realizá el reintegro al cliente por '+this.paymentName(o.payment_method)+'.';});}

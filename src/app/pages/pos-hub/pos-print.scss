@@ -1,0 +1,216 @@
+/*
+  System Lab POS - impresión térmica
+  Área útil objetivo: 72 mm dentro de un rollo térmico de 80 mm.
+  Este archivo se carga DESPUÉS de pos-hub.scss para aislar y sobrescribir
+  únicamente la presentación de comandas y comprobantes al imprimir.
+*/
+
+@media print {
+  @page {
+    margin: 0;
+  }
+
+  :host {
+    display: block !important;
+    width: 72mm !important;
+    min-width: 72mm !important;
+    max-width: 72mm !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /*
+    Todo el POS queda fuera del trabajo de impresión. Solo permanece
+    el modal activo de comanda o comprobante.
+  */
+  .top,
+  .workspace,
+  .public-page,
+  .business-picker,
+  .alert,
+  .loading,
+  .no-print,
+  .mobile-toolbar,
+  .mobile-cart {
+    display: none !important;
+  }
+
+  .receipt-modal {
+    position: static !important;
+    inset: auto !important;
+    display: block !important;
+    width: 72mm !important;
+    min-width: 72mm !important;
+    max-width: 72mm !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  .receipt-modal > .receipt {
+    display: block !important;
+    width: 72mm !important;
+    min-width: 72mm !important;
+    max-width: 72mm !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 2mm 2.2mm 1.5mm !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #000 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 9pt !important;
+    line-height: 1.18 !important;
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: none;
+  }
+
+  .receipt-modal > .receipt,
+  .receipt-modal > .receipt * {
+    color: #000 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  .receipt-modal > .receipt h1,
+  .receipt-modal > .receipt h2,
+  .receipt-modal > .receipt h3,
+  .receipt-modal > .receipt p,
+  .receipt-modal > .receipt small,
+  .receipt-modal > .receipt strong,
+  .receipt-modal > .receipt span,
+  .receipt-modal > .receipt div {
+    max-width: 100% !important;
+    overflow: visible !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+  }
+
+  .receipt-modal > .receipt h2 {
+    margin: 0 0 1mm !important;
+    padding: 0 !important;
+    font-size: 11pt !important;
+    line-height: 1.08 !important;
+    letter-spacing: 0 !important;
+    font-weight: 800 !important;
+  }
+
+  .receipt-modal > .receipt p {
+    margin: 0 0 1.2mm !important;
+    padding: 0 !important;
+    font-size: 8.5pt !important;
+    line-height: 1.18 !important;
+  }
+
+  .receipt-modal > .receipt small {
+    display: block !important;
+    margin: 1.2mm 0 0 !important;
+    padding: 0 !important;
+    font-size: 7.3pt !important;
+    line-height: 1.15 !important;
+  }
+
+  /*
+    COMANDA: el producto ya no usa el tamaño grande del diseño de pantalla.
+    Se permite envolver el nombre completo en varias líneas sin recortarlo.
+  */
+  .receipt-modal[aria-label='Comanda'] .kitchen-line {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1.15mm 0 !important;
+    border-bottom: 0.2mm dashed #000 !important;
+    font-size: 9pt !important;
+    font-weight: 800 !important;
+    line-height: 1.14 !important;
+    letter-spacing: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    page-break-inside: avoid !important;
+  }
+
+  .receipt-modal[aria-label='Comanda'] .kitchen-line:last-of-type {
+    border-bottom: 0 !important;
+  }
+
+  .receipt-modal[aria-label='Comanda'] .note {
+    margin: 1.4mm 0 0 !important;
+    padding: 1.2mm !important;
+    border: 0.25mm solid #000 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    font-size: 8.5pt !important;
+    line-height: 1.15 !important;
+    font-weight: 700 !important;
+  }
+
+  /*
+    COMPROBANTE: filas compactas para evitar alimentar papel de más.
+  */
+  .receipt-modal[aria-label='Comprobante'] .list-row {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    gap: 2mm !important;
+    margin: 0 !important;
+    padding: 0.8mm 0 !important;
+    border-bottom: 0.2mm solid #000 !important;
+    font-size: 8pt !important;
+    line-height: 1.12 !important;
+    page-break-inside: avoid !important;
+  }
+
+  .receipt-modal[aria-label='Comprobante'] .list-row > span:first-child {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .receipt-modal[aria-label='Comprobante'] .list-row > strong,
+  .receipt-modal[aria-label='Comprobante'] .list-row > span:last-child {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+
+  .receipt-modal[aria-label='Comprobante'] .total {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 2mm !important;
+    margin: 0 !important;
+    padding: 1.4mm 0 0.8mm !important;
+    border-top: 0.35mm solid #000 !important;
+    font-size: 9pt !important;
+    line-height: 1.1 !important;
+  }
+
+  .receipt-modal[aria-label='Comprobante'] .total strong {
+    font-size: 11pt !important;
+    font-weight: 800 !important;
+  }
+
+  /*
+    Evita que propiedades pensadas para pantalla dejen una caja alta o
+    scrollable que Chrome pueda convertir en papel blanco adicional.
+  */
+  .receipt-modal,
+  .receipt-modal > .receipt {
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+  }
+}
