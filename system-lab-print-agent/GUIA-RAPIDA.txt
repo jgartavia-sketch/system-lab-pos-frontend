@@ -1,0 +1,45 @@
+SYSTEM LAB PRINT AGENT - GUÍA RÁPIDA
+====================================
+
+ANTES DE COMENZAR
+
+La impresora térmica debe estar encendida. Si se conecta por USB, primero debe
+aparecer en Configuración > Impresoras y escáneres de Windows.
+
+INSTALACIÓN
+
+1. Extraiga completamente este ZIP. No ejecute el instalador desde la vista
+   previa del archivo comprimido.
+2. Abra la carpeta extraída.
+3. Haga doble clic en INSTALAR-PRINT-AGENT.bat.
+4. Si Windows solicita autorización para instalar un componente, acéptela.
+5. Al terminar se abrirá automáticamente el panel System Lab Print Agent.
+
+CONFIGURACIÓN DE LA IMPRESORA
+
+1. Para una impresora USB, elija "Instalada en Windows / USB" y seleccione su
+   nombre en la lista.
+2. Para una impresora de red, elija "Impresora de red TCP" e indique su IP. El
+   puerto habitual es 9100.
+3. Seleccione el ancho de papel: 80 mm o 58 mm.
+4. Pulse "Guardar configuración".
+5. Pulse "Imprimir prueba". No continúe hasta que la prueba salga correctamente.
+
+VINCULACIÓN CON EL POS
+
+1. En el panel del agente, pulse "Mostrar y copiar".
+2. Regrese a System Lab POS > Mi cuenta > Vincular estación.
+3. Pegue la clave y pulse "Guardar y probar conexión".
+4. El estado debe cambiar a "Conectada" y mostrar la impresora elegida.
+5. Si Chrome solicita acceso a la red local, pulse "Permitir".
+
+PRUEBA FINAL
+
+Cree un pedido de prueba y pulse "Guardar y enviar a cocina". La comanda debe
+salir automáticamente, sin mostrar la ventana de impresión de Chrome.
+
+SOPORTE
+
+Si el estado queda desconectado, abra nuevamente System Lab POS y pulse
+"Abrir configuración de impresoras". Compruebe que el agente indique que está
+activo y repita la impresión de prueba.

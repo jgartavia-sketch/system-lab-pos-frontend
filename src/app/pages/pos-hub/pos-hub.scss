@@ -5,6 +5,7 @@
   color: #15313a;
   font-family: Inter, Arial, sans-serif;
 }
+
 * {
   box-sizing: border-box;
 }
@@ -1128,6 +1129,80 @@ textarea {
   justify-content: space-between;
   gap: 16px;
 }
+.print-agent-download .form-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+.print-agent-download h2 {
+  margin: 7px 0 6px;
+}
+.print-agent-download .form-heading p {
+  margin: 0;
+}
+.setup-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: agent-step;
+}
+.setup-steps li {
+  counter-increment: agent-step;
+  position: relative;
+  min-width: 0;
+  padding: 16px 14px 16px 52px;
+  border: 1px solid #d4e4df;
+  border-radius: 12px;
+  background: #f7fbf9;
+}
+.setup-steps li::before {
+  content: counter(agent-step);
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #08755f;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+}
+.setup-steps strong,
+.setup-steps span {
+  display: block;
+}
+.setup-steps span {
+  margin-top: 4px;
+  color: #57717a;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.download-agent.primary {
+  border-color: #08755f;
+  background: #08755f;
+  color: #fff;
+}
+.advanced-agent {
+  grid-column: 1/-1;
+  border-top: 1px solid #dbe7e3;
+  padding-top: 12px;
+}
+.advanced-agent summary {
+  cursor: pointer;
+  color: #57717a;
+  font-size: 13px;
+  font-weight: 700;
+}
+.advanced-agent label {
+  margin-top: 12px;
+}
 .agent-status {
   flex: 0 0 auto;
   display: inline-flex;
@@ -1896,3 +1971,15 @@ tbody tr:hover {
   background: #fff7f7 !important;
 }
 .danger:hover { background: #ffe9e9 !important; }
+
+@media (max-width: 700px) {
+  .print-agent-download .form-heading {
+    flex-direction: column;
+  }
+  .setup-steps {
+    grid-template-columns: 1fr;
+  }
+  .print-agent-download .actions .button-link {
+    width: 100%;
+  }
+}

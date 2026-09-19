@@ -158,16 +158,31 @@
 <section *ngIf="tab==='audit' && rights.manage"><p>Últimos 200 registros de este local. Los códigos nunca se muestran en el historial.</p><button (click)="loadAudit()" [disabled]="busy">Actualizar historial</button><article class="card" *ngFor="let entry of auditRows"><h2>{{entry.action==='price_approval'?'Ajuste autorizado':entry.action==='staff_created'?'Empleado creado':entry.action==='staff_access'?'Permisos actualizados':entry.action==='staff_removed'?'Acceso retirado':entry.action==='pin_changed'?'Código actualizado':'Contraseña restablecida'}}</h2><p>{{date(entry.created_at)}} · {{entry.actor_name}}<span *ngIf="entry.order_id"> · Pedido #{{entry.order_id}}</span></p><p *ngIf="entry.approver_name">Autorizó: {{entry.approver_name}}</p><p *ngIf="entry.detail.reason">{{entry.detail.reason}}</p><p *ngIf="entry.detail.discount">Descuento: {{money(entry.detail.discount)}}</p><div class="list-row" *ngFor="let price of entry.detail.prices"><span>{{productName(price.product_id)}} · {{price.quantity}} unidades</span><strong>{{money(price.catalog_price)}} → {{money(price.authorized_price)}}</strong></div></article></section>
 <section *ngIf="tab==='account'">
   <div class="card account-info"><h2>Mi perfil</h2><dl><div><dt>Nombre</dt><dd>{{account.name}}</dd></div><div><dt>Correo</dt><dd>{{account.email}}</dd></div><div><dt>Local actual</dt><dd>{{data.business.name}}</dd></div><div><dt>Rol</dt><dd>{{roleName(rights.role)}}</dd></div></dl><p *ngIf="rights.team">Para agregar un local a tu cuenta, solicitá la autorización de System Lab.</p></div>
-  <form class="card form-grid print-agent-settings" (ngSubmit)="savePrintAgent()">
+  <div class="card print-agent-download">
     <div class="form-heading">
-      <div><h2>Estación de impresión</h2><p>Impresión automática de comandas mediante System Lab Print Agent.</p></div>
+      <div><span class="eyebrow">IMPRESIÓN AUTOMÁTICA</span><h2>Preparar esta computadora</h2><p>Instalá una sola vez el puente que conecta el POS con la impresora térmica.</p></div>
       <span class="agent-status" [class.online]="printAgent.state==='online'" [class.offline]="printAgent.state==='offline'">{{printAgentStateLabel()}}</span>
     </div>
-    <label>Dirección local del agente<input name="printAgentUrl" [(ngModel)]="printAgentUrl" required placeholder="http://127.0.0.1:18181" autocomplete="off"></label>
+    <ol class="setup-steps">
+      <li><strong>Descargar</strong><span>Obtené el instalador oficial para Windows.</span></li>
+      <li><strong>Instalar</strong><span>Abrí el ZIP y ejecutá <b>INSTALAR-PRINT-AGENT.bat</b>.</span></li>
+      <li><strong>Vincular</strong><span>Configurá la impresora, copiá la clave y pegala abajo.</span></li>
+    </ol>
+    <div class="actions">
+      <a class="button-link primary download-agent" href="/downloads/System-Lab-Print-Agent-Windows.zip" download>Descargar agente para Windows</a>
+      <a class="button-link" [href]="printAgentUrl || printAgent.defaultUrl" target="_blank" rel="noopener">Abrir configuración de impresoras</a>
+    </div>
+    <small>Compatible con Windows 10/11 e impresoras térmicas ESC/POS USB o de red.</small>
+  </div>
+  <form class="card form-grid print-agent-settings" (ngSubmit)="savePrintAgent()">
+    <div class="form-heading">
+      <div><h2>Vincular estación</h2><p>Después de imprimir la prueba, copiá aquí la clave que muestra el panel del agente.</p></div>
+    </div>
     <label>Clave de vinculación<input type="password" name="printAgentKey" [(ngModel)]="printAgentKey" required autocomplete="off" placeholder="Copiar desde el panel local"></label>
     <p *ngIf="printAgent.printerLabel">Impresora activa: <strong>{{printAgent.printerLabel}}</strong><span *ngIf="printAgent.version"> · Agente {{printAgent.version}}</span></p>
     <p *ngIf="printAgent.lastError && printAgent.state==='offline'">{{printAgent.lastError}}</p>
-    <div class="actions"><button class="primary" [disabled]="printAgentChecking">Guardar y probar conexión</button><a class="button-link" [href]="printAgentUrl || printAgent.defaultUrl" target="_blank" rel="noopener">Abrir panel local</a></div>
+    <div class="actions"><button class="primary" [disabled]="printAgentChecking||!printAgentKey">Guardar y probar conexión</button></div>
+    <details class="advanced-agent"><summary>Configuración avanzada</summary><label>Dirección local del agente<input name="printAgentUrl" [(ngModel)]="printAgentUrl" required placeholder="http://127.0.0.1:18181" autocomplete="off"></label></details>
   </form>
   <form class="card form-grid" *ngIf="rights.pin" (ngSubmit)="savePin()"><h2>Código para autorizar precios</h2><p>Código personal de 6 a 12 dígitos, válido solamente en {{data.business.name}}. Estado: {{rights.pin_configured?'Configurado':'Pendiente de configurar'}}. No lo compartás con el equipo; ingresalo cuando apruebes un ajuste.</p><label>Tu contraseña para confirmar<input type="password" name="pinPassword" [(ngModel)]="pinPassword" required autocomplete="current-password"></label><label>Nuevo código personal<input type="password" inputmode="numeric" pattern="[0-9]{6,12}" name="pinCode" [(ngModel)]="pinCode" required autocomplete="new-password"></label><button class="primary" [disabled]="busy">Guardar código</button></form>
   <form class="card form-grid" (ngSubmit)="changePassword()"><h2>Cambiar contraseña</h2><p>{{account.email}} · {{account.name}}</p><label>Contraseña actual<input type="password" name="old" [(ngModel)]="currentPassword" required autocomplete="current-password"></label><label>Nueva contraseña<input type="password" name="new" [(ngModel)]="nextPassword" minlength="8" required autocomplete="new-password"></label><button class="primary" [disabled]="busy">Actualizar contraseña</button></form>

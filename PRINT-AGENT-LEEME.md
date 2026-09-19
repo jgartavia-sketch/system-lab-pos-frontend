@@ -4,8 +4,8 @@ Este paquete sustituye la impresión automática basada en `window.print()` por 
 
 ## Instalación en la computadora del restaurante
 
-1. Abrir la carpeta `system-lab-print-agent`.
-2. Ejecutar `INSTALAR-PRINT-AGENT.bat`.
+1. Desde el POS, abrir **Mi cuenta → Preparar esta computadora** y pulsar **Descargar agente para Windows**.
+2. Extraer el ZIP descargado y ejecutar `INSTALAR-PRINT-AGENT.bat`.
 3. En el panel que se abre, seleccionar la impresora térmica instalada en Windows o indicar la IP si es una impresora de red.
 4. Seleccionar 80 mm o 58 mm, guardar y pulsar **Imprimir prueba**.
 5. Pulsar **Mostrar y copiar** en la clave de vinculación.
@@ -18,7 +18,7 @@ Desde ese momento, **Guardar y enviar a cocina** imprime directamente y no abre 
 ## Requisitos
 
 - Windows 10 u 11.
-- Node.js 20 o superior. La computadora de desarrollo ya utiliza Node 24.
+- El instalador prepara automáticamente el componente de ejecución mediante Windows Package Manager cuando sea necesario.
 - Impresora térmica compatible con comandos ESC/POS.
 - Para USB: la impresora debe aparecer en **Configuración → Impresoras y escáneres** de Windows.
 - Para red: la impresora debe aceptar conexiones RAW/TCP, normalmente en el puerto 9100.

@@ -5,14 +5,39 @@ Write-Host "SYSTEM LAB PRINT AGENT" -ForegroundColor Green
 Write-Host "Instalación de estación de impresión" -ForegroundColor Gray
 Write-Host ""
 
-$nodeCommand = Get-Command node.exe -ErrorAction SilentlyContinue
-if (-not $nodeCommand) {
-  throw "Node.js 20 o superior no está instalado. Instalalo y ejecutá este archivo nuevamente."
+function Find-CompatibleNode {
+  $command = Get-Command node.exe -ErrorAction SilentlyContinue
+  if (-not $command) { return $null }
+  try {
+    $major = [int]((& $command.Source --version).TrimStart("v").Split(".")[0])
+    if ($major -ge 20) { return $command.Source }
+  } catch { return $null }
+  return $null
 }
 
-$major = [int]((& $nodeCommand.Source --version).TrimStart("v").Split(".")[0])
-if ($major -lt 20) {
-  throw "Se requiere Node.js 20 o superior. Versión detectada: $(& $nodeCommand.Source --version)"
+$nodePath = Find-CompatibleNode
+if (-not $nodePath) {
+  Write-Host "Preparando el componente de ejecución..." -ForegroundColor Yellow
+  $winget = Get-Command winget.exe -ErrorAction SilentlyContinue
+  if (-not $winget) {
+    Start-Process "https://nodejs.org/en/download"
+    throw "Windows no tiene disponible el instalador automático. Instalá Node.js LTS desde la página que se abrió y ejecutá nuevamente este archivo."
+  }
+
+  $arguments = @(
+    "install", "--id", "OpenJS.NodeJS.LTS", "--exact", "--silent",
+    "--accept-package-agreements", "--accept-source-agreements"
+  )
+  $installation = Start-Process -FilePath $winget.Source -ArgumentList $arguments -Wait -PassThru
+  if ($installation.ExitCode -ne 0) {
+    throw "Windows no pudo instalar automáticamente el componente requerido. Código: $($installation.ExitCode)."
+  }
+
+  $env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [Environment]::GetEnvironmentVariable("Path", "User")
+  $nodePath = Find-CompatibleNode
+  if (-not $nodePath) {
+    throw "El componente se instaló, pero Windows todavía no lo detecta. Reiniciá la computadora y ejecutá nuevamente el instalador."
+  }
 }
 
 $source = Split-Path -Parent $PSScriptRoot
@@ -32,7 +57,7 @@ Copy-Item -Path (Join-Path $source "public\*") -Destination (Join-Path $installD
 Copy-Item -LiteralPath (Join-Path $source "scripts\raw-print.ps1") -Destination (Join-Path $installDir "scripts\raw-print.ps1") -Force
 
 $vbsPath = Join-Path $installDir "start-hidden.vbs"
-$nodeEscaped = $nodeCommand.Source.Replace('"', '""')
+$nodeEscaped = $nodePath.Replace('"', '""')
 $serverEscaped = (Join-Path $installDir "server.js").Replace('"', '""')
 $vbs = @"
 Set shell = CreateObject("WScript.Shell")
