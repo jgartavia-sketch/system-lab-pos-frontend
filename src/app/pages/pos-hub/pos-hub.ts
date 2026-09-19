@@ -7,6 +7,7 @@ import { PosDashboard } from './pos-dashboard';
 import { PosFinances } from './pos-finances';
 import { PosConnect } from './pos-connect';
 import { appointmentOverview, AppointmentDay } from './pos-appointments';
+import { PrintAgentService } from '../../services/print-agent.service';
 
 @Component({
   selector:'app-pos-hub',
@@ -33,22 +34,14 @@ export class PosHub implements OnInit, OnDestroy {
   roles=[{id:'admin',name:'Administrador'},{id:'cashier',name:'Cajero'},{id:'waiter',name:'Salonero'},{id:'kitchen',name:'Cocina'}];
   sourceChannel='pos'; fulfillment='dine_in'; externalOrderId='';
   currentPassword=''; nextPassword=''; private poll:any; private params:any;
-  private autoPrintingComanda=false;
+  printAgentUrl=''; printAgentKey=''; printAgentChecking=false;
 
-  constructor(private route:ActivatedRoute,private router:Router,private cd:ChangeDetectorRef){}
+  constructor(private route:ActivatedRoute,private router:Router,private cd:ChangeDetectorRef,public printAgent:PrintAgentService){}
 
   today(){return posDay(new Date());}
   blankProduct(){return {name:'',category:'General',sku:'',price:0,cost:0,tax_rate:0,minimum:0,track_stock:true,active:true,packaging_fee:0,cost_known:true};}
-  ngOnInit(){this.params=this.route.paramMap.subscribe(p=>{this.mode=p.get('mode')||'';this.tab='dashboard';this.bid=0;this.data=null;this.resetCart();void this.initialize();});this.poll=setInterval(()=>{if(this.bid&&!this.busy&&['kitchen','orders','dashboard','appointments'].includes(this.tab))void this.refresh().catch((e:any)=>{this.error=e.message;this.cd.detectChanges();});},5000);}
+  ngOnInit(){this.printAgentUrl=this.printAgent.url;this.printAgentKey=this.printAgent.apiKey;void this.refreshPrintAgent();this.params=this.route.paramMap.subscribe(p=>{this.mode=p.get('mode')||'';this.tab='dashboard';this.bid=0;this.data=null;this.resetCart();void this.initialize();});this.poll=setInterval(()=>{if(this.bid&&!this.busy&&['kitchen','orders','dashboard','appointments'].includes(this.tab))void this.refresh().catch((e:any)=>{this.error=e.message;this.cd.detectChanges();});},5000);}
   ngOnDestroy(){clearInterval(this.poll);this.params?.unsubscribe();}
-
-  @HostListener('window:afterprint')
-  afterPrint(){
-    if(!this.autoPrintingComanda)return;
-    this.autoPrintingComanda=false;
-    this.comanda=null;
-    this.cd.detectChanges();
-  }
 
   async request(path:string,method='GET',body?:any){
     const ctl=new AbortController();const timeout=setTimeout(()=>ctl.abort(),45000);
@@ -166,29 +159,59 @@ export class PosHub implements OnInit, OnDestroy {
     });
   }
 
-  private queueComandaPrint(o:any){
+  private async queueComandaPrint(o:any){
     this.receipt=null;
-    this.comanda=o;
-    this.autoPrintingComanda=true;
+    try{
+      const result=await this.printAgent.printComanda(o,this.data?.business);
+      this.comanda=null;
+      this.notice=result.duplicate
+        ? `Comanda #${o.id} ya estaba impresa; se evitó el duplicado.`
+        : `Comanda #${o.id} enviada e impresa automáticamente en cocina.`;
+    }catch(e:any){
+      // El pedido ya está guardado y en cocina. Se abre la vista como respaldo,
+      // pero nunca se dispara el diálogo del navegador sin autorización.
+      this.comanda=o;
+      this.notice=`Comanda #${o.id} enviada a cocina. No se imprimió automáticamente: ${e.message}`;
+    }
     this.cd.detectChanges();
-
-    // El pequeño retraso permite que Angular pinte la comanda antes de abrir
-    // automáticamente el diálogo de impresión del navegador.
-    setTimeout(()=>{
-      try{
-        window.print();
-      }catch{
-        this.autoPrintingComanda=false;
-        this.notice='Comanda enviada a cocina. La impresión automática no pudo abrirse; usá Ver comanda para reimprimir.';
-        this.cd.detectChanges();
-      }
-    },120);
   }
 
   openPayment(o:any){this.paymentOrder=o;this.method='cash';this.received=+o.total;}
   async pay(){await this.run(async()=>{const o=await this.mutate('/orders/'+this.paymentOrder.id+'/pay',{method:this.method,received:+this.received});this.paymentOrder=null;this.receipt=o;this.notice='Venta registrada. Inventario actualizado.';});}
   async refund(o:any){const reason=prompt('Motivo de devolución total (reintegra todas las existencias):');if(!reason)return;await this.run(async()=>{await this.mutate('/orders/'+o.id+'/refund',{reason});this.notice='Devolución registrada. Realizá el reintegro al cliente por '+this.paymentName(o.payment_method)+'.';});}
   print(){window.print();}
+  async reprintComanda(){
+    if(!this.comanda)return;
+    const order=this.comanda;
+    try{
+      // Una reimpresión explícita usa una clave nueva; el control de duplicados
+      // permanece activo únicamente para los envíos automáticos accidentales.
+      await this.printAgent.printComanda({...order,revision:`${order.revision||0}-reprint-${Date.now()}`},this.data?.business);
+      this.comanda=null;
+      this.notice=`Comanda #${order.id} reimpresa en cocina.`;
+    }catch(e:any){
+      this.notice=`No se pudo reimprimir con el agente: ${e.message}`;
+    }
+    this.cd.detectChanges();
+  }
+  async refreshPrintAgent(){
+    this.printAgentChecking=true;
+    await this.printAgent.check();
+    this.printAgentChecking=false;
+    this.cd.detectChanges();
+  }
+  async savePrintAgent(){
+    this.printAgent.save(this.printAgentUrl,this.printAgentKey);
+    this.printAgentUrl=this.printAgent.url;
+    this.printAgentKey=this.printAgent.apiKey;
+    await this.refreshPrintAgent();
+    this.notice=this.printAgent.state==='online'
+      ? `Estación vinculada: ${this.printAgent.printerLabel}.`
+      : this.printAgent.state==='unconfigured'
+        ? 'El agente respondió, pero falta elegir la impresora o copiar la clave correcta.'
+        : this.printAgent.lastError;
+  }
+  printAgentStateLabel(){return ({checking:'Comprobando…',online:'Conectada',offline:'Desconectada',unconfigured:'Pendiente de configurar'} as Record<string,string>)[this.printAgent.state]||this.printAgent.state;}
   showComanda(o:any){this.receipt=null;this.comanda=o;}
   editProduct(p:any){this.productId=p.id;this.product={...this.blankProduct()};for(const k of Object.keys(this.product))this.product[k]=p[k];this.tab='products';}
   async saveProduct(){await this.run(async()=>{await this.mutate('/products'+(this.productId?'/'+this.productId:''),this.product,this.productId?'PUT':'POST');this.product=this.blankProduct();this.productId=0;this.notice='Producto guardado. Cargá sus existencias en Inventario.';});}

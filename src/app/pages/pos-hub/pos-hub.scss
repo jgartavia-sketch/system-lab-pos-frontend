@@ -1122,6 +1122,55 @@ textarea {
   font-weight: 650;
   overflow-wrap: anywhere;
 }
+.print-agent-settings .form-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.agent-status {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #fff5d8;
+  color: #7b5a00;
+  font-size: 12px;
+  font-weight: 750;
+}
+.agent-status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.agent-status.online {
+  background: #daf5e7;
+  color: #08755f;
+}
+.agent-status.offline {
+  background: #ffe5e5;
+  color: #a52e2e;
+}
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 43px;
+  padding: 10px 15px;
+  border: 1px solid #b9ccc6;
+  border-radius: 8px;
+  background: #fff;
+  color: #173f40;
+  font-weight: 700;
+  text-decoration: none;
+}
+.button-link:hover {
+  border-color: #81b5a4;
+}
 
 /* Montañas, superficies claras y controles que se adaptan al espacio real. */
 :host {

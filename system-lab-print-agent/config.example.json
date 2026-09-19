@@ -1,0 +1,25 @@
+{
+  "port": 18181,
+  "apiKey": "SE_GENERA_AL_INSTALAR",
+  "allowedOrigins": [
+    "https://systemlabcr.com",
+    "https://www.systemlabcr.com",
+    "http://localhost:4200"
+  ],
+  "printer": {
+    "type": "windows",
+    "name": "",
+    "host": "",
+    "port": 9100,
+    "paperWidth": 80,
+    "charactersPerLine": 48,
+    "codePage": "cp850",
+    "codePageId": 2,
+    "autoCut": true,
+    "feedLines": 5
+  },
+  "jobs": {
+    "deduplicationHours": 24,
+    "historyLimit": 500
+  }
+}
