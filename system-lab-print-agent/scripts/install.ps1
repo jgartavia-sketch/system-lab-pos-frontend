@@ -63,7 +63,10 @@ $vbs = @"
 Set shell = CreateObject("WScript.Shell")
 shell.Run Chr(34) & "$nodeEscaped" & Chr(34) & " " & Chr(34) & "$serverEscaped" & Chr(34), 0, False
 "@
-Set-Content -LiteralPath $vbsPath -Value $vbs -Encoding UTF8
+# Windows Script Host no interpreta de forma fiable un VBScript guardado como
+# UTF-8 con BOM por Windows PowerShell 5.1. Unicode genera UTF-16 LE, formato
+# compatible con WScript en las versiones de Windows soportadas.
+Set-Content -LiteralPath $vbsPath -Value $vbs -Encoding Unicode
 
 $shell = New-Object -ComObject WScript.Shell
 $shortcut = $shell.CreateShortcut($shortcutPath)
@@ -74,12 +77,32 @@ $shortcut.Description = "System Lab Print Agent"
 $shortcut.Save()
 
 $existing = Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.CommandLine -like "*$installDir*server.js*" }
-if (-not $existing) {
-  Start-Process -FilePath "$env:WINDIR\System32\wscript.exe" -ArgumentList ('"' + $vbsPath + '"')
+foreach ($process in $existing) {
+  Stop-Process -Id $process.ProcessId -Force -ErrorAction SilentlyContinue
 }
 
-Start-Sleep -Seconds 2
+Start-Process -FilePath "$env:WINDIR\System32\wscript.exe" -ArgumentList ('"' + $vbsPath + '"')
+
+$agentUrl = "http://127.0.0.1:18181"
+$agentReady = $false
+for ($attempt = 1; $attempt -le 15; $attempt++) {
+  Start-Sleep -Seconds 1
+  try {
+    $health = Invoke-RestMethod -Uri "$agentUrl/v1/health" -Method Get -TimeoutSec 2
+    if ($health.ok -eq $true) {
+      $agentReady = $true
+      break
+    }
+  } catch {
+    # El proceso puede tardar algunos segundos en quedar disponible.
+  }
+}
+
+if (-not $agentReady) {
+  throw "El agente se instaló, pero no logró iniciar. Contactá a soporte de System Lab y enviá una captura de esta ventana."
+}
+
 Write-Host "Instalación completada." -ForegroundColor Green
 Write-Host "El agente iniciará automáticamente con Windows." -ForegroundColor Gray
 Write-Host "Abriendo el panel para elegir la impresora..." -ForegroundColor Gray
-Start-Process "http://127.0.0.1:18181"
+Start-Process $agentUrl

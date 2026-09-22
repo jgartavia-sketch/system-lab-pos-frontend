@@ -9,7 +9,7 @@ const {
   isPrinterConfigured, publicPrinter
 } = require('./lib');
 
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 let config = loadConfig();
 let jobs = loadJobs();
 let queue = Promise.resolve();
