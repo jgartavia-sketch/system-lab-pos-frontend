@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>System Lab Print Agent</title>
   <style>
-    :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#eff7f2;background:#07110d;color-scheme:dark;--green:#55e49b;--panel:#101c17;--line:#263d32;--muted:#9db4a8;--danger:#ff8c8c}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0,#143326 0,transparent 38%),#07110d}main{width:min(960px,calc(100% - 32px));margin:40px auto}.brand{display:flex;align-items:center;gap:14px;margin-bottom:28px}.mark{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#06100c;background:var(--green);font-weight:900}.brand h1{font-size:clamp(1.35rem,3vw,2rem);margin:0}.brand p{margin:4px 0 0;color:var(--muted)}.status{display:inline-flex;align-items:center;gap:8px;margin-left:auto;padding:9px 13px;border:1px solid var(--line);border-radius:999px}.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 14px var(--green)}section{background:linear-gradient(145deg,#122019,#0c1712);border:1px solid var(--line);border-radius:18px;padding:24px;margin-bottom:18px;box-shadow:0 18px 60px #0004}h2{margin:0 0 8px;font-size:1.12rem}p{color:var(--muted);line-height:1.55}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.wide{grid-column:1/-1}label{display:grid;gap:7px;color:#cfe0d6;font-size:.88rem}input,select,button,textarea{font:inherit}input,select,textarea{width:100%;border:1px solid var(--line);background:#07110d;color:#fff;border-radius:10px;padding:12px}textarea{min-height:92px;resize:vertical}button{border:1px solid var(--line);background:#172a20;color:#fff;border-radius:10px;padding:11px 15px;cursor:pointer;font-weight:700}button.primary{background:var(--green);color:#06100c;border-color:var(--green)}button:disabled{opacity:.5;cursor:wait}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.key-row{display:grid;grid-template-columns:1fr auto;gap:8px}.message{display:none;margin-top:16px;padding:12px;border-radius:10px;background:#173726;color:#bffbd9}.message.error{background:#3d1e1e;color:#ffd3d3}.message.show{display:block}.jobs{display:grid;gap:8px}.job{display:grid;grid-template-columns:1fr auto;gap:10px;padding:10px;border-bottom:1px solid var(--line);font-size:.88rem}.job small{color:var(--muted)}code{color:var(--green)}@media(max-width:700px){main{margin-top:22px}.brand{align-items:flex-start;flex-wrap:wrap}.status{margin-left:0}.grid{grid-template-columns:1fr}.wide{grid-column:auto}.key-row{grid-template-columns:1fr}.actions button{flex:1}}
+    :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#eff7f2;background:#07110d;color-scheme:dark;--green:#55e49b;--panel:#101c17;--line:#263d32;--muted:#9db4a8;--danger:#ff8c8c}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0,#143326 0,transparent 38%),#07110d}main{width:min(1180px,calc(100% - 32px));margin:40px auto}.brand{display:flex;align-items:center;gap:14px;margin-bottom:28px}.mark{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#06100c;background:var(--green);font-weight:900}.brand h1{font-size:clamp(1.35rem,3vw,2rem);margin:0}.brand p{margin:4px 0 0;color:var(--muted)}.status{display:inline-flex;align-items:center;gap:8px;margin-left:auto;padding:9px 13px;border:1px solid var(--line);border-radius:999px}.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 14px var(--green)}section{background:linear-gradient(145deg,#122019,#0c1712);border:1px solid var(--line);border-radius:18px;padding:24px;margin-bottom:18px;box-shadow:0 18px 60px #0004}h2{margin:0 0 8px;font-size:1.12rem}h3{margin:0;font-size:1rem}p{color:var(--muted);line-height:1.55}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.wide{grid-column:1/-1}label{display:grid;gap:7px;color:#cfe0d6;font-size:.88rem}input,select,button,textarea{font:inherit}input,select,textarea{width:100%;border:1px solid var(--line);background:#07110d;color:#fff;border-radius:10px;padding:12px}textarea{min-height:92px;resize:vertical}button{border:1px solid var(--line);background:#172a20;color:#fff;border-radius:10px;padding:11px 15px;cursor:pointer;font-weight:700}button.primary{background:var(--green);color:#06100c;border-color:var(--green)}button.danger{color:#ffc8c8;border-color:#6b3636;background:#281515}button:disabled{opacity:.5;cursor:wait}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.key-row{display:grid;grid-template-columns:1fr auto;gap:8px}.message{display:none;margin-top:16px;padding:12px;border-radius:10px;background:#173726;color:#bffbd9}.message.error{background:#3d1e1e;color:#ffd3d3}.message.show{display:block}.station-list{display:grid;gap:16px;margin-top:20px}.station-card{border:1px solid var(--line);border-radius:14px;padding:18px;background:#09130f}.station-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.station-key{color:var(--green);font-size:.78rem}.add-station{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:18px}.jobs{display:grid;gap:8px}.job{display:grid;grid-template-columns:1fr auto;gap:10px;padding:10px;border-bottom:1px solid var(--line);font-size:.88rem}.job small{color:var(--muted)}code{color:var(--green)}@media(max-width:700px){main{margin-top:22px}.brand{align-items:flex-start;flex-wrap:wrap}.status{margin-left:0}.grid{grid-template-columns:1fr}.wide{grid-column:auto}.key-row,.add-station{grid-template-columns:1fr}.actions button{flex:1}.station-head{align-items:flex-start;flex-direction:column}}
   </style>
 </head>
 <body>
@@ -13,22 +13,32 @@
   <div class="brand"><div class="mark">SL</div><div><h1>System Lab Print Agent</h1><p>Puente local de impresión ESC/POS</p></div><div class="status"><span class="dot"></span><span id="agent-status">Agente activo</span></div></div>
 
   <section>
-    <h2>Impresora de cocina</h2>
-    <p>Esta elección queda guardada en la computadora. Las comandas llegarán aquí sin abrir la ventana de impresión de Chrome.</p>
-    <div class="grid">
-      <label>Tipo de conexión<select id="printer-type"><option value="windows">Instalada en Windows / USB</option><option value="network">Impresora de red TCP</option></select></label>
-      <label id="windows-field">Impresora<select id="printer-name"><option value="">Buscando impresoras…</option></select></label>
-      <label class="network-field">Dirección IP<input id="printer-host" placeholder="192.168.1.50"></label>
-      <label class="network-field">Puerto<input id="printer-port" type="number" min="1" max="65535" value="9100"></label>
-      <label>Ancho de papel<select id="paper-width"><option value="80">80 mm</option><option value="58">58 mm</option></select></label>
-      <label>Caracteres por línea<input id="characters" type="number" min="24" max="64" value="48"></label>
-      <label>Página de caracteres<select id="code-page"><option value="cp850">CP850 · Español</option><option value="ascii">ASCII básico</option><option value="utf8">UTF-8</option></select></label>
-      <label>Líneas al finalizar<input id="feed-lines" type="number" min="2" max="12" value="5"></label>
-      <label><span>Corte automático</span><select id="auto-cut"><option value="true">Activado</option><option value="false">Desactivado</option></select></label>
-    </div>
-    <div class="actions"><button class="primary" id="save">Guardar configuración</button><button id="test">Imprimir prueba</button><button id="reload-printers">Actualizar impresoras</button></div>
+    <h2>Rutas de impresión</h2>
+    <p>Asigná una impresora diferente a cada operación. La configuración queda guardada en esta computadora y el POS enviará cada trabajo a su destino correcto.</p>
+    <div class="station-list" id="stations"></div>
+    <div class="add-station"><input id="new-station-label" maxlength="80" placeholder="Nueva estación, por ejemplo Postres"><button id="add-station">Agregar estación</button></div>
+    <div class="actions"><button class="primary" id="save">Guardar todas las rutas</button><button id="reload-printers">Actualizar impresoras</button></div>
     <div class="message" id="message"></div>
   </section>
+
+  <template id="station-template">
+    <article class="station-card">
+      <div class="station-head"><div><h3 class="station-title"></h3><span class="station-key"></span></div><button class="danger remove-station">Eliminar</button></div>
+      <div class="grid">
+        <label>Nombre de la operación<input class="station-label" maxlength="80"></label>
+        <label>Tipo de conexión<select class="printer-type"><option value="windows">Instalada en Windows / USB</option><option value="network">Impresora de red TCP</option></select></label>
+        <label class="windows-field">Impresora<select class="printer-name"><option value="">Seleccionar impresora</option></select></label>
+        <label class="network-field">Dirección IP<input class="printer-host" placeholder="192.168.1.50"></label>
+        <label class="network-field">Puerto<input class="printer-port" type="number" min="1" max="65535" value="9100"></label>
+        <label>Ancho de papel<select class="paper-width"><option value="80">80 mm</option><option value="58">58 mm</option></select></label>
+        <label>Caracteres por línea<input class="characters" type="number" min="24" max="64" value="48"></label>
+        <label>Página de caracteres<select class="code-page"><option value="cp850">CP850 · Español</option><option value="ascii">ASCII básico</option><option value="utf8">UTF-8</option></select></label>
+        <label>Líneas al finalizar<input class="feed-lines" type="number" min="2" max="12" value="5"></label>
+        <label>Corte automático<select class="auto-cut"><option value="true">Activado</option><option value="false">Desactivado</option></select></label>
+      </div>
+      <div class="actions"><button class="test-station">Imprimir prueba de esta ruta</button></div>
+    </article>
+  </template>
 
   <section>
     <h2>Vincular con System Lab POS</h2>

@@ -39,7 +39,7 @@ export class PosHub implements OnInit, OnDestroy {
   constructor(private route:ActivatedRoute,private router:Router,private cd:ChangeDetectorRef,public printAgent:PrintAgentService){}
 
   today(){return posDay(new Date());}
-  blankProduct(){return {name:'',category:'General',sku:'',price:0,cost:0,tax_rate:0,minimum:0,track_stock:true,active:true,packaging_fee:0,cost_known:true};}
+  blankProduct(){return {name:'',category:'General',sku:'',price:0,cost:0,tax_rate:0,minimum:0,track_stock:true,active:true,packaging_fee:0,cost_known:true,print_station:'kitchen'};}
   ngOnInit(){this.printAgentUrl=this.printAgent.url;this.printAgentKey=this.printAgent.apiKey;void this.refreshPrintAgent();this.params=this.route.paramMap.subscribe(p=>{this.mode=p.get('mode')||'';this.tab='dashboard';this.bid=0;this.data=null;this.resetCart();void this.initialize();});this.poll=setInterval(()=>{if(this.bid&&!this.busy&&['kitchen','orders','dashboard','appointments'].includes(this.tab))void this.refresh().catch((e:any)=>{this.error=e.message;this.cd.detectChanges();});},5000);}
   ngOnDestroy(){clearInterval(this.poll);this.params?.unsubscribe();}
 
@@ -63,6 +63,8 @@ export class PosHub implements OnInit, OnDestroy {
   get available(){return this.businesses.filter(b=>b.mode===this.mode);}
   get products(){return (this.data?.products||[]).filter((p:any)=>p.active&&(!this.category||p.category===this.category)&&(!this.search||(p.name+' '+p.sku).toLowerCase().includes(this.search.toLowerCase())));}
   get categories():string[]{return [...new Set<string>((this.data?.products||[]).map((p:any)=>p.category))];}
+  get printStations(){return this.printAgent.stationOptions();}
+  printStationName(key:string){return key==='none'?'No imprimir':this.printStations.find(station=>station.key===key)?.label||key;}
   get kitchenOrders(){return (this.data?.orders||[]).filter((o:any)=>['queued','preparing','ready'].includes(o.kitchen_status));}
   get pending(){return (this.data?.orders||[]).filter((o:any)=>['open','queued','preparing','ready'].includes(o.status));}
   get lowStock(){return (this.data?.products||[]).filter((p:any)=>p.active&&p.track_stock&&+p.stock<=+p.minimum);}
@@ -162,22 +164,33 @@ export class PosHub implements OnInit, OnDestroy {
   private async queueComandaPrint(o:any){
     this.receipt=null;
     try{
-      const result=await this.printAgent.printComanda(o,this.data?.business);
+      const result=await this.printAgent.printPreparation(o,this.data?.business);
       this.comanda=null;
       this.notice=result.duplicate
-        ? `Comanda #${o.id} ya estaba impresa; se evitó el duplicado.`
-        : `Comanda #${o.id} enviada e impresa automáticamente en cocina.`;
+        ? `Las comandas #${o.id} ya estaban impresas; se evitó el duplicado.`
+        : `Pedido #${o.id} distribuido automáticamente a sus estaciones de preparación.`;
     }catch(e:any){
       // El pedido ya está guardado y en cocina. Se abre la vista como respaldo,
       // pero nunca se dispara el diálogo del navegador sin autorización.
       this.comanda=o;
-      this.notice=`Comanda #${o.id} enviada a cocina. No se imprimió automáticamente: ${e.message}`;
+      this.notice=`Pedido #${o.id} enviado a preparación. Una ruta no se imprimió automáticamente: ${e.message}`;
     }
     this.cd.detectChanges();
   }
 
   openPayment(o:any){this.paymentOrder=o;this.method='cash';this.received=+o.total;}
-  async pay(){await this.run(async()=>{const o=await this.mutate('/orders/'+this.paymentOrder.id+'/pay',{method:this.method,received:+this.received});this.paymentOrder=null;this.receipt=o;this.notice='Venta registrada. Inventario actualizado.';});}
+  async pay(){await this.run(async()=>{
+    const o=await this.mutate('/orders/'+this.paymentOrder.id+'/pay',{method:this.method,received:+this.received});
+    this.paymentOrder=null;this.receipt=o;
+    try{
+      const result=await this.printAgent.printReceipt(o,this.data?.business,this.customerName(o.customer_id));
+      this.notice=result.duplicate
+        ? `Venta #${o.id} registrada. El comprobante ya estaba impreso.`
+        : `Venta #${o.id} registrada y comprobante impreso para el cliente.`;
+    }catch(e:any){
+      this.notice=`Venta #${o.id} registrada. No se imprimió el comprobante automáticamente: ${e.message}`;
+    }
+  });}
   async refund(o:any){const reason=prompt('Motivo de devolución total (reintegra todas las existencias):');if(!reason)return;await this.run(async()=>{await this.mutate('/orders/'+o.id+'/refund',{reason});this.notice='Devolución registrada. Realizá el reintegro al cliente por '+this.paymentName(o.payment_method)+'.';});}
   print(){window.print();}
   async reprintComanda(){
@@ -186,11 +199,22 @@ export class PosHub implements OnInit, OnDestroy {
     try{
       // Una reimpresión explícita usa una clave nueva; el control de duplicados
       // permanece activo únicamente para los envíos automáticos accidentales.
-      await this.printAgent.printComanda({...order,revision:`${order.revision||0}-reprint-${Date.now()}`},this.data?.business);
+      await this.printAgent.printPreparation({...order,revision:`${order.revision||0}-reprint-${Date.now()}`},this.data?.business);
       this.comanda=null;
-      this.notice=`Comanda #${order.id} reimpresa en cocina.`;
+      this.notice=`Comandas #${order.id} reimpresas en sus estaciones.`;
     }catch(e:any){
       this.notice=`No se pudo reimprimir con el agente: ${e.message}`;
+    }
+    this.cd.detectChanges();
+  }
+  async reprintReceipt(){
+    if(!this.receipt)return;
+    const order=this.receipt;
+    try{
+      await this.printAgent.printReceipt({...order,revision:`${order.revision||0}-reprint-${Date.now()}`},this.data?.business,this.customerName(order.customer_id));
+      this.notice=`Comprobante #${order.id} reimpreso para el cliente.`;
+    }catch(e:any){
+      this.notice=`No se pudo reimprimir el comprobante con el agente: ${e.message}`;
     }
     this.cd.detectChanges();
   }
@@ -213,7 +237,7 @@ export class PosHub implements OnInit, OnDestroy {
   }
   printAgentStateLabel(){return ({checking:'Comprobando…',online:'Conectada',offline:'Desconectada',unconfigured:'Pendiente de configurar'} as Record<string,string>)[this.printAgent.state]||this.printAgent.state;}
   showComanda(o:any){this.receipt=null;this.comanda=o;}
-  editProduct(p:any){this.productId=p.id;this.product={...this.blankProduct()};for(const k of Object.keys(this.product))this.product[k]=p[k];this.tab='products';}
+  editProduct(p:any){this.productId=p.id;this.product={...this.blankProduct()};for(const k of Object.keys(this.product))if(p[k]!==undefined&&p[k]!==null)this.product[k]=p[k];this.tab='products';}
   async saveProduct(){await this.run(async()=>{await this.mutate('/products'+(this.productId?'/'+this.productId:''),this.product,this.productId?'PUT':'POST');this.product=this.blankProduct();this.productId=0;this.notice='Producto guardado. Cargá sus existencias en Inventario.';});}
   async saveStock(){await this.run(async()=>{const {product_id,...p}=this.stockForm;await this.mutate('/products/'+product_id+'/stock',p);this.stockForm={product_id:0,kind:'entry',quantity:0,reason:''};this.notice='Inventario actualizado.';});}
   editCustomer(c:any){this.customerEdit=c.id;this.customer={name:c.name,phone:c.phone,email:c.email};}

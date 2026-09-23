@@ -1,45 +1,59 @@
-SYSTEM LAB PRINT AGENT - GUÍA RÁPIDA
-====================================
+SYSTEM LAB PRINT AGENT 2.0 - GUÍA RÁPIDA
+=======================================
 
-ANTES DE COMENZAR
-
-La impresora térmica debe estar encendida. Si se conecta por USB, primero debe
-aparecer en Configuración > Impresoras y escáneres de Windows.
-
-INSTALACIÓN
+INSTALACIÓN O ACTUALIZACIÓN
 
 1. Extraiga completamente este ZIP. No ejecute el instalador desde la vista
    previa del archivo comprimido.
 2. Abra la carpeta extraída.
 3. Haga doble clic en INSTALAR-PRINT-AGENT.bat.
-4. Si Windows solicita autorización para instalar un componente, acéptela.
-5. Al terminar se abrirá automáticamente el panel System Lab Print Agent.
+4. Al terminar se abrirá automáticamente System Lab Print Agent.
 
-CONFIGURACIÓN DE LA IMPRESORA
+No es necesario desinstalar la versión anterior. La impresora que ya estaba
+configurada se conserva automáticamente como la ruta Cocina.
 
-1. Para una impresora USB, elija "Instalada en Windows / USB" y seleccione su
-   nombre en la lista.
-2. Para una impresora de red, elija "Impresora de red TCP" e indique su IP. El
-   puerto habitual es 9100.
-3. Seleccione el ancho de papel: 80 mm o 58 mm.
-4. Pulse "Guardar configuración".
-5. Pulse "Imprimir prueba". No continúe hasta que la prueba salga correctamente.
+RUTAS DE IMPRESIÓN
+
+El agente incluye tres rutas independientes:
+
+- Comprobante del cliente: comprobante que sale después de cobrar.
+- Cocina: productos preparados en cocina.
+- Bar / bebidas: bebidas y productos preparados en bar.
+
+Cada ruta puede usar una impresora diferente, con su propio ancho de papel,
+corte y tipo de conexión. También puede agregar rutas nuevas, por ejemplo
+Postres o Parrilla.
+
+CONFIGURACIÓN
+
+1. En cada ruta seleccione la impresora correspondiente.
+2. Elija 80 mm o 58 mm según el papel de esa impresora.
+3. Pulse Guardar todas las rutas.
+4. Pulse Imprimir prueba de esta ruta en cada impresora configurada.
+5. No continúe hasta que cada prueba salga por la impresora correcta.
 
 VINCULACIÓN CON EL POS
 
-1. En el panel del agente, pulse "Mostrar y copiar".
+1. En el panel del agente, pulse Mostrar y copiar.
 2. Regrese a System Lab POS > Mi cuenta > Vincular estación.
-3. Pegue la clave y pulse "Guardar y probar conexión".
-4. El estado debe cambiar a "Conectada" y mostrar la impresora elegida.
-5. Si Chrome solicita acceso a la red local, pulse "Permitir".
+3. Pegue la clave y pulse Guardar y probar conexión.
+4. El estado debe mostrar las rutas configuradas.
 
-PRUEBA FINAL
+ASIGNACIÓN DE PRODUCTOS
 
-Cree un pedido de prueba y pulse "Guardar y enviar a cocina". La comanda debe
-salir automáticamente, sin mostrar la ventana de impresión de Chrome.
+En System Lab POS > Productos, cada producto tiene el campo Destino de
+preparación. Seleccione Cocina, Bar / bebidas, una ruta personalizada o No
+enviar a preparación. Esta selección se guarda una sola vez.
 
-SOPORTE
+FUNCIONAMIENTO
 
-Si el estado queda desconectado, abra nuevamente System Lab POS y pulse
-"Abrir configuración de impresoras". Compruebe que el agente indique que está
-activo y repita la impresión de prueba.
+- Al enviar un pedido a preparación, el POS separa automáticamente los
+  productos y envía cada grupo a su impresora.
+- Al cobrar, el comprobante completo sale por la impresora del cliente.
+- Una impresora sin configurar nunca recibe trabajos de otra ruta como
+  reemplazo; el POS muestra el error para evitar impresiones incorrectas.
+
+IMPORTANTE
+
+El comprobante impreso por el POS es de control interno. No sustituye una
+factura electrónica autorizada por Hacienda.
