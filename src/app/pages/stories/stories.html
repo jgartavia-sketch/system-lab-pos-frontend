@@ -143,51 +143,7 @@
       </div>
     </section>
 
-    <section class="season-section" id="temporada">
-      <div class="season-intro">
-        <p class="section-number">02 / Primera temporada</p>
-        <h2>Seis capítulos.<br />Un viaje sin regreso.</h2>
-        <p>
-          La primera temporada será completamente gratuita y cada estreno abrirá una
-          nueva puerta dentro del hotel.
-        </p>
-      </div>
-
-      <div class="chapter-experience">
-        <div class="chapter-carousel" aria-label="Capítulos de la primera temporada">
-        @for (chapter of chapters; track chapter; let first = $first; let last = $last) {
-          <button
-            class="chapter-card"
-            [class.active]="selectedChapter === chapter"
-            type="button"
-            (click)="selectChapter(chapter)"
-          >
-            <span class="chapter-card-number">0{{ chapter }}</span>
-            <div>
-              <small>{{ first ? 'Próximo estreno' : (last ? 'Final de temporada' : 'Archivo clasificado') }}</small>
-              <h3>{{ first ? 'El viaje comienza aquí' : 'Título por revelar' }}</h3>
-            </div>
-            <span class="card-arrow">→</span>
-          </button>
-        }
-        </div>
-
-        <article class="chapter-reader-preview">
-          <div class="reader-heading">
-            <span>Temporada 1 · Capítulo 0{{ selectedChapter }}</span>
-            <strong>{{ selectedChapter === 1 ? 'El viaje comienza aquí' : 'Título por revelar' }}</strong>
-          </div>
-          <div class="reader-lock" aria-hidden="true">✦</div>
-          <h3>Este capítulo requiere una cuenta.</h3>
-          <p>
-            La primera temporada será gratuita, pero estará disponible exclusivamente
-            para lectores registrados en System Lab Stories.
-          </p>
-          <a class="gold-button" routerLink="/stories/mi-cuenta">Registrarme para leer</a>
-          <small>¿Ya tenés una cuenta? Podrás iniciar sesión desde la misma sección.</small>
-        </article>
-      </div>
-    </section>
+    <app-stories-comments />
   </main>
 
   <footer class="stories-footer">

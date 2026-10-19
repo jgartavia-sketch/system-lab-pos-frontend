@@ -130,6 +130,15 @@ export class StoriesAuthService {
     );
   }
 
+  listComments(parentId: number | null = null, offset = 0): Observable<StoryComment[]> {
+    return this.http.get<StoryComment[]>(`${this.apiBase}/stories/comments`, { params: { ...(parentId === null ? {} : {parent_id: parentId}), offset, limit: 20 } });
+  }
+  commentCapabilities(): Observable<{characters: string[]}> {
+    return this.http.get<{characters: string[]}>(`${this.apiBase}/stories/comments/capabilities`, {headers: this.authHeaders()});
+  }
+  postComment(payload: {body: string; rating?: number; parent_id?: number; anonymous: boolean; character?: string}): Observable<StoryComment> {
+    return this.http.post<StoryComment>(`${this.apiBase}/stories/comments`, payload, {headers: this.authHeaders()});
+  }
   hasSession(): boolean {
     return Boolean(globalThis.localStorage?.getItem(this.tokenKey));
   }
@@ -143,4 +152,9 @@ export class StoriesAuthService {
     const token = globalThis.localStorage?.getItem(this.tokenKey) ?? '';
     return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
+}
+
+export interface StoryComment {
+  id: number; parent_id: number | null; body: string; rating: number | null;
+  author_name: string; character: string | null; created_at: string;
 }

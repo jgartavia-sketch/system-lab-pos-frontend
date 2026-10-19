@@ -1,13 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import {StoriesComments} from '../../components/stories-comments/stories-comments';
 import { finalize } from 'rxjs';
 
 import { StoriesAuthService, StoriesDashboard } from '../../services/stories-auth.service';
 
 @Component({
   selector: 'app-stories-account',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, StoriesComments],
   templateUrl: './stories-account.html',
   styleUrl: './stories-account.scss',
 })

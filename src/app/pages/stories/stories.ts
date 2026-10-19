@@ -1,9 +1,10 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import {StoriesComments} from '../../components/stories-comments/stories-comments';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-stories',
-  imports: [RouterLink],
+  imports: [RouterLink, StoriesComments],
   templateUrl: './stories.html',
   styleUrl: './stories.scss',
 })

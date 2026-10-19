@@ -1,0 +1,50 @@
+<section class="community" aria-labelledby="community-title">
+  <p class="eyebrow">La voz de los viajeros</p>
+  <h2 id="community-title">Después de leer, comienza la conversación.</h2>
+  <p>Compartí tu opinión sobre The Voyager Space Hotel.</p>
+  @if (auth.hasSession()) {
+    <form (ngSubmit)="submit()">
+      @if (target) {<p>Respondiendo a {{target.author_name}} <button type="button" (click)="cancel()">Cancelar respuesta</button></p>}
+      @else {
+        <fieldset><legend>Tu calificación</legend>
+          @for (n of stars; track n) {<button type="button" class="star" [class.selected]="rating >= n" [attr.aria-label]="n + ' estrellas'" [attr.aria-pressed]="rating === n" (click)="rating = n">★</button>}
+        </fieldset>
+      }
+      <label for="stories-comment-body">{{target ? 'Tu respuesta' : 'Tu opinión'}}</label>
+      <textarea id="stories-comment-body" name="body" [(ngModel)]="body" required maxlength="2000" rows="4" placeholder="¿Qué te dejó la historia?"></textarea>
+      <small>{{body.length}} / 2000</small>
+      @if (target && characters().length) {
+        <label for="comment-character">Responder como</label>
+        <select id="comment-character" name="character" [(ngModel)]="character"><option value="">Mi nombre</option>@for (name of characters(); track name) {<option [value]="name">{{name}}</option>}</select>
+      }
+      @if (!character) {<label class="anonymous"><input type="checkbox" name="anonymous" [(ngModel)]="anonymous"> Publicar como Anónimo</label>}
+      <button class="publish" type="submit" [disabled]="busy()">{{busy() ? 'Publicando…' : (target ? 'Publicar respuesta' : 'Publicar opinión')}}</button>
+    </form>
+  } @else {<p><a routerLink="/stories/mi-cuenta">Ingresá o registrate gratis para comentar y responder.</a></p>}
+  <p role="status" aria-live="polite">{{message()}}</p>
+  @if (loading()) {<p>Cargando opiniones…</p>}
+  @if (!loading() && !comments().length) {<p>Todavía no hay opiniones. La primera puede ser la tuya.</p>}
+  <ng-template #thread let-rows let-depth="depth">
+    @for (c of rows; track c.id) {
+      <article class="comment">
+        <header>
+          @if (c.character) {<img class="avatar" [src]="avatar(c.character)" [alt]="c.character">}
+          <div><strong>{{c.author_name}}</strong>@if (c.character) {<small>Respuesta oficial · Personaje</small>}<time>{{c.created_at | date:'dd/MM/yyyy HH:mm'}}</time></div>
+        </header>
+        @if(c.rating) {<div class="rating" [attr.aria-label]="c.rating + ' de 5 estrellas'">@for(n of stars; track n) {<span [class.selected]="n <= c.rating">★</span>}</div>}
+        <p class="body">{{c.body}}</p>
+        <div class="actions">@if(auth.hasSession()) {<button type="button" (click)="reply(c)">Responder</button>}
+          <button type="button" (click)="showReplies(c)">{{expanded()[c.id] ? 'Ocultar respuestas' : 'Ver respuestas'}}</button>
+        </div>
+        @if(expanded()[c.id]) {
+          <div class="replies" [class.flat]="depth >= 2"><ng-container *ngTemplateOutlet="thread; context: {$implicit: replies()[c.id] || [], depth: depth + 1}"></ng-container>
+          @if(!replies()[c.id]?.length) {<small>Sin respuestas todavía.</small>}
+          @if(moreReplies()[c.id]) {<button type="button" (click)="showReplies(c, true)">Más respuestas</button>}</div>
+        }
+      </article>
+    }
+  </ng-template>
+  <ng-container *ngTemplateOutlet="thread; context: {$implicit: comments(), depth: 0}"></ng-container>
+  @if(more()) {<button type="button" [disabled]="loading()" (click)="load(true)">Más opiniones</button>}
+  @if(message() && !comments().length) {<button type="button" [disabled]="loading()" (click)="load()">Volver a cargar</button>}
+</section>
