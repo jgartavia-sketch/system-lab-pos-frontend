@@ -1,0 +1,32 @@
+<section class="readers-panel" aria-labelledby="stories-readers-title">
+  <header class="heading"><div><span class="eyebrow">System Lab Stories</span><h2 id="stories-readers-title">Lista de clientes · Lectores</h2><p>Personas registradas para leer tus historias.</p></div>
+    @if(data(); as page) {<div class="total"><span>Total registrados</span><strong>{{page.total | number}}</strong></div>}
+  </header>
+  @if(error()) {<p class="error" role="alert">{{error()}}</p>}
+  @if(needsLogin()) {
+    <form class="login" (ngSubmit)="login()"><h3>Acceso administrativo</h3><p>Usá la misma cuenta administradora de «POS: usuarios y locales».</p>
+      <label>Correo<input type="email" name="adminEmail" [(ngModel)]="email" required autocomplete="username" /></label>
+      <label>Contraseña<input type="password" name="adminPassword" [(ngModel)]="password" required autocomplete="current-password" /></label>
+      <button type="submit" [disabled]="signingIn()">{{signingIn() ? 'Ingresando…' : 'Ver lectores registrados'}}</button>
+    </form>
+  } @else {
+    <form class="toolbar" (ngSubmit)="filter()"><label>Buscar lectores<input type="search" name="readerSearch" [(ngModel)]="search" maxlength="180" placeholder="Nombre, correo o teléfono" /></label>
+      <button type="submit" [disabled]="loading()">Buscar</button><button type="button" (click)="refresh()" [disabled]="loading()">Actualizar</button>
+    </form>
+    @if(loading()) {<p role="status">Cargando lectores…</p>}
+    @if(data(); as page) {
+      @if(!page.items.length) {<p class="empty">{{page.total ? 'No hay lectores que coincidan con la búsqueda.' : 'Todavía no hay lectores registrados en Stories.'}}</p>}
+      @else {
+        <div class="reader-list" role="list">
+          @for(reader of page.items; track reader.id) {
+            <article class="reader" role="listitem"><div class="identity"><h3>{{reader.full_name}}</h3><span [class.inactive]="!reader.is_active" class="badge">{{reader.is_active ? 'Activo' : 'Inactivo'}}</span></div>
+              <dl><div><dt>Correo</dt><dd>{{reader.email}}</dd></div><div><dt>Teléfono</dt><dd>{{reader.phone}}</dd></div>
+              <div><dt>Registrado</dt><dd>{{reader.created_at | date:'dd/MM/yyyy HH:mm'}}</dd></div><div><dt>Último acceso</dt><dd>{{reader.last_login_at ? (reader.last_login_at | date:'dd/MM/yyyy HH:mm') : 'Sin inicio de sesión posterior'}}</dd></div></dl>
+            </article>
+          }
+        </div>
+        <nav class="pagination" aria-label="Páginas de lectores"><button type="button" (click)="previous()" [disabled]="loading() || offset === 0">Anterior</button><span>{{offset + 1}}–{{end()}} de {{page.filtered_total}}</span><button type="button" (click)="next()" [disabled]="loading() || end() >= page.filtered_total">Siguiente</button></nav>
+      }
+    }
+  }
+</section>

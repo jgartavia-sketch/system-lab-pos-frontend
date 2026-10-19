@@ -20,7 +20,10 @@
       <button [class.active]="activeTab() === 'pos'" (click)="setTab('pos')">04 · POS: usuarios y locales</button>
       <button [class.active]="activeTab() === 'events'" (click)="setTab('events')">05 · Eventos</button>
       <button [class.active]="activeTab() === 'finances'" (click)="setTab('finances')">06 · Finanzas</button>
+      <button [class.active]="activeTab() === 'stories'" (click)="setTab('stories')">07 · Clientes Stories</button>
     </nav>
+
+    @if (activeTab() === 'stories') { <app-stories-readers-admin [apiBase]="apiBase" /> }
 
     @if (activeTab() === 'pos') { <app-pos-admin [api]="apiBase + '/pos-api'" /> }
 

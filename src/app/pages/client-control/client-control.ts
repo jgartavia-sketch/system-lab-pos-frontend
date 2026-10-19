@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { StoriesReadersAdmin } from './stories-readers-admin';
 import { PosAdmin } from './pos-admin';
 import { ClientEvents } from './client-events';
 import { ClientFinances } from './client-finances';
 
-type Tab = 'services' | 'progress' | 'payments' | 'pos' | 'events' | 'finances';
+type Tab = 'services' | 'progress' | 'payments' | 'pos' | 'events' | 'finances' | 'stories';
 type WorkStatus = 'pending' | 'in_progress' | 'completed' | 'blocked';
 type PaymentStatus = 'pending' | 'paid' | 'overdue';
 type PaymentStage = 'overdue' | 'pending' | 'scheduled' | 'paid';
@@ -26,7 +27,7 @@ interface Dashboard { services: ServiceDefinition[]; clients: ManagedClient[]; }
 
 @Component({
   selector: 'app-client-control',
-  imports: [CommonModule, FormsModule, PosAdmin, ClientEvents, ClientFinances],
+  imports: [CommonModule, FormsModule, PosAdmin, ClientEvents, ClientFinances, StoriesReadersAdmin],
   templateUrl: './client-control.html',
   styleUrl: './client-control.scss',
 })
