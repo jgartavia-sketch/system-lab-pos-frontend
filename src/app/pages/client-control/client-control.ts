@@ -39,6 +39,8 @@ export class ClientControl {
       ? 'http://localhost:8000'
       : 'https://system-lab-pos-backend.onrender.com');
 
+  protected readonly paymentFilter = signal<PaymentStage | null>(null);
+  protected readonly deletingIds = signal(new Set<string>());
   protected readonly activeTab = signal<Tab>('services');
   protected readonly dashboard = signal<Dashboard>({ services: [], clients: [] });
   protected readonly loading = signal(true);
@@ -251,9 +253,29 @@ export class ClientControl {
     });
   }
 
+  protected filterPayments(stage: PaymentStage): void { this.paymentFilter.set(this.paymentFilter() === stage ? null : stage); }
+  protected async deleteRecord(kind: 'milestone' | 'payment', id: number, label: string): Promise<void> {
+    const key=kind+':'+id;
+    if(this.deletingIds().has(key)) return;
+    const token=sessionStorage.getItem('systemlab-pos-token');
+    if(!token){this.error.set('Iniciá sesión con tu cuenta administradora en Clientes Stories o POS: usuarios y locales para eliminar registros.');return;}
+    if(!confirm('¿Eliminar definitivamente '+label+'? Esta acción no se puede deshacer.')) return;
+    this.deletingIds.update(v=>new Set([...v,key]));
+    this.http.delete(`${this.apiBase}/client-management/${kind === 'milestone' ? 'milestones' : 'payments'}/${id}`, {headers:{Authorization:'Bearer '+token}}).subscribe({
+      next:()=>{
+        this.dashboard.update(d=>({...d,clients:d.clients.map(client=>({...client,
+          milestones:kind==='milestone' ? client.milestones.filter(x=>x.id!==id) : client.milestones,
+          payments:kind==='payment' ? client.payments.filter(x=>x.id!==id) : client.payments}))}));
+        if(kind==='payment' && this.editingPaymentId===id)this.resetPaymentForm();
+        if(kind==='payment' && this.settlingPaymentId===id)this.cancelPaymentSettlement();
+        this.deletingIds.update(v=>{const next=new Set(v);next.delete(key);return next;});
+      },error:()=>{this.error.set('No se pudo eliminar el registro. Revisá tu sesión administradora e intentá nuevamente.');this.deletingIds.update(v=>{const next=new Set(v);next.delete(key);return next;});}
+    });
+  }
+
   protected clientName(id: number): string { return this.dashboard().clients.find((client) => client.id === id)?.name ?? 'Cliente'; }
   protected allPayments(): Payment[] { return this.dashboard().clients.flatMap((client) => client.payments).sort((a, b) => (b.payment_date ?? b.next_payment_date ?? '').localeCompare(a.payment_date ?? a.next_payment_date ?? '') || b.id - a.id); }
-  protected paymentsForClient(client: ManagedClient): Payment[] { return [...client.payments].sort((a, b) => (b.due_date ?? b.payment_date ?? '').localeCompare(a.due_date ?? a.payment_date ?? '') || b.id - a.id); }
+  protected paymentsForClient(client: ManagedClient): Payment[] { return [...client.payments].filter(item => !this.paymentFilter() || this.paymentStage(item) === this.paymentFilter()).sort((a, b) => (b.due_date ?? b.payment_date ?? '').localeCompare(a.due_date ?? a.payment_date ?? '') || b.id - a.id); }
   protected paymentStage(item: Payment): PaymentStage {
     if (item.status === 'paid') return 'paid';
     if (!item.due_date) return item.status === 'overdue' ? 'overdue' : 'pending';
@@ -267,7 +289,7 @@ export class ClientControl {
   protected milestonesByPriority(priority: 'low' | 'medium' | 'high'): Array<{ milestone: Milestone; client: ManagedClient }> {
     return this.dashboard().clients.flatMap((client) => client.milestones.map((milestone) => ({ milestone, client }))).filter(({ milestone }) => milestone.priority === priority && milestone.status !== 'completed');
   }
-  protected statusLabel(status: string): string { return ({ pending: 'Pendiente', scheduled: 'Programado', in_progress: 'En proceso', completed: 'Listo', blocked: 'Bloqueado', paid: 'Pagado', overdue: 'Atrasado' } as Record<string, string>)[status] ?? status; }
+  protected statusLabel(status: string): string { return ({ pending: 'Pendiente', scheduled: 'Programado', in_progress: 'En proceso', completed: 'Completado', blocked: 'Bloqueado', paid: 'Pagado', overdue: 'Atrasado' } as Record<string, string>)[status] ?? status; }
 
   private replaceMilestone(saved: Milestone): void {
     this.dashboard.update((current) => ({ ...current, clients: current.clients.map((client) => ({ ...client, milestones: client.milestones.map((item) => item.id === saved.id ? saved : item) })) }));

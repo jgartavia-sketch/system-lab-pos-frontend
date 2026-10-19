@@ -21,7 +21,7 @@
           @for(reader of page.items; track reader.id) {
             <article class="reader" role="listitem"><div class="identity"><h3>{{reader.full_name}}</h3><span [class.inactive]="!reader.is_active" class="badge">{{reader.is_active ? 'Activo' : 'Inactivo'}}</span></div>
               <dl><div><dt>Correo</dt><dd>{{reader.email}}</dd></div><div><dt>Teléfono</dt><dd>{{reader.phone}}</dd></div>
-              <div><dt>Registrado</dt><dd>{{reader.created_at | date:'dd/MM/yyyy HH:mm'}}</dd></div><div><dt>Último acceso</dt><dd>{{reader.last_login_at ? (reader.last_login_at | date:'dd/MM/yyyy HH:mm') : 'Sin inicio de sesión posterior'}}</dd></div></dl>
+              <div><dt>Registrado</dt><dd>{{reader.created_at | date:'dd/MM/yyyy HH:mm'}}</dd></div><div><dt>Último acceso</dt><dd>{{reader.last_login_at ? (reader.last_login_at | date:'dd/MM/yyyy HH:mm') : 'Sin inicio de sesión posterior'}}</dd></div></dl><button class="delete-reader" type="button" [disabled]="deleting() !== null" (click)="deleteReader(reader)">{{deleting() === reader.id ? 'Eliminando…' : 'Eliminar usuario'}}</button>
             </article>
           }
         </div>

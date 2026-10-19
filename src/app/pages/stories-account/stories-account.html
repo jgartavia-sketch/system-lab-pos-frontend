@@ -173,6 +173,7 @@
         @if (notice) {
           <p class="form-message success">{{ notice }}</p>
         }
+        <app-stories-recovery />
         @if (mode === 'registro') {
           <form [formGroup]="registerForm" (ngSubmit)="register()">
             <label

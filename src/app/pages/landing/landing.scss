@@ -2368,3 +2368,6 @@ a {
   .video-partner-links a { flex: 1 1 auto; justify-content: center; }
   .video-package > .primary-button { width: 100%; }
 }
+
+.limited-promo{display:inline-block;max-width:100%;padding:10px 14px;border-radius:10px;background:#ffdd73;color:#392400;font-size:13px;font-weight:850;letter-spacing:.04em;text-transform:uppercase;box-sizing:border-box;line-height:1.4}
+.video-conditions{display:grid;gap:8px;padding:0;margin:0 0 20px;list-style:none}.video-conditions li{padding:9px 12px;border-radius:9px;background:#edf7f6;color:#164c4b;border:1px solid #b4dcd7;font-size:12px;line-height:1.45;overflow-wrap:anywhere}.video-conditions li:first-child{background:#ffdd73;border-color:#e6c256;color:#392400;font-weight:800;text-transform:uppercase}

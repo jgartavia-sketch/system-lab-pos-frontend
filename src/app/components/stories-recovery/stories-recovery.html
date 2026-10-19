@@ -1,0 +1,18 @@
+<div class="recovery">
+  @if(!open()) {<button class="forgot-link" type="button" (click)="show()">¿Olvidaste tu contraseña?</button>}
+  @else {
+    <h3>{{resetting() ? 'Elegí tu nueva contraseña' : 'Recuperá tu contraseña'}}</h3>
+    @if(message()) {<p role="status">{{message()}}</p>}
+    @if(error()) {<p class="error" role="alert">{{error()}}</p>}
+    <form (ngSubmit)="submit()">
+      @if(resetting()) {
+        <label>Nueva contraseña<input type="password" name="newPassword" [(ngModel)]="password" required minlength="8" maxlength="72" autocomplete="new-password" /></label>
+        <label>Confirmar nueva contraseña<input type="password" name="confirmPassword" [(ngModel)]="confirmation" required minlength="8" maxlength="72" autocomplete="new-password" /></label>
+        <small>Entre 8 y 72 caracteres.</small>
+      } @else {<label>Correo de tu cuenta<input type="email" name="recoveryEmail" [(ngModel)]="email" required autocomplete="email" /></label>}
+      <button class="submit" type="submit" [disabled]="busy()">{{busy() ? 'Procesando…' : (resetting() ? 'Guardar nueva contraseña' : 'Enviar enlace de recuperación')}}</button>
+      @if(resetting()) {<button type="button" (click)="requestNew()" [disabled]="busy()">Solicitar otro enlace</button>}
+      @else {<button type="button" (click)="open.set(false)" [disabled]="busy()">Volver a iniciar sesión</button>}
+    </form>
+  }
+</div>

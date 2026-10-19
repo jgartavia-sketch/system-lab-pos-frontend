@@ -139,6 +139,12 @@ export class StoriesAuthService {
   postComment(payload: {body: string; rating?: number; parent_id?: number; anonymous: boolean; character?: string}): Observable<StoryComment> {
     return this.http.post<StoryComment>(`${this.apiBase}/stories/comments`, payload, {headers: this.authHeaders()});
   }
+  forgotPassword(email: string): Observable<{message:string}> {
+    return this.http.post<{message:string}>(`${this.apiBase}/stories/auth/forgot-password`,{email});
+  }
+  resetPassword(token: string, password: string): Observable<{message:string}> {
+    return this.http.post<{message:string}>(`${this.apiBase}/stories/auth/reset-password`,{token,password});
+  }
   hasSession(): boolean {
     return Boolean(globalThis.localStorage?.getItem(this.tokenKey));
   }

@@ -18,6 +18,7 @@ export class StoriesReadersAdmin implements OnInit, OnDestroy {
   private loginRequest?: Subscription;
   readonly data = signal<AdminStoriesReadersPage | null>(null);
   readonly loading = signal(false);
+  readonly deleting = signal<number | null>(null);
   readonly signingIn = signal(false);
   readonly needsLogin = signal(false);
   readonly error = signal('');
@@ -58,6 +59,15 @@ export class StoriesReadersAdmin implements OnInit, OnDestroy {
         this.password=''; this.signingIn.set(false);
         this.error.set(typeof e.error?.detail==='string' ? e.error.detail : 'No se pudo iniciar sesión. Intentá nuevamente.');
       }
+    });
+  }
+  deleteReader(reader: AdminStoriesReader): void {
+    if(this.deleting() !== null) return;
+    if(!confirm('¿Eliminar definitivamente a '+reader.full_name+' ('+reader.email+')? Se eliminarán su cuenta, referidos, recompensas y comentarios, incluidas las respuestas dependientes. Esta acción no se puede deshacer.')) return;
+    this.deleting.set(reader.id); this.error.set('');
+    this.loginRequest=this.http.delete(this.apiBase+'/stories/admin/readers/'+reader.id,{headers:this.headers()}).subscribe({
+      next:()=>{this.deleting.set(null);this.load();},
+      error:(e:HttpErrorResponse)=>{this.deleting.set(null);this.error.set(typeof e.error?.detail==='string' ? e.error.detail : 'No se pudo eliminar el lector. Revisá tu sesión administradora.');}
     });
   }
   end(): number {return Math.min(this.offset+this.pageSize,this.data()?.filtered_total ?? 0);}

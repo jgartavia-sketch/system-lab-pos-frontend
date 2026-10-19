@@ -261,3 +261,7 @@ main {
   .settlement-form { grid-template-columns: 1fr; padding: 16px 20px; }
   .settlement-form > div { grid-column: auto; }
 }
+
+/* Controles nuevos de tareas y trazabilidad. */
+.delete-record{min-height:44px;padding:10px 14px;border:1px solid #a33333;border-radius:10px;color:#9c2424;background:#fff3f1;cursor:pointer;font:inherit;touch-action:manipulation}
+.delete-record:disabled{opacity:.5;cursor:wait}.finance-card{font:inherit;text-align:left;cursor:pointer;min-height:100px;touch-action:manipulation}.finance-card.selected{outline:3px solid #19bca7;outline-offset:3px}.finance-card:focus-visible,.delete-record:focus-visible{outline:3px solid #16a9c0;outline-offset:3px}.payment-client-card[hidden]{display:none}.payment-filter-notice{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:16px;margin:12px 0;border:1px solid #529c91;border-radius:12px}.payment-filter-notice button{min-height:44px;cursor:pointer}.milestone{flex-wrap:wrap}.milestone button{min-height:44px}@media(max-width:600px){.milestone button{flex:1;white-space:normal}.row-actions{flex-wrap:wrap}}
