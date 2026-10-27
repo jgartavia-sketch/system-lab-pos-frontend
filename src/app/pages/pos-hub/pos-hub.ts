@@ -5,6 +5,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { groupOrderDays, OrderDay, posDate, posDay, stepQuantity } from './pos-order-groups';
 import { PosDashboard } from './pos-dashboard';
 import { PosFinances } from './pos-finances';
+import { PosZenit } from './pos-zenit';
+import { PosCredit } from './pos-credit';
 import { PosConnect } from './pos-connect';
 import { appointmentOverview, AppointmentDay } from './pos-appointments';
 import { PrintAgentService } from '../../services/print-agent.service';
@@ -12,20 +14,20 @@ import { PrintAgentService } from '../../services/print-agent.service';
 @Component({
   selector:'app-pos-hub',
   standalone:true,
-  imports:[CommonModule,FormsModule,RouterLink,PosDashboard,PosFinances,PosConnect],
+  imports:[CommonModule,FormsModule,RouterLink,PosDashboard,PosFinances,PosConnect,PosCredit,PosZenit],
   templateUrl:'./pos-hub.html',
   styleUrls:['./pos-hub.scss','./pos-print.scss']
 })
 export class PosHub implements OnInit, OnDestroy {
   modes=[{id:'restaurante',name:'Restaurante',icon:'01',copy:'Mesas, comandas, cocina y venta rápida.'},{id:'heladeria',name:'Heladería',icon:'02',copy:'Mostrador, productos, pedidos y existencias.'},{id:'supermercado',name:'Supermercado',icon:'03',copy:'Venta por código, inventario y control de caja.'},{id:'taller',name:'Taller mecánico',icon:'04',copy:'Órdenes de trabajo, repuestos, servicios y citas.'},{id:'salon',name:'Salón de belleza',icon:'05',copy:'Servicios, productos, clientes y agenda.'}];
-  tabs=[['dashboard','Resumen'],['sale','Nueva venta'],['orders','Pedidos'],['kitchen','Cocina'],['products','Productos'],['inventory','Inventario'],['customers','Clientes'],['cash','Caja'],['finances','Ingresos y gastos'],['reports','Reportes'],['appointments','Agenda'],['team','Mi equipo'],['audit','Autorizaciones'],['account','Mi cuenta']];
+  tabs=[['dashboard','Resumen'],['sale','Nueva venta'],['orders','Pedidos'],['kitchen','Cocina'],['products','Productos'],['inventory','Inventario'],['customers','Clientes'],['cash','Caja'],['finances','Ingresos y gastos'],['credit','Cuentas por cobrar'],['reports','Reportes'],['appointments','Agenda'],['team','Mi equipo'],['audit','Autorizaciones'],['account','Mi cuenta']];
   api='https://system-lab-pos-backend.onrender.com/pos-api';
   mode=''; token=sessionStorage.getItem('systemlab-pos-token')||''; account:any=null; businesses:any[]=[]; bid=0; data:any=null; tab='dashboard';
   error=''; notice=''; busy=false; booting=true; loginEmail=''; loginPassword=''; search=''; category='';
   cartKey=crypto.randomUUID(); cart:any[]=[]; label='Mostrador'; tableNumber:any=null; customerId:any=null; notes=''; discount=0; editingOrder=0; editingRevision=0;
   product:any=this.blankProduct(); productId=0; customer:any={name:'',phone:'',email:''}; customerEdit=0;
-  stockForm:any={product_id:0,kind:'entry',quantity:0,reason:''}; cashAmount=0; cashForm:any={kind:'expense',amount:0,reason:''};
-  paymentOrder:any=null; method='cash'; received=0; receipt:any=null;
+  stockForm:any={request_key:crypto.randomUUID(),product_id:0,kind:'entry',quantity:0,reason:''}; cashAmount=0; cashForm:any={kind:'expense',amount:0,reason:''};
+  paymentOrder:any=null; invoiceNumber=''; method='cash'; received=0; receipt:any=null;
   start=this.today(); end=this.today(); report:any=null;
   appointment:any={customer_id:0,title:'',at:'',status:'pending',notes:''}; appointmentId=0;
   orderDays:OrderDay[]=[]; kitchenDays:OrderDay[]=[]; openedDays:Record<string,boolean>={}; dashboardRevision='';
@@ -40,7 +42,9 @@ export class PosHub implements OnInit, OnDestroy {
 
   today(){return posDay(new Date());}
   blankProduct(){return {name:'',category:'General',sku:'',price:0,cost:0,tax_rate:0,minimum:0,track_stock:true,active:true,packaging_fee:0,cost_known:true,print_station:'kitchen'};}
-  ngOnInit(){this.printAgentUrl=this.printAgent.url;this.printAgentKey=this.printAgent.apiKey;void this.refreshPrintAgent();this.params=this.route.paramMap.subscribe(p=>{this.mode=p.get('mode')||'';this.tab='dashboard';this.bid=0;this.data=null;this.resetCart();void this.initialize();});this.poll=setInterval(()=>{if(this.bid&&!this.busy&&['kitchen','orders','dashboard','appointments'].includes(this.tab))void this.refresh().catch((e:any)=>{this.error=e.message;this.cd.detectChanges();});},5000);}
+  activationToken=location.hash.startsWith('#activate=')?location.hash.slice(10):''; activationPassword=''; activationConfirm='';
+  async activate(){await this.run(async()=>{if(this.activationPassword!==this.activationConfirm)throw Error('Las contraseñas no coinciden.');const activated=await this.request('/auth/activate','POST',{token:this.activationToken,password:this.activationPassword});this.loginEmail=activated.email||'';this.token='';this.account=null;this.bid=0;this.data=null;sessionStorage.removeItem('systemlab-pos-token');this.activationToken='';this.activationPassword='';this.activationConfirm='';this.notice='Cuenta activada. Ya podés iniciar sesión.';});}
+  ngOnInit(){if(this.activationToken)history.replaceState(null,'',location.pathname); this.printAgentUrl=this.printAgent.url;this.printAgentKey=this.printAgent.apiKey;void this.refreshPrintAgent();this.params=this.route.paramMap.subscribe(p=>{this.mode=p.get('mode')||'';this.tab='dashboard';this.bid=0;this.data=null;this.resetCart();void this.initialize();});this.poll=setInterval(()=>{if(this.bid&&!this.busy&&['kitchen','orders','dashboard','appointments'].includes(this.tab))void this.refresh().catch((e:any)=>{this.error=e.message;this.cd.detectChanges();});},5000);}
   ngOnDestroy(){clearInterval(this.poll);this.params?.unsubscribe();}
 
   async request(path:string,method='GET',body?:any){
@@ -73,7 +77,7 @@ export class PosHub implements OnInit, OnDestroy {
   get rights():any{return this.data?.permissions||{};}
   get visibleTabs(){return this.tabs.filter(t=>{
     if(t[0]==='kitchen')return ['restaurante','heladeria'].includes(this.mode);
-    if(['products','inventory','reports','audit','finances'].includes(t[0]))return this.rights.manage;
+    if(['products','inventory','reports','audit','finances','credit'].includes(t[0]))return this.rights.manage;
     if(t[0]==='team')return this.rights.team;
     if(t[0]==='cash')return this.rights.cash;
     if(['sale','customers','appointments'].includes(t[0]))return this.rights.sell;
@@ -103,11 +107,11 @@ export class PosHub implements OnInit, OnDestroy {
   money(v:any){return new Intl.NumberFormat('es-CR',{style:'currency',currency:'CRC'}).format(Number(v||0));}
   date(v:string){return v?posDate(v).toLocaleString('es-CR',{timeZone:'America/Costa_Rica'}):'—';}
   status(v:string){return ({open:'Abierto',queued:'En cola',preparing:'En preparación',ready:'Listo',paid:'Pagado',cancelled:'Cancelado',refunded:'Devuelto',served:'Entregado',pending:'Pendiente',confirmed:'Confirmada',completed:'Completada'} as any)[v]||v;}
-  paymentName(v:string){return ({cash:'Efectivo',card:'Tarjeta',sinpe:'SINPE',transfer:'Transferencia'} as any)[v]||v;}
+  paymentName(v:string){return ({credit:'A crédito',cash:'Efectivo',card:'Tarjeta',sinpe:'SINPE',transfer:'Transferencia'} as any)[v]||v;}
   async enter(b:any){await this.run(async()=>{this.bid=b.id;this.tab='dashboard';this.resetCart();this.report=null;this.team=null;this.openedDays={};await this.refresh();if(this.rights.role==='kitchen')this.tab='kitchen';});}
   async refresh(){if(!this.bid)return;const bid=this.bid;const data=await this.request('/business/'+bid+'/state');if(bid!==this.bid)return;this.data=data;this.orderDays=groupOrderDays(data.orders);this.kitchenDays=groupOrderDays(data.orders,true);this.dashboardRevision=JSON.stringify([data.orders.map((o:any)=>[o.id,o.revision]),data.movements.filter((m:any)=>m.kind!=='stock').map((m:any)=>m.id),data.finance_revision||'']);if(!this.visibleTabs.some(t=>t[0]===this.tab))this.tab='dashboard';this.cd.detectChanges();}
   path(p:string){return '/business/'+this.bid+p;}
-  async mutate(p:string,body:any,method='POST'){const r=await this.request(this.path(p),method,body);await this.refresh();return r;}
+  async mutate(p:string,body:any,method='POST'){const r=await this.request(this.path(p),method,body);if(this.data?.connect?.provider==='zenit'&&this.rights.manage)await this.request(this.path('/connect/zenit/sync'),'POST',{}).catch(()=>{});await this.refresh();return r;}
   async navigate(tab:string){if(!this.visibleTabs.some(t=>t[0]===tab))return;this.tab=tab;this.menuOpen=false;if(tab==='team')await this.loadTeam();if(tab==='audit')await this.loadAudit();if(tab==='reports')await this.loadReport();if(tab==='appointments')await this.run(async()=>{await this.refresh();});}
   dayOpen(section:string,day:string){return this.openedDays[section+':'+day]??day===this.today();}
   toggleDay(section:string,day:string,event:Event){this.openedDays[section+':'+day]=(event.target as HTMLDetailsElement).open;}
@@ -178,9 +182,9 @@ export class PosHub implements OnInit, OnDestroy {
     this.cd.detectChanges();
   }
 
-  openPayment(o:any){this.paymentOrder=o;this.method='cash';this.received=+o.total;}
+  openPayment(o:any){this.invoiceNumber=o.invoice_number||'';this.paymentOrder=o;this.method='cash';this.received=+o.total;}
   async pay(){await this.run(async()=>{
-    const o=await this.mutate('/orders/'+this.paymentOrder.id+'/pay',{method:this.method,received:+this.received});
+    const o=await this.mutate('/orders/'+this.paymentOrder.id+'/pay',{method:this.method,received:+this.received,invoice_number:this.invoiceNumber});
     this.paymentOrder=null;this.receipt=o;
     try{
       const result=await this.printAgent.printReceipt(o,this.data?.business,this.customerName(o.customer_id));
@@ -239,7 +243,7 @@ export class PosHub implements OnInit, OnDestroy {
   showComanda(o:any){this.receipt=null;this.comanda=o;}
   editProduct(p:any){this.productId=p.id;this.product={...this.blankProduct()};for(const k of Object.keys(this.product))if(p[k]!==undefined&&p[k]!==null)this.product[k]=p[k];this.tab='products';}
   async saveProduct(){await this.run(async()=>{await this.mutate('/products'+(this.productId?'/'+this.productId:''),this.product,this.productId?'PUT':'POST');this.product=this.blankProduct();this.productId=0;this.notice='Producto guardado. Cargá sus existencias en Inventario.';});}
-  async saveStock(){await this.run(async()=>{const {product_id,...p}=this.stockForm;await this.mutate('/products/'+product_id+'/stock',p);this.stockForm={product_id:0,kind:'entry',quantity:0,reason:''};this.notice='Inventario actualizado.';});}
+  async saveStock(){await this.run(async()=>{const {product_id,...p}=this.stockForm;await this.mutate('/products/'+product_id+'/stock',p);this.stockForm={request_key:crypto.randomUUID(),product_id:0,kind:'entry',quantity:0,reason:''};this.notice='Inventario actualizado.';});}
   editCustomer(c:any){this.customerEdit=c.id;this.customer={name:c.name,phone:c.phone,email:c.email};}
   async saveCustomer(){await this.run(async()=>{await this.mutate('/customers'+(this.customerEdit?'/'+this.customerEdit:''),this.customer,this.customerEdit?'PUT':'POST');this.customerEdit=0;this.customer={name:'',phone:'',email:''};this.notice='Cliente guardado.';});}
   async cashAction(close=false){if(close&&!confirm('¿Cerrar la caja con el efectivo contado indicado?'))return;await this.run(async()=>{const r=await this.mutate('/register/'+(close?'close':'open'),{amount:+this.cashAmount});this.cashAmount=0;this.notice=close?'Caja cerrada. Diferencia: '+this.money(r.difference):'Caja abierta.';});}

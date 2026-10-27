@@ -31,7 +31,7 @@ export class PosDashboard implements OnChanges, OnDestroy {
   ngOnDestroy() { this.destroyed = true; this.requestId++; this.controller?.abort(); }
   money(value: any) { return new Intl.NumberFormat('es-CR',{style:'currency',currency:'CRC'}).format(Number(value || 0)); }
   dayLabel(day: string) { return day.split('-').reverse().join('/'); }
-  paymentName(key: string) { return ({cash:'Efectivo',card:'Tarjeta',sinpe:'SINPE',transfer:'Transferencia'} as Record<string,string>)[key] || key; }
+  paymentName(key: string) { return ({credit:'A crédito',cash:'Efectivo',card:'Tarjeta',sinpe:'SINPE',transfer:'Transferencia'} as Record<string,string>)[key] || key; }
   get topProducts(): any[] { return (this.report?.top_products || []).slice(0,5); }
   productWidth(product: any) { return 100 * Number(product.quantity) / Math.max(1, Number(this.topProducts[0]?.quantity)); }
   get grossProfit() { return this.report?.gross_profit ?? Number(this.report?.sales || 0)-Number(this.report?.tax || 0)-Number(this.report?.cost || 0); }
