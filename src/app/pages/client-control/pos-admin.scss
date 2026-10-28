@@ -4,3 +4,5 @@
 #pos-business-form,#pos-access-form{scroll-margin-top:24px}
 
 .list-row strong,.list-row small{overflow-wrap:anywhere}.list-row>.actions{flex-shrink:0}.danger{border-color:#e98282;color:#ffb8b8}
+
+.password-field{display:flex;align-items:stretch;margin-top:7px}.password-field input{margin-top:0;border-radius:8px 0 0 8px;flex:1;min-width:0}.password-field button{flex:0 0 46px;padding:8px;border-radius:0 8px 8px 0;display:grid;place-items:center}.mismatch{color:#ffb8b8}.maintenance{margin-top:18px}.maintenance>button{margin-top:12px}#pos-activate-form{scroll-margin-top:24px}

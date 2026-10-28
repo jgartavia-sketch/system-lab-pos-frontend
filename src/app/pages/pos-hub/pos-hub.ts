@@ -64,7 +64,7 @@ export class PosHub implements OnInit, OnDestroy {
   async logout(){await this.run(async()=>{try{await this.request('/auth/logout','POST');}finally{this.token='';this.account=null;this.bid=0;this.data=null;this.resetCart();this.paymentOrder=null;this.receipt=null;this.comanda=null;sessionStorage.removeItem('systemlab-pos-token');}});}
   get modeName(){return this.modes.find(m=>m.id===this.mode)?.name||'POS';}
   get validMode(){return this.modes.some(m=>m.id===this.mode);}
-  get available(){return this.businesses.filter(b=>b.mode===this.mode);}
+  get available(){return this.businesses.filter(b=>!this.mode||b.mode===this.mode||b.setup_complete===false);}
   get products(){return (this.data?.products||[]).filter((p:any)=>p.active&&(!this.category||p.category===this.category)&&(!this.search||(p.name+' '+p.sku).toLowerCase().includes(this.search.toLowerCase())));}
   get categories():string[]{return [...new Set<string>((this.data?.products||[]).map((p:any)=>p.category))];}
   get printStations(){return this.printAgent.stationOptions();}
@@ -108,7 +108,10 @@ export class PosHub implements OnInit, OnDestroy {
   date(v:string){return v?posDate(v).toLocaleString('es-CR',{timeZone:'America/Costa_Rica'}):'—';}
   status(v:string){return ({open:'Abierto',queued:'En cola',preparing:'En preparación',ready:'Listo',paid:'Pagado',cancelled:'Cancelado',refunded:'Devuelto',served:'Entregado',pending:'Pendiente',confirmed:'Confirmada',completed:'Completada'} as any)[v]||v;}
   paymentName(v:string){return ({credit:'A crédito',cash:'Efectivo',card:'Tarjeta',sinpe:'SINPE',transfer:'Transferencia'} as any)[v]||v;}
-  async enter(b:any){await this.run(async()=>{this.bid=b.id;this.tab='dashboard';this.resetCart();this.report=null;this.team=null;this.openedDays={};await this.refresh();if(this.rights.role==='kitchen')this.tab='kitchen';});}
+  businessSettings={name:'',mode:'restaurante',tables:0};
+  editBusinessSettings(){const b=this.data?.business;if(b)this.businessSettings={name:b.name,mode:b.mode,tables:b.tables};}
+  async saveBusinessSettings(){await this.run(async()=>{const b=await this.request(this.path('/settings'),'PUT',this.businessSettings);this.mode=b.mode;this.businesses=this.businesses.map(x=>x.id===b.id?{...x,...b}:x);await this.refresh();this.notice='Negocio configurado. Ya podés operar tu POS.';});}
+  async enter(b:any){await this.run(async()=>{this.mode=b.mode;this.bid=b.id;this.tab='dashboard';this.resetCart();this.report=null;this.team=null;this.openedDays={};await this.refresh();if(this.rights.role==='kitchen')this.tab='kitchen';this.editBusinessSettings();});}
   async refresh(){if(!this.bid)return;const bid=this.bid;const data=await this.request('/business/'+bid+'/state');if(bid!==this.bid)return;this.data=data;this.orderDays=groupOrderDays(data.orders);this.kitchenDays=groupOrderDays(data.orders,true);this.dashboardRevision=JSON.stringify([data.orders.map((o:any)=>[o.id,o.revision]),data.movements.filter((m:any)=>m.kind!=='stock').map((m:any)=>m.id),data.finance_revision||'']);if(!this.visibleTabs.some(t=>t[0]===this.tab))this.tab='dashboard';this.cd.detectChanges();}
   path(p:string){return '/business/'+this.bid+p;}
   async mutate(p:string,body:any,method='POST'){const r=await this.request(this.path(p),method,body);if(this.data?.connect?.provider==='zenit'&&this.rights.manage)await this.request(this.path('/connect/zenit/sync'),'POST',{}).catch(()=>{});await this.refresh();return r;}

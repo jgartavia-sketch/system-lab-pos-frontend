@@ -1,62 +1,29 @@
-<section class="pos-access" aria-label="Usuarios y locales del POS">
-  <div class="panel-head"><div><h2>Usuarios y locales del POS</h2><p>Creá la cuenta de cada cliente y autorizá los locales que administra.</p></div><button *ngIf="account" (click)="logout()" [disabled]="busy">Cerrar sesión del POS</button></div>
-  <p class="message error" *ngIf="error" role="alert">{{error}}</p>
+<section class="pos-access" aria-label="Activación de clientes POS">
+  <div class="panel-head"><div><h2>Acceso de clientes al POS</h2><p>Activá su acceso. Cada cliente configura y administra su negocio dentro del POS.</p></div><button *ngIf="account" (click)="logout()" [disabled]="busy">Cerrar sesión</button></div>
+  <p id="pos-admin-error" class="message error" *ngIf="error" role="alert">{{error}}</p>
   <p class="message success" *ngIf="notice" role="status">{{notice}}</p>
   <p *ngIf="loading" role="status">Verificando acceso…</p>
   <form class="panel login-form" *ngIf="!loading && !account" #loginForm="ngForm" (ngSubmit)="loginForm.valid && login()">
-    <h3>Ingresar como System Lab</h3><p>Usá tu cuenta CEO del POS para administrar usuarios y locales.</p>
+    <h3>Ingresar como System Lab</h3>
     <label>Correo<input name="ceoEmail" type="email" [(ngModel)]="loginEmail" required autocomplete="username"></label>
-    <label>Contraseña<input name="ceoPassword" type="password" [(ngModel)]="loginPassword" required autocomplete="current-password"></label>
+    <label>Contraseña<span class="password-field"><input name="ceoPassword" [type]="showLogin?'text':'password'" [(ngModel)]="loginPassword" required autocomplete="current-password"><button type="button" (click)="showLogin=!showLogin" [attr.aria-label]="showLogin?'Ocultar contraseña de ingreso':'Mostrar contraseña de ingreso'" [attr.aria-pressed]="showLogin"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></span></label>
     <button class="primary" [disabled]="busy || loginForm.invalid">Ingresar</button>
   </form>
-  <div class="panel" *ngIf="account && !account.ceo"><h3>Acceso exclusivo de System Lab</h3><p>Para agregar un local a tu cuenta, solicitá la autorización de System Lab.</p><a href="/pos">Volver al POS</a></div>
+  <div class="panel" *ngIf="account && !account.ceo"><p>Este panel es exclusivo de System Lab.</p><a href="/pos">Ingresar a mi POS</a></div>
   <ng-container *ngIf="account?.ceo && adminData">
-    <p class="scope-note">Solo System Lab crea cuentas de dueños y autoriza locales. Cada dueño administra sus empleados desde «Mi equipo» dentro del POS.</p>
-    <details class="panel">
-      <summary>Configurar Shirley’s · POS + SL Connect</summary>
-      <p>Creá su cuenta, local y catálogo de 68 productos en una sola operación. Incluye categorías, precios y empaques del menú. Una repetición conserva la configuración existente.</p>
-      <form class="form-grid" #shirleysForm="ngForm" (ngSubmit)="shirleysForm.valid && setupShirleys()">
-        <label>Nombre del dueño<input name="shirleysOwner" [(ngModel)]="shirleys.name" required minlength="2" maxlength="160"></label>
-        <label>Correo del dueño<input name="shirleysEmail" type="email" [(ngModel)]="shirleys.email" required maxlength="255" autocomplete="off"></label>
-        <label>Contraseña inicial<input name="shirleysPassword" type="password" [(ngModel)]="shirleys.password" required minlength="8" maxlength="128" autocomplete="new-password"><small>Al menos 8 caracteres.</small></label>
-        <label>Nombre del local<input name="shirleysBusiness" [(ngModel)]="shirleys.business_name" required minlength="2" maxlength="160"></label>
-        <label>Número de mesas<input name="shirleysTables" type="number" [(ngModel)]="shirleys.tables" required min="0" max="200" step="1"></label>
-        <p>Los costos quedan pendientes de completar y el inventario sin seguimiento hasta registrar existencias. La conexión con el sitio requiere la clave privada configurada en ambos servidores.</p>
-        <div class="actions"><button class="primary" [disabled]="busy || shirleysForm.invalid">Crear Shirley’s con su catálogo</button></div>
-      </form>
-    </details>
-    <form id="pos-business-form" class="panel form-grid" #businessForm="ngForm" (ngSubmit)="businessForm.valid && saveBusiness()">
-      <h3>{{businessEdit ? 'Editar local' : 'Crear y asignar local'}}</h3>
-      <label *ngIf="!businessEdit">Cuenta del cliente<select name="businessOwner" [(ngModel)]="businessOwner"><option [ngValue]="0">Guardar local para asignarlo después</option><option *ngFor="let u of adminData.accounts" [ngValue]="u.id">{{u.name}} · {{u.email}}</option></select></label>
-      <label>Nombre del local<input name="businessName" [(ngModel)]="newBusiness.name" minlength="2" maxlength="160" required></label>
-      <label>Modalidad<select name="businessMode" [(ngModel)]="newBusiness.mode" [disabled]="!!businessEdit"><option *ngFor="let m of modes" [value]="m.id">{{m.name}}</option></select></label>
-      <label>Número de mesas<input name="businessTables" type="number" min="0" max="200" step="1" [(ngModel)]="newBusiness.tables" required></label>
-      <label class="check"><input name="businessActive" type="checkbox" [(ngModel)]="newBusiness.active">Local activo</label>
-      <div class="actions"><button class="primary" [disabled]="busy || businessForm.invalid">{{!businessEdit && businessOwner ? 'Crear y asignar local' : 'Guardar local'}}</button><button type="button" (click)="cancelBusiness()">Limpiar formulario</button></div>
+    <form id="pos-activate-form" class="panel form-grid" #activateForm="ngForm" (ngSubmit)="activateForm.valid && activatePos()">
+      <h3>Activar POS de un cliente</h3>
+      <label>Correo del dueño<input name="ownerEmail" type="email" [(ngModel)]="email" required maxlength="255" autocomplete="off"></label>
+      <label>Contraseña<span class="password-field"><input id="pos-owner-password" name="ownerPassword" [type]="showPassword?'text':'password'" [(ngModel)]="password" required minlength="8" maxlength="128" autocomplete="new-password"><button type="button" (click)="showPassword=!showPassword" [attr.aria-label]="showPassword?'Ocultar contraseña':'Mostrar contraseña'" [attr.aria-pressed]="showPassword"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></span><small>Mínimo 8 caracteres.</small></label>
+      <label>Confirmar contraseña<span class="password-field"><input name="ownerConfirmation" [type]="showConfirmation?'text':'password'" [(ngModel)]="confirmation" required minlength="8" maxlength="128" autocomplete="new-password"><button type="button" (click)="showConfirmation=!showConfirmation" [attr.aria-label]="showConfirmation?'Ocultar confirmación':'Mostrar confirmación'" [attr.aria-pressed]="showConfirmation"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></span></label>
+      <p class="mismatch" *ngIf="confirmation && password!==confirmation" role="status">Las contraseñas no coinciden.</p>
+      <div class="actions"><button class="primary" [disabled]="busy || activateForm.invalid || password!==confirmation">Activar POS</button></div>
     </form>
-    <details class="panel"><summary>Locales registrados · {{adminData.businesses.length}}</summary><div class="rows"><div class="list-row" *ngFor="let b of adminData.businesses"><div><strong>{{b.name}} · #{{b.id}}</strong><small>{{modeName(b.mode)}} · Local {{b.active ? 'activo' : 'suspendido'}}</small><small>{{ownersFor(b)}}</small></div><div class="actions"><button (click)="editBusiness(b)" [disabled]="busy">Editar local</button><button class="danger" (click)="deleteBusiness(b)" [disabled]="busy">Eliminar local</button></div></div></div></details>
-    <form class="panel form-grid" #ownerForm="ngForm" (ngSubmit)="ownerForm.valid && saveAccount()">
-      <h3>Crear cuenta de cliente / dueño</h3>
-      <label>Nombre<input name="ownerName" [(ngModel)]="newAccount.name" required minlength="2" maxlength="160"></label>
-      <label>Correo<input name="ownerEmail" type="email" [(ngModel)]="newAccount.email" required maxlength="255" autocomplete="off"></label>
-      <label>Contraseña inicial<input name="ownerPassword" type="password" [(ngModel)]="newAccount.password" required minlength="8" maxlength="128" autocomplete="new-password" aria-describedby="owner-password-help"><small id="owner-password-help">La contraseña debe tener al menos 8 caracteres.</small></label>
-      <fieldset><legend>Locales que administra como dueño</legend><p *ngIf="!adminData.businesses.length">Podés crear la cuenta primero y agregarle un local después.</p><label class="check" *ngFor="let b of adminData.businesses"><input type="checkbox" [checked]="newAccount.business_ids.includes(b.id)" (change)="toggleBusiness(newAccount,b.id)">{{b.name}} · {{modeName(b.mode)}}</label></fieldset>
-      <div class="actions"><button class="primary" [disabled]="busy || ownerForm.invalid">Crear cuenta</button></div>
-    </form>
-    <section aria-label="Cuentas del POS"><h3>Cuentas y locales autorizados</h3>
-      <details class="panel account-row" *ngFor="let u of adminData.accounts">
-        <summary><span><strong>{{u.name}}</strong><small>{{u.email}}</small></span><span class="pill">{{u.ceo ? 'CEO' : u.active ? 'Activa' : 'Suspendida'}} · {{u.business_ids.length}} locales como dueño</span></summary>
-        <div class="rows"><p *ngIf="!u.business_ids.length">Sin locales asignados como dueño. Los accesos de empleados se gestionan en Mi equipo.</p><div class="list-row" *ngFor="let b of localsFor(u)"><span>{{b.name}} · {{modeName(b.mode)}}</span><small>{{b.active ? 'Activo' : 'Suspendido'}}</small></div><div class="actions"><button class="primary" (click)="newLocalFor(u)">Agregar nuevo local</button><button (click)="editAccess(u)">Administrar acceso y locales existentes</button><button *ngIf="!u.ceo" class="danger" (click)="deleteAccount(u)" [disabled]="busy">Eliminar cuenta</button></div></div>
-      </details>
+    <section aria-label="Clientes con POS"><h3>Clientes</h3><label>Buscar por correo o nombre<input name="clientSearch" type="search" [(ngModel)]="search" placeholder="Correo del cliente"></label>
+      <p *ngIf="!customers.length">No hay clientes para mostrar.</p>
+      <article class="panel" *ngFor="let u of customers"><div class="list-row"><div><strong>{{u.email}}</strong><small>{{u.active?'Acceso activo':'Acceso suspendido'}}</small><small *ngFor="let b of localsFor(u)">{{b.name}} · {{b.setup_complete===false?'Por configurar':modeName(b.mode)}} · {{b.active?'Local activo':'Local suspendido'}}</small></div><div class="actions"><button class="primary" (click)="prepareAccess(u)" [disabled]="busy">Cambiar contraseña</button><button *ngIf="u.active" (click)="suspend(u)" [disabled]="busy">Suspender</button><button *ngIf="!u.active" (click)="resume(u)" [disabled]="busy">Reactivar</button><button class="danger" (click)="deleteAccount(u)" [disabled]="busy">Eliminar</button></div></div>
+      </article>
     </section>
-    <form id="pos-access-form" class="panel form-grid" *ngIf="access" (ngSubmit)="saveAccess()">
-      <h3>Acceso de {{access.name}} · {{access.email}}</h3>
-      <label class="check"><input name="accessActive" type="checkbox" [(ngModel)]="access.active">Cuenta activa</label>
-      <fieldset><legend>Locales que administra como dueño</legend><label class="check" *ngFor="let b of adminData.businesses"><input type="checkbox" [checked]="access.business_ids.includes(b.id)" (change)="toggleBusiness(access,b.id)">{{b.name}} · {{modeName(b.mode)}}</label></fieldset>
-      <p>Los locales marcados conservan su acceso. Guardar cierra las sesiones actuales de esta cuenta.</p>
-      <div class="actions"><button class="primary" [disabled]="busy">Guardar acceso</button><button type="button" (click)="access=null">Cerrar edición</button></div>
-      <label>Nueva contraseña para restablecer<input name="resetPassword" type="password" [(ngModel)]="resetPassword" minlength="8" maxlength="128" autocomplete="new-password"><small>Mínimo 8 caracteres.</small></label>
-      <div class="actions"><button type="button" (click)="resetAccountPassword()" [disabled]="busy || resetPassword.trim().length<8">Restablecer contraseña</button></div>
-    </form>
+    <details class="panel maintenance"><summary>Mantenimiento de locales</summary><p>Los locales con datos o integración se conservan para proteger la operación y el historial.</p><div class="list-row" *ngFor="let b of adminData.businesses"><div><strong>{{b.name}} · #{{b.id}}</strong><small>{{ownersFor(b)}}</small></div><button class="danger" (click)="deleteBusiness(b)" [disabled]="busy">Eliminar local vacío</button></div></details>
   </ng-container>
 </section>
