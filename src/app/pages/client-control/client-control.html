@@ -1,26 +1,26 @@
 <div class="control-shell">
   <header class="hero">
-    <div class="brand"><img src="/logo.png" alt="System Lab" /><div><strong>System Lab</strong><span>Centro de control</span></div></div>
-    <div class="hero-copy"><span class="eyebrow">Panel administrativo</span><h1>Todos los clientes. Todo bajo control.</h1><p>Infraestructura, avance de proyectos y pagos en una sola torre de mando.</p></div>
+    <div class="brand"><img src="/logo.png" alt="System Lab" /><div><strong>System Lab</strong><span>Centro de operaciones</span></div></div>
+    <div class="hero-copy"><span class="eyebrow">SYSTEM LAB · ADMINISTRACIÓN</span><h1>Centro de clientes<span class="hero-dot">.</span></h1><p>Servicios, proyectos, pagos y accesos. Todo en una misma vista.</p></div>
     <a class="back-link" href="/">Volver al inicio</a>
   </header>
 
   <main>
     <section class="kpis" aria-label="Resumen">
-      <article><span>Clientes activos</span><strong>{{ dashboard().clients.length }}</strong></article>
-      <article><span>Servicios conectados</span><strong>{{ activeServices() }}</strong></article>
-      <article><span>Tareas abiertas</span><strong>{{ pendingWork() }}</strong></article>
-      <article><span>Pagos pendientes</span><strong>{{ pendingPayments() }}</strong></article>
+      <button class="kpi-card" (click)="setTab('services')"><span>Clientes</span><strong>{{ dashboard().clients.length }}</strong><small>Ver servicios <span aria-hidden="true">↗</span></small></button>
+      <button class="kpi-card" (click)="setTab('services')"><span>Servicios activos</span><strong>{{ activeServices() }}</strong><small>Infraestructura <span aria-hidden="true">↗</span></small></button>
+      <button class="kpi-card" (click)="setTab('progress')"><span>Tareas abiertas</span><strong>{{ pendingWork() }}</strong><small>Ver proyectos <span aria-hidden="true">↗</span></small></button>
+      <button class="kpi-card" (click)="setTab('payments')"><span>Pagos pendientes</span><strong>{{ pendingPayments() }}</strong><small>Ver historial <span aria-hidden="true">↗</span></small></button>
     </section>
 
     <nav class="tabs" aria-label="Secciones del panel">
-      <button [class.active]="activeTab() === 'services'" (click)="setTab('services')">01 · Servicios</button>
-      <button [class.active]="activeTab() === 'progress'" (click)="setTab('progress')">02 · Estado de proyectos</button>
-      <button [class.active]="activeTab() === 'payments'" (click)="setTab('payments')">03 · Historial de pagos</button>
-      <button [class.active]="activeTab() === 'pos'" (click)="setTab('pos')">04 · POS: usuarios y locales</button>
-      <button [class.active]="activeTab() === 'events'" (click)="setTab('events')">05 · Eventos</button>
-      <button [class.active]="activeTab() === 'finances'" (click)="setTab('finances')">06 · Finanzas</button>
-      <button [class.active]="activeTab() === 'stories'" (click)="setTab('stories')">07 · Clientes Stories</button>
+      <button [class.active]="activeTab() === 'services'" [attr.aria-current]="activeTab() === 'services' ? 'page' : null" (click)="setTab('services')">01 · Servicios</button>
+      <button [class.active]="activeTab() === 'progress'" [attr.aria-current]="activeTab() === 'progress' ? 'page' : null" (click)="setTab('progress')">02 · Estado de proyectos</button>
+      <button [class.active]="activeTab() === 'payments'" [attr.aria-current]="activeTab() === 'payments' ? 'page' : null" (click)="setTab('payments')">03 · Historial de pagos</button>
+      <button [class.active]="activeTab() === 'pos'" [attr.aria-current]="activeTab() === 'pos' ? 'page' : null" (click)="setTab('pos')">04 · Clientes POS</button>
+      <button [class.active]="activeTab() === 'events'" [attr.aria-current]="activeTab() === 'events' ? 'page' : null" (click)="setTab('events')">05 · Eventos</button>
+      <button [class.active]="activeTab() === 'finances'" [attr.aria-current]="activeTab() === 'finances' ? 'page' : null" (click)="setTab('finances')">06 · Finanzas</button>
+      <button [class.active]="activeTab() === 'stories'" [attr.aria-current]="activeTab() === 'stories' ? 'page' : null" (click)="setTab('stories')">07 · Clientes Stories</button>
     </nav>
 
     @if (activeTab() === 'stories') { <app-stories-readers-admin [apiBase]="apiBase" /> }
