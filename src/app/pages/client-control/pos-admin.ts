@@ -99,6 +99,23 @@ export class PosAdmin implements OnInit {
       this.notice = assigned ? 'Local creado y asignado. El cliente conserva sus otros locales.' : 'Local guardado.';
     });
   }
+  ownersFor(business: any): string {
+    return (this.adminData?.accounts || [])
+      .filter((u: any) => u.business_ids.includes(business.id))
+      .map((u: any) => `${u.email} (${u.active ? 'cuenta activa' : 'cuenta suspendida'})`)
+      .join(' · ') || 'Sin cuenta propietaria asignada';
+  }
+  async deleteBusiness(business: any) {
+    if (this.busy) return;
+    if (!confirm(`¿Eliminar el local #${business.id}: ${business.name}?\n\nSolo se elimina si no tiene datos ni integración. Las cuentas se conservan. Esta acción es permanente.`)) return;
+    await this.run(async () => {
+      await this.request('/admin/businesses/' + business.id, 'DELETE');
+      if (this.businessEdit === business.id) this.cancelBusiness();
+      this.access = null;
+      this.adminData = await this.request('/admin');
+      this.notice = `Local #${business.id} eliminado. Las cuentas se conservaron.`;
+    });
+  }
   toggleBusiness(target: any, id: number) {
     target.business_ids = target.business_ids.includes(id) ? target.business_ids.filter((v: number) => v !== id) : [...target.business_ids, id];
   }

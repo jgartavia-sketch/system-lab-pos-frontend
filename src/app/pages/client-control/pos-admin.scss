@@ -2,3 +2,5 @@
 @media(max-width:700px){.panel{padding:18px}.form-grid{grid-template-columns:minmax(0,1fr)}.panel-head,.list-row,.account-row>summary{flex-direction:column;align-items:stretch}.actions>button{flex:1 1 180px}.account-row>summary{gap:10px}}
 
 #pos-business-form,#pos-access-form{scroll-margin-top:24px}
+
+.list-row strong,.list-row small{overflow-wrap:anywhere}.list-row>.actions{flex-shrink:0}.danger{border-color:#e98282;color:#ffb8b8}

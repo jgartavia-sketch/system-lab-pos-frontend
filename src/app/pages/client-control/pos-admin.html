@@ -34,7 +34,7 @@
       <label class="check"><input name="businessActive" type="checkbox" [(ngModel)]="newBusiness.active">Local activo</label>
       <div class="actions"><button class="primary" [disabled]="busy || businessForm.invalid">{{!businessEdit && businessOwner ? 'Crear y asignar local' : 'Guardar local'}}</button><button type="button" (click)="cancelBusiness()">Limpiar formulario</button></div>
     </form>
-    <details class="panel"><summary>Locales registrados · {{adminData.businesses.length}}</summary><div class="rows"><div class="list-row" *ngFor="let b of adminData.businesses"><div><strong>{{b.name}}</strong><small>{{modeName(b.mode)}} · {{b.active ? 'Activo' : 'Suspendido'}}</small></div><button (click)="editBusiness(b)">Editar local</button></div></div></details>
+    <details class="panel"><summary>Locales registrados · {{adminData.businesses.length}}</summary><div class="rows"><div class="list-row" *ngFor="let b of adminData.businesses"><div><strong>{{b.name}} · #{{b.id}}</strong><small>{{modeName(b.mode)}} · Local {{b.active ? 'activo' : 'suspendido'}}</small><small>{{ownersFor(b)}}</small></div><div class="actions"><button (click)="editBusiness(b)" [disabled]="busy">Editar local</button><button class="danger" (click)="deleteBusiness(b)" [disabled]="busy">Eliminar local</button></div></div></div></details>
     <form class="panel form-grid" #ownerForm="ngForm" (ngSubmit)="ownerForm.valid && saveAccount()">
       <h3>Crear cuenta de cliente / dueño</h3>
       <label>Nombre<input name="ownerName" [(ngModel)]="newAccount.name" required minlength="2" maxlength="160"></label>
