@@ -58,4 +58,30 @@ describe('Interacciones del POS', () => {
     component.fulfillment='dine_in';expect(component.packagingTotal).toBe(0);expect(component.serviceTotal).toBe(300);expect(component.estimatedTotal).toBe(3300);
     component.resetCart();expect(component.sourceChannel).toBe('pos');expect(component.externalOrderId).toBe('');
   });
+  it('muestra varias cuentas en una mesa y conserva la ocupación al pagar una',async()=>{
+    component.data.business.tables=3;component.tab='dashboard';
+    component.data.orders=[{id:10,label:'Ana',table_number:2,table_session:'visit-1',status:'open',items:[],total:6000},{id:11,label:'Luis',table_number:2,table_session:'visit-1',status:'open',items:[],total:11000}];
+    component.useTable(2);render();await fixture.whenStable();
+    expect(fixture.nativeElement.querySelectorAll('.table-bill').length).toBe(2);expect(component.tableBalance(2)).toBe(17000);
+    component.data.orders[0].status='paid';expect(component.occupied(2)).toBe(true);expect(component.tableBalance(2)).toBe(11000);
+    component.startTableAccount(2);expect(component.label).toBe('Mesa 2 · Cuenta 3');expect(component.tableSession).toBe('visit-1');
+    component.data.orders[1].status='paid';expect(component.occupied(2)).toBe(false);
+    component.useTable(2);expect(component.tableNumber).toBe(2);expect(component.tableSession).toBeNull();expect(component.editingOrder).toBe(0);
+  });
+  it('cobra el id de la cuenta seleccionada con su cliente y su revisión',async()=>{
+    const bill={id:11,label:'Luis',revision:4,customer_id:null,table_number:2,status:'ready',total:11000,items:[]};
+    const mutate=vi.spyOn(component,'mutate').mockResolvedValue({...bill,status:'paid',customer_id:8,loyalty_name:'Luis',loyalty_status:'credited',loyalty_points:7});
+    vi.spyOn(component.printAgent,'printReceipt').mockResolvedValue({duplicate:false});
+    component.openPayment(bill);component.method='sinpe';component.paymentCustomer={customer_id:null,loyalty_code:'A02',loyalty_name:'Luis'};
+    await component.pay();
+    expect(mutate).toHaveBeenCalledWith('/orders/11/pay',{method:'sinpe',received:11000,invoice_number:'',expected_revision:4,customer_id:null,loyalty_code:'A02'});
+    expect(component.notice).toContain('7 puntos acreditados a Luis');expect(component.receipt.id).toBe(11);
+  });
+  it('las cuentas derivadas consultan la comanda original y no duplican cocina',()=>{
+    const original={id:10,status:'split',kitchen_status:'preparing',items:[{name:'Pizza',quantity:1}]};
+    const child={id:11,status:'open',preparation_order_id:10,split_parent_id:10,kitchen_status:null,items:[{name:'Pizza',quantity:.5}]};
+    component.data.orders=[original,child];expect(component.kitchenOrders).toHaveLength(1);
+    component.showComanda(child);expect(component.comanda).toBe(original);
+    component.edit(child);expect(component.editingOrder).toBe(0);expect(component.tab).toBe('orders');
+  });
 });

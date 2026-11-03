@@ -1,0 +1,23 @@
+<div class="customer-picker">
+  <label>Cliente de esta cuenta
+    <select [ngModel]="selected.customer_id" (ngModelChange)="localCustomer($event)" [ngModelOptions]="{standalone:true}" [disabled]="disabled">
+      <option [ngValue]="null">{{selected.loyalty_code&&!selected.customer_id?'Cliente registrado seleccionado':'Consumidor final'}}</option>
+      <option *ngFor="let c of customers" [ngValue]="c.id">{{c.name}}{{loyalty&&c.remote_id?' · registrado':''}}</option>
+    </select>
+  </label>
+  <div class="chosen-customer" *ngIf="selected.loyalty_code" role="status">
+    <div><strong>{{selected.loyalty_name || selected.loyalty_code}}</strong><small>{{selected.loyalty_code}} · Puntos por su propia compra</small></div>
+    <button type="button" (click)="clear()" [disabled]="disabled">Quitar</button>
+  </div>
+  <ng-container *ngIf="loyalty">
+    <label>Buscar cliente registrado
+      <span class="search-row"><input [ngModel]="query" (ngModelChange)="query=$event" [ngModelOptions]="{standalone:true}" maxlength="160" placeholder="Código, teléfono, correo o nombre" [disabled]="disabled||loading" (keydown.enter)="$event.preventDefault();search()"><button type="button" (click)="search()" [disabled]="disabled||loading||query.trim().length<2">{{loading?'Buscando…':'Buscar'}}</button></span>
+    </label>
+    <p class="picker-hint" *ngIf="!selected.loyalty_code">Seleccioná su registro para acreditar puntos al confirmar el pago.</p>
+    <p class="picker-error" *ngIf="error" role="alert">{{error}}</p>
+    <p class="picker-hint" *ngIf="searched&&!results.length">No encontramos coincidencias. Revisá el código o el teléfono.</p>
+    <div class="customer-results" *ngIf="results.length" aria-label="Clientes registrados encontrados">
+      <button type="button" *ngFor="let customer of results" (click)="select(customer)" [disabled]="disabled"><strong>{{customer.name}}</strong><small>{{customer.code}} · {{customer.whatsapp}}</small><span>{{customer.points}} puntos actuales · Seleccionar</span></button>
+    </div>
+  </ng-container>
+</div>

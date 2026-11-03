@@ -1983,3 +1983,6 @@ tbody tr:hover {
     width: 100%;
   }
 }
+
+// Several independently paid bills can share the same table.
+.table-modal .table-accounts{width:min(100%,780px);max-height:90vh;overflow:auto}.table-totals{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:1rem;background:#f2f6fc;border-radius:.8rem;margin:1rem 0}.table-bill{border:1px solid #dce3ef;border-radius:.9rem;margin:.8rem 0;padding:1rem}.table-bill h3{font-size:1.05rem;margin:0}.table-bill p{font-size:.85rem;overflow-wrap:anywhere}.table-bill .actions{justify-content:flex-end}.add-table-bill{margin-top:1rem;width:100%}.loyalty-note{font-size:.85rem;color:#256949;background:#eff8f1;border-radius:.5rem;padding:.6rem}.payment-modal app-pos-customer-picker{margin:1rem 0}@media(max-width:600px){.table-modal{padding:.5rem}.table-modal .table-accounts{padding:1rem;max-height:95vh}.table-bill .actions{flex-wrap:wrap}.table-bill .actions button{flex:1}.table-totals{font-size:.9rem}}
