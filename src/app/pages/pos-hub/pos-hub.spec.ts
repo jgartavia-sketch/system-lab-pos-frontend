@@ -84,4 +84,39 @@ describe('Interacciones del POS', () => {
     component.showComanda(child);expect(component.comanda).toBe(original);
     component.edit(child);expect(component.editingOrder).toBe(0);expect(component.tab).toBe('orders');
   });
+  it('ofrece Crédito al cobrar y envía el cliente y abono inicial en una sola operación',async()=>{
+    component.mode='salon';component.tab='orders';component.data.permissions.manage=true;
+    component.data.customers=[{id:8,name:'Ana'}];
+    const sale={id:35,label:'Servicio',revision:2,customer_id:null,status:'open',total:3000,items:[]};
+    component.openPayment(sale);render();await fixture.whenStable();
+    const method=fixture.nativeElement.querySelector('select[name="method"]') as HTMLSelectElement;
+    expect(Array.from(method.options).some(o=>o.value==='credit'&&o.textContent==='Crédito')).toBe(true);
+    component.method='credit';render();await fixture.whenStable();
+    expect(component.validCredit).toBe(false);
+    expect(fixture.nativeElement.textContent).toContain('Abono inicial');
+    component.paymentCustomer={customer_id:8,loyalty_code:null};component.creditInitial=1000;component.creditMethod='sinpe';
+    expect(component.creditBalance).toBe(2000);expect(component.validCredit).toBe(true);
+    const credit={id:7,order_id:35,paid:1000,balance:2000,status:'partial'};
+    const mutate=vi.spyOn(component,'mutate').mockResolvedValue(credit);
+    const printer=vi.spyOn(component.printAgent,'printReceipt');
+    await component.pay();
+    expect(mutate).toHaveBeenCalledWith('/orders/35/credit',{request_key:component.creditKey,expected_revision:2,customer_id:8,invoice_number:'',due_date:null,initial_payment:{amount:1000,method:'sinpe',reference:''}});
+    expect(component.receipt.credit.balance).toBe(2000);expect(component.paymentOrder).toBeNull();expect(printer).not.toHaveBeenCalled();
+    expect(component.notice).toContain('Saldo pendiente');
+  });
+  it('permite crédito total y conserva la clave de cobro si se pierde la respuesta',async()=>{
+    component.mode='salon';component.data.permissions.manage=true;
+    component.openPayment({id:35,revision:1,customer_id:8,total:3000});component.method='credit';
+    expect(component.creditInitial).toBe(0);expect(component.creditBalance).toBe(3000);expect(component.validCredit).toBe(true);
+    const key=component.creditKey;
+    const mutate=vi.spyOn(component,'mutate').mockRejectedValueOnce(Error('Respuesta perdida')).mockResolvedValueOnce({id:7,paid:0,balance:3000});
+    await component.pay();expect(component.paymentOrder.id).toBe(35);expect(component.creditKey).toBe(key);
+    await component.pay();expect(mutate.mock.calls[0][1]).toEqual(mutate.mock.calls[1][1]);
+  });
+  it('rechaza abonos iniciales inválidos y abre el saldo de la venta elegida',()=>{
+    component.data.permissions.manage=true;component.openPayment({id:35,customer_id:8,total:3000});
+    for(const amount of [-1,3000,3001,.001]){component.creditInitial=amount;expect(component.validCredit).toBe(false);}
+    component.creditInitial=1000;component.data.register=null;expect(component.validCredit).toBe(false);
+    component.receipt={id:35};component.viewCredit({id:35});expect(component.receipt).toBeNull();expect(component.tab).toBe('credit');expect(component.creditOrderId).toBe(35);
+  });
 });

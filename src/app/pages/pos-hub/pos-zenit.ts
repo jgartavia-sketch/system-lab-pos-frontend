@@ -21,7 +21,7 @@ export class PosZenit implements OnInit,OnDestroy{
   this.appointments=agenda.appointments;this.products=catalog.products;this.services=catalog.services;this.orders=orders.orders;this.importedIds=orders.imported;this.nextOffset=orders.nextOffset;this.customers=customers.customers.filter((c:any)=>c.remote_id);this.loaded=true;
  });}
  async page(next:boolean){this.offset=next?(this.nextOffset||0):Math.max(0,this.offset-100);await this.load(false);}
- async importOrder(o:any){await this.action(async()=>{const order=await posRequest(this.api,this.base(`/orders/${o.id}/import`),'POST',{});this.importedIds[o.id]=order.id;this.imported.emit(order);this.notice='Pedido importado #'+order.id+'. Revisá y cobrá desde Pedidos o elegí Cuentas por cobrar.';});}
+ async importOrder(o:any){await this.action(async()=>{const order=await posRequest(this.api,this.base(`/orders/${o.id}/import`),'POST',{});this.importedIds[o.id]=order.id;this.imported.emit(order);this.notice='Pedido importado #'+order.id+'. Revisá sus datos y usá Cobrar en Pedidos. Para dejar saldo pendiente, elegí Crédito en Método.';});}
  selectCustomer(){const c=this.customers.find(x=>x.remote_id===this.booking.customerId);if(c){this.booking.customerName=c.name;this.booking.phone=c.phone;}}
  selectService(){const s=this.services.find(x=>x.slug===this.booking.serviceSlug);if(s?.durationMinutes)this.booking.durationMinutes=s.durationMinutes;}
  async createAppointment(){await this.action(async()=>{

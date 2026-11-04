@@ -30,6 +30,7 @@ export class PosHub implements OnInit, OnDestroy {
   product:any=this.blankProduct(); productId=0; customer:any={name:'',phone:'',email:''}; customerEdit=0;
   stockForm:any={request_key:crypto.randomUUID(),product_id:0,kind:'entry',quantity:0,reason:''}; cashAmount=0; cashForm:any={kind:'expense',amount:0,reason:''};
   paymentOrder:any=null; invoiceNumber=''; method='cash'; received=0; receipt:any=null;
+  creditKey=crypto.randomUUID();creditInitial=0;creditMethod='cash';creditReference='';creditDue='';creditOrderId=0;
   tableSession:string|null=null;tablePanel=0;tablePanelSession:string|null=null;splitOrder:any=null;
   cartCustomer:BillCustomer={customer_id:null,loyalty_code:null};
   paymentCustomer:BillCustomer={customer_id:null,loyalty_code:null};
@@ -93,6 +94,7 @@ export class PosHub implements OnInit, OnDestroy {
   appointmentTime(value:string){return posDate(value).toLocaleTimeString('es-CR',{timeZone:'America/Costa_Rica',hour:'2-digit',minute:'2-digit'});}
   appointmentStatus(value:string){return ({pending:'Por confirmar',confirmed:'Confirmada',completed:'Completada',cancelled:'Cancelada'} as Record<string,string>)[value]||this.status(value);}
   trackAppointmentDay(_index:number,group:AppointmentDay){return group.day;}
+  auditName(action:string){return ({price_approval:'Ajuste autorizado',staff_created:'Empleado creado',staff_access:'Permisos actualizados',staff_removed:'Acceso retirado',pin_changed:'Código actualizado',staff_password:'Contraseña restablecida',credit_sale:'Venta a crédito',credit_payment:'Abono recibido',credit_payment_void:'Abono anulado',credit_void:'Crédito anulado'} as Record<string,string>)[action]||action;}
   roleName(role:string){return role==='owner'?'Dueño':this.roles.find(r=>r.id===role)?.name||role;}
   get needsApproval(){return this.discount>0||this.cart.some(i=>+i.price!==+(this.data?.products.find((p:any)=>p.id===i.product_id)?.price??i.price));}
   canCancel(o:any){return this.rights.manage||(!o.split_parent_id&&this.rights.sell&&o.status==='open'&&o.account_id===this.account.id);}
@@ -120,7 +122,7 @@ export class PosHub implements OnInit, OnDestroy {
   async refresh(){if(!this.bid)return;const bid=this.bid;const data=await this.request('/business/'+bid+'/state');if(bid!==this.bid)return;this.data=data;this.orderDays=groupOrderDays(data.orders);this.kitchenDays=groupOrderDays(data.orders,true);this.dashboardRevision=JSON.stringify([data.orders.map((o:any)=>[o.id,o.revision]),data.movements.filter((m:any)=>m.kind!=='stock').map((m:any)=>m.id),data.finance_revision||'']);if(!this.visibleTabs.some(t=>t[0]===this.tab))this.tab='dashboard';this.cd.detectChanges();}
   path(p:string){return '/business/'+this.bid+p;}
   async mutate(p:string,body:any,method='POST'){const r=await this.request(this.path(p),method,body);if(this.data?.connect?.provider==='zenit'&&this.rights.manage)await this.request(this.path('/connect/zenit/sync'),'POST',{}).catch(()=>{});await this.refresh();return r;}
-  async navigate(tab:string){if(!this.visibleTabs.some(t=>t[0]===tab))return;this.tab=tab;this.menuOpen=false;if(tab==='team')await this.loadTeam();if(tab==='audit')await this.loadAudit();if(tab==='reports')await this.loadReport();if(tab==='appointments')await this.run(async()=>{await this.refresh();});}
+  async navigate(tab:string){if(!this.visibleTabs.some(t=>t[0]===tab))return;this.tab=tab;this.menuOpen=false;if(tab==='credit')this.creditOrderId=0;if(tab==='team')await this.loadTeam();if(tab==='audit')await this.loadAudit();if(tab==='reports')await this.loadReport();if(tab==='appointments')await this.run(async()=>{await this.refresh();});}
   dayOpen(section:string,day:string){return this.openedDays[section+':'+day]??day===this.today();}
   toggleDay(section:string,day:string,event:Event){this.openedDays[section+':'+day]=(event.target as HTMLDetailsElement).open;}
   trackDay(_index:number,day:OrderDay){return day.day;}
@@ -202,8 +204,20 @@ export class PosHub implements OnInit, OnDestroy {
     this.cd.detectChanges();
   }
 
-  openPayment(o:any){this.error='';this.tablePanel=0;this.paymentCustomer={customer_id:o.customer_id||null,loyalty_code:o.loyalty_code||null,loyalty_name:o.loyalty_name};this.invoiceNumber=o.invoice_number||'';this.paymentOrder=o;this.method='cash';this.received=+o.total;}
+  openPayment(o:any){this.error='';this.tablePanel=0;this.paymentCustomer={customer_id:o.customer_id||null,loyalty_code:o.loyalty_code||null,loyalty_name:o.loyalty_name};this.invoiceNumber=o.invoice_number||'';this.paymentOrder=o;this.method='cash';this.received=+o.total;this.creditKey=crypto.randomUUID();this.creditInitial=0;this.creditMethod='cash';this.creditReference='';this.creditDue='';}
+  get creditBalance(){return Math.round((+(this.paymentOrder?.total||0)-(+this.creditInitial||0))*100)/100;}
+  get validCredit(){const value=+this.creditInitial;return this.rights.manage&&!!this.paymentCustomer.customer_id&&!!this.data?.register&&Number.isFinite(value)&&value>=0&&this.creditInitial!==null&&Math.abs(value*100-Math.round(value*100))<.000001&&this.creditBalance>0&&(!this.creditDue||this.creditDue>=this.today());}
+  viewCredit(o:any){this.receipt=null;this.creditOrderId=o.id;this.tab='credit';this.menuOpen=false;}
   async pay(){await this.run(async()=>{
+    if(this.method==='credit'){
+      if(!this.validCredit)throw Error('Elegí un cliente, abrí la caja y revisá el abono inicial y la fecha de pago.');
+      const sale=this.paymentOrder;
+      const credit=await this.mutate('/orders/'+sale.id+'/credit',{request_key:this.creditKey,expected_revision:sale.revision||null,customer_id:this.paymentCustomer.customer_id,invoice_number:this.invoiceNumber,due_date:this.creditDue||null,initial_payment:{amount:+this.creditInitial,method:this.creditMethod,reference:this.creditReference}});
+      this.paymentOrder=null;
+      this.receipt={...(this.data.orders.find((o:any)=>o.id===sale.id)||sale),credit};
+      this.notice=`Venta #${sale.id} a crédito. Abonado ${this.money(credit.paid)}. Saldo pendiente ${this.money(credit.balance)}. Los próximos pagos se registran en Cuentas por cobrar.`;
+      return;
+    }
     const o=await this.mutate('/orders/'+this.paymentOrder.id+'/pay',{method:this.method,received:+this.received,invoice_number:this.invoiceNumber,expected_revision:this.paymentOrder.revision||null,customer_id:this.paymentCustomer.customer_id,loyalty_code:this.paymentCustomer.loyalty_code});
     this.paymentOrder=null;this.receipt=o;
     try{
@@ -234,6 +248,7 @@ export class PosHub implements OnInit, OnDestroy {
   }
   async reprintReceipt(){
     if(!this.receipt)return;
+    if(this.receipt.payment_method==='credit'){this.print();return;}
     const order=this.receipt;
     try{
       await this.printAgent.printReceipt({...order,revision:`${order.revision||0}-reprint-${Date.now()}`},this.data?.business,this.customerName(order.customer_id));
